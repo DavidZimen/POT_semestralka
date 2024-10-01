@@ -1,0 +1,6 @@
+@POT_semestralka_backend_HostAddress = http://localhost:5177
+
+GET {{POT_semestralka_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

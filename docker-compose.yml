@@ -1,0 +1,52 @@
+﻿version: '4.32'
+
+networks:
+  semka:
+    driver: bridge
+
+services:
+  postgres_db:
+    image: postgres:17.0
+    container_name: semestralka_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=semestralka
+    ports:
+      - "5433:5432"
+    restart: always
+    networks:
+      - semka
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  pgAdmin4:
+    image: dpage/pgadmin4
+    container_name: pgAdmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5434:80"
+    depends_on:
+      - postgres_db
+    networks:
+      - semka
+      
+  pot_backend:
+    container_name: semestralka-backend
+    depends_on:
+      - postgres_db
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__DefaultConnection: "User ID=postgres;Password=postgres;Server=semestralka_db;Port=5432;Database=semestralka;Pooling=true;"
+    networks:
+      - semka
+    build:
+      context: .
+      dockerfile: POT_semestralka_backend/Dockerfile
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+volumes:
+  postgres_data:
