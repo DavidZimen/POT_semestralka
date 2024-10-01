@@ -9,9 +9,9 @@ services:
     image: postgres:17.0
     container_name: semestralka_db
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=semestralka
+      POSTGRES_USER: ${db_user}
+      POSTGRES_PASSWORD: ${db_pass}
+      POSTGRES_DB: ${db_name}
     ports:
       - "5433:5432"
     restart: always
@@ -19,6 +19,11 @@ services:
       - semka
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
   pgAdmin4:
     image: dpage/pgadmin4
@@ -29,17 +34,19 @@ services:
     ports:
       - "5434:80"
     depends_on:
-      - postgres_db
+      postgres_db:
+        condition: service_healthy
     networks:
       - semka
       
   pot_backend:
     container_name: semestralka-backend
     depends_on:
-      - postgres_db
+      postgres_db:
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "User ID=postgres;Password=postgres;Server=semestralka_db;Port=5432;Database=semestralka;Pooling=true;"
+      ConnectionStrings__DefaultConnection: "User ID=postgres;Password=postgres;Server=semestralka_db;Port=5432;Database=semestralka;Pooling=true"
     networks:
       - semka
     build:
