@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace POT_semestralka_backend.Models;
+namespace Persistence.Entity;
 
 [Table(name: "product")]
-public class Product
+public class ProductEntity
 {
     [Key]
     public int ProductId { get; set; }

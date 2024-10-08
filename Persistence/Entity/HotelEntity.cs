@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace POT_semestralka_backend.Models;
+namespace Persistence.Entity;
 
 [Table(name: "hotel")]
-public class Hotel
+public class HotelEntity
 {
     [Key]
     public int HotelId { get; set; }

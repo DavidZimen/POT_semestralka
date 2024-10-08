@@ -4,10 +4,13 @@ networks:
   semka:
     driver: bridge
 
+volumes:
+  postgres_data:
+
 services:
   postgres_db:
     image: postgres:17.0
-    container_name: semestralka_db
+    container_name: database
     environment:
       POSTGRES_USER: ${db_user}
       POSTGRES_PASSWORD: ${db_pass}
@@ -39,21 +42,19 @@ services:
     networks:
       - semka
       
-  pot_backend:
-    container_name: semestralka-backend
+  pot_api:
+    container_name: api
     depends_on:
       postgres_db:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "User ID=postgres;Password=postgres;Server=semestralka_db;Port=5432;Database=semestralka;Pooling=true"
+      ConnectionStrings__DefaultConnection: "User ID=postgres;Password=postgres;Server=database;Port=5432;Database=semestralka;Pooling=true"
     networks:
       - semka
     build:
       context: .
-      dockerfile: POT_semestralka_backend/Dockerfile
+      dockerfile: Api/Dockerfile
     ports:
       - "5000:8080"
       - "5001:8081"
-volumes:
-  postgres_data:
