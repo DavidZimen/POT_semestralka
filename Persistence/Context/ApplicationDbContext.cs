@@ -10,7 +10,8 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, in
 
     private readonly ILogger<ApplicationDbContext> _logger;
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ILogger<ApplicationDbContext> logger) : base(options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, ILogger<ApplicationDbContext> logger) 
+        : base(options)
     {
         _logger = logger;
     }
@@ -22,6 +23,8 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, in
         
         // here goes the extensions for base data
         builder.AddRoles();
+        builder.AddUsers();
+        builder.AddUserRoles();
     }
 
     public void Migrate()

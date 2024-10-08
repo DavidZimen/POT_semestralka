@@ -48,7 +48,7 @@ public static class Extension
         builder.Entity<UserEntity>().HasData(superAdminUser);
     }
 
-    public static void AddUserRoles(this ModelBuilder builder, UserManager<UserEntity> roleManager)
+    public static void AddUserRoles(this ModelBuilder builder)
     {
         //set super admin user to super admin role
         builder.Entity<IdentityUserRole<int>>().HasData(new IdentityUserRole<int> { 
