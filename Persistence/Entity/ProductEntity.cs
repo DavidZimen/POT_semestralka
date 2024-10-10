@@ -4,10 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Persistence.Entity;
 
 [Table(name: "product")]
-public class ProductEntity
+public class ProductEntity : BaseEntity
 {
-    [Key]
-    public int ProductId { get; set; }
 
     [Column(name: "name", TypeName = "varchar(255)")]
     [Required]
@@ -19,4 +17,10 @@ public class ProductEntity
     [Column(name:"price", TypeName = "double precision")]
     [Required]
     public double Price { get; set; }
+    
+    [ForeignKey(name: "UserId")]
+    [Column(name: "user_id", TypeName = "text")]
+    public string? UserId { get; set; }
+    
+    public UserEntity? User { get; set; }
 }

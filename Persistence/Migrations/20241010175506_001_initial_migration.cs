@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class _001_initial_ddl : Migration
+    public partial class _001_initial_migration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,8 +18,7 @@ namespace Persistence.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
@@ -33,8 +32,7 @@ namespace Persistence.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<string>(type: "text", nullable: false),
                     first_name = table.Column<string>(type: "varchar(50)", nullable: false),
                     last_name = table.Column<string>(type: "varchar(50)", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -61,28 +59,16 @@ namespace Persistence.Migrations
                 name: "hotel",
                 columns: table => new
                 {
-                    HotelId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    name = table.Column<string>(type: "varchar(255)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_hotel", x => x.HotelId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "product",
-                columns: table => new
-                {
-                    ProductId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    hotel_id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "varchar(255)", nullable: false),
-                    description = table.Column<string>(type: "varchar(255)", nullable: true),
-                    price = table.Column<double>(type: "double precision", nullable: false)
+                    version = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    modified_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_product", x => x.ProductId);
+                    table.PrimaryKey("PK_hotel", x => x.hotel_id);
                 });
 
             migrationBuilder.CreateTable(
@@ -91,7 +77,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    RoleId = table.Column<int>(type: "integer", nullable: false),
+                    RoleId = table.Column<string>(type: "text", nullable: false),
                     ClaimType = table.Column<string>(type: "text", nullable: true),
                     ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
@@ -112,7 +98,7 @@ namespace Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
                     ClaimType = table.Column<string>(type: "text", nullable: true),
                     ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
@@ -134,7 +120,7 @@ namespace Persistence.Migrations
                     LoginProvider = table.Column<string>(type: "text", nullable: false),
                     ProviderKey = table.Column<string>(type: "text", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
-                    UserId = table.Column<int>(type: "integer", nullable: false)
+                    UserId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -151,8 +137,8 @@ namespace Persistence.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "integer", nullable: false),
-                    RoleId = table.Column<int>(type: "integer", nullable: false)
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    RoleId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -175,7 +161,7 @@ namespace Persistence.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
                     LoginProvider = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Value = table.Column<string>(type: "text", nullable: true)
@@ -191,26 +177,58 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "product",
+                columns: table => new
+                {
+                    product_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "varchar(255)", nullable: false),
+                    description = table.Column<string>(type: "varchar(255)", nullable: true),
+                    price = table.Column<double>(type: "double precision", nullable: false),
+                    user_id = table.Column<string>(type: "text", nullable: true),
+                    version = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp", nullable: false),
+                    modified_at = table.Column<DateTime>(type: "timestamp", nullable: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_product", x => x.product_id);
+                    table.ForeignKey(
+                        name: "FK_product_AspNetUsers_user_id",
+                        column: x => x.user_id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { 1, "SuperAdmin", "SuperAdmin", "SuperAdmin" },
-                    { 2, "Admin", "Admin", "Admin" },
-                    { 3, "HotelManager", "HotelManager", "HotelManager" },
-                    { 4, "User", "User", "User" }
+                    { "1", "SuperAdmin", "SuperAdmin", "SuperAdmin" },
+                    { "2", "Admin", "Admin", "Admin" },
+                    { "3", "HotelManager", "HotelManager", "HotelManager" },
+                    { "4", "User", "User", "User" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "first_name", "last_name", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { 1, 0, "ef9a8407-d12e-4a7e-8bea-35d71951fcde", "admin@example.com", true, "admin", "admin", false, null, "admin@example.com", "admin@example.com", "AQAAAAIAAYagAAAAEEAXtxvsGqyaCcMRwotjarILhioHcIjUWnJeNO0J6F6LKsHazvbEF5wJAym/eq7lVQ==", null, false, null, false, "admin@example.com" });
+                values: new object[,]
+                {
+                    { "1f1be752-41a8-40b5-b485-2d801e440851", 0, "3bdcf56a-2823-4461-ac6d-49a9b2e3d829", "admin@example.com", true, "admin", "admin", false, null, "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEBUqEhtAPOUOgMNnco8l8cG/iRt8dHNbNSUvWFf/qXCHWuH/lFYeUsKfklcwVyrnRQ==", null, false, "43147011-d517-4b26-b6f2-706c35deb78c", false, "admin@example.com" },
+                    { "d44f849b-d52e-4d02-9629-c19329bae4dd", 0, "f2b71351-8ca5-49be-b452-515aa993ced7", "user@example.com", true, "user", "user", false, null, "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAIAAYagAAAAEF2NhX3XmpQthT1qJNq0fnlfqUNJPQ93QNf+Q4RoyNeG3HtjNNbtYgayP3+4qozjgw==", null, false, "c176cda2-1e1b-498d-924e-c57f3ee17248", false, "user@example.com" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { 1, 1 });
+                values: new object[,]
+                {
+                    { "1", "1f1be752-41a8-40b5-b485-2d801e440851" },
+                    { "4", "d44f849b-d52e-4d02-9629-c19329bae4dd" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -248,6 +266,11 @@ namespace Persistence.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_product_user_id",
+                table: "product",
+                column: "user_id");
         }
 
         /// <inheritdoc />

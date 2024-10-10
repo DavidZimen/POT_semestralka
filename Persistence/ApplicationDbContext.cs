@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Persistence.Entity;
 
-namespace Persistence.Context;
+namespace Persistence;
 
-public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, int>
+public class ApplicationDbContext : IdentityDbContext<UserEntity>
 {
 
     private readonly ILogger<ApplicationDbContext> _logger;
@@ -19,7 +19,7 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, in
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.ApplyConfigurationsFromAssembly(AssemblyReference.Assembly);
+        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         
         // here goes the extensions for base data
         builder.AddRoles();
@@ -27,6 +27,10 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, in
         builder.AddUserRoles();
     }
 
+    /// <summary>
+    /// Function to be called in Program.cs class before application startup.
+    /// Ensures, that the database is in correct state for application to run.
+    /// </summary>
     public void Migrate()
     {
         _logger.LogInformation("Beginning migration...");

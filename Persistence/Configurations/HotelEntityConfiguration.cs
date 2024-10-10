@@ -10,5 +10,8 @@ public class HotelEntityConfiguration : IEntityTypeConfiguration<HotelEntity>
     public void Configure(EntityTypeBuilder<HotelEntity> builder)
     {
         builder.ToTable(TableNames.Hotel);
+
+        builder.Property(h => h.Id)
+            .HasColumnName("hotel_id");
     }
 }

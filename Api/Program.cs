@@ -1,10 +1,8 @@
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Persistence.Context;
+using Persistence;
 using Persistence.Entity;
+using Security.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,30 +17,18 @@ builder.Services.AddSwaggerGen();
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(conn));
 
+// map properties from appsettings.json
+builder.Services.AddOptions<JwtOptions>().BindConfiguration(nameof(JwtOptions));
+builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
+
 // configure JWT
-builder.Services.AddIdentity<UserEntity, RoleEntity>()
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication()
+    .AddJwtBearer();
+
+builder.Services.AddIdentityApiEndpoints<UserEntity>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
-
-// Configure JWT authentication
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-            ValidAudience = builder.Configuration["JWT:ValidAudience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"] ?? string.Empty))
-        };
-    });
 
 var app = builder.Build();
 
@@ -56,9 +42,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapGroup("/user").MapIdentityApi<UserEntity>();
 
 // run Persistence migrations during start up
 using (var scope = app.Services.CreateScope())

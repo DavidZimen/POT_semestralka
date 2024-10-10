@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Persistence.Context;
+using Persistence;
 using Persistence.Entity;
 
 namespace Api.Controllers;
@@ -45,7 +45,7 @@ public class ProductsController : ControllerBase
         _productDbContext.Set<ProductEntity>().Add(newProduct);
         await _productDbContext.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetProduct), new { id = newProduct.ProductId }, newProduct);
+        return CreatedAtAction(nameof(GetProduct), new { id = newProduct.Id }, newProduct);
     }
 
     [HttpDelete("{id:int}")]
