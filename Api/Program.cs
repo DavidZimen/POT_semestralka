@@ -2,9 +2,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Entity;
-using Security.Configuration;
+using Security;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// configure options for Keycloak provider and add it
+builder.Services.ConfigureKeycloakServices()
+    .AddKeycloak();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -16,15 +20,6 @@ builder.Services.AddSwaggerGen();
 // add db contexts
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(conn));
-
-// map properties from appsettings.json
-builder.Services.AddOptions<JwtOptions>().BindConfiguration(nameof(JwtOptions));
-builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
-
-// configure JWT
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication()
-    .AddJwtBearer();
 
 builder.Services.AddIdentityApiEndpoints<UserEntity>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
