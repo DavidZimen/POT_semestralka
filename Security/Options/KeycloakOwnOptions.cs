@@ -1,6 +1,6 @@
 ﻿namespace Security.Options;
 
-public class KeycloakOptions
+public class KeycloakOwnOptions
 {
     public string Realm { get; init; }
     

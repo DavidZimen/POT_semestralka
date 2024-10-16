@@ -1,7 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using Keycloak.Net;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Security.Config;
+using Security.Options;
 using Security.Service;
 using Security.Setup;
 
@@ -9,11 +11,13 @@ namespace Security.Extension;
 
 public static class KeycloakSecurityExtension
 {
+    private const string KeycloakOptionsName = "Keycloak";
+    
     public static IServiceCollection ConfigureKeycloakForApi(this IServiceCollection services)
     {
         JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         
-        services.AddOptions<KeycloakOptions>().BindConfiguration(nameof(KeycloakOptions));
+        services.AddOptions<KeycloakOwnOptions>().BindConfiguration(KeycloakOptionsName);
         services.ConfigureOptions<JwtBearerOptionsSetup>();
         services.ConfigureOptions<SwaggerGenOptionsSetup>();
         services.ConfigureOptions<AuthenticationOptionsSetup>();
@@ -50,10 +54,10 @@ public static class KeycloakSecurityExtension
         {
             services.AddSingleton<KeycloakClient>(sp =>
             {
-                var options = sp.GetRequiredService<Options.KeycloakOptions>();
+                var options = sp.GetRequiredService<IOptions<KeycloakOwnOptions>>().Value;
                 ArgumentNullException.ThrowIfNull(options);
-
-                return new KeycloakClient(options.Url, options.Username, options.Password);
+                Console.WriteLine(options.Url);
+                return new KeycloakClient(options.Url, options.Username, options.Password, new KeycloakOptions(authenticationRealm:"master"));
             });
         }
 
@@ -63,7 +67,7 @@ public static class KeycloakSecurityExtension
         }
     }
     
-    public static bool IsServiceRegistered<TService>(this IServiceCollection services)
+    private static bool IsServiceRegistered<TService>(this IServiceCollection services)
     {
         return services.Any(s => s.ServiceType == typeof(TService));
     }

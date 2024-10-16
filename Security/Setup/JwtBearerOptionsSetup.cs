@@ -7,18 +7,18 @@ namespace Security.Setup;
 
 public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
 {
-    private readonly KeycloakOptions _keycloakOptions;
+    private readonly KeycloakOwnOptions _keycloakOwnOptions;
 
-    public JwtBearerOptionsSetup(IOptions<KeycloakOptions> keycloakOptions)
+    public JwtBearerOptionsSetup(IOptions<KeycloakOwnOptions> keycloakOptions)
     {
-        _keycloakOptions = keycloakOptions.Value;
+        _keycloakOwnOptions = keycloakOptions.Value;
     }
 
     public void Configure(JwtBearerOptions o)
     {
         o.RequireHttpsMetadata = false;
-        o.Audience = _keycloakOptions.Audience;
-        o.MetadataAddress = _keycloakOptions.MetadataAddress;
+        o.Audience = _keycloakOwnOptions.Audience;
+        o.MetadataAddress = _keycloakOwnOptions.MetadataAddress;
         
         o.TokenValidationParameters = new TokenValidationParameters
         {
@@ -26,7 +26,7 @@ public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
             ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = _keycloakOptions.ValidIssuer,
+            ValidIssuer = _keycloakOwnOptions.ValidIssuer,
         };
         
         o.Events = new JwtBearerEvents

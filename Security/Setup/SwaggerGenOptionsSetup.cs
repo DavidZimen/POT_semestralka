@@ -10,11 +10,11 @@ public class SwaggerGenOptionsSetup : IConfigureOptions<SwaggerGenOptions>
 {
     private const string SecuritySchemeName = "Keycloak";
 
-    private readonly KeycloakOptions _keycloakOptions;
+    private readonly KeycloakOwnOptions _keycloakOwnOptions;
 
-    public SwaggerGenOptionsSetup(IOptions<KeycloakOptions> keycloakOptions)
+    public SwaggerGenOptionsSetup(IOptions<KeycloakOwnOptions> keycloakOptions)
     {
-        _keycloakOptions = keycloakOptions.Value;
+        _keycloakOwnOptions = keycloakOptions.Value;
     }
 
     public void Configure(SwaggerGenOptions o)
@@ -28,7 +28,7 @@ public class SwaggerGenOptionsSetup : IConfigureOptions<SwaggerGenOptions>
             {
                 Implicit = new OpenApiOAuthFlow
                 {
-                    AuthorizationUrl = new Uri(_keycloakOptions.AuthorizationUrl),
+                    AuthorizationUrl = new Uri(_keycloakOwnOptions.AuthorizationUrl),
                     Scopes = new Dictionary<string, string>
                     {
                         { "openid", "openid" },
