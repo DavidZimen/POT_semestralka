@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Persistence.Entity;
+namespace Domain.Entity;
 
-[Table(name: "product")]
 public class ProductEntity : BaseEntity
 {
 

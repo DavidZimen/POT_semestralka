@@ -6,8 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // configure options for Keycloak provider and add it
 builder.Services
-    .ConfigureKeycloak()
-    .AddKeycloak();
+    .ConfigureKeycloakForApi()
+    .AddKeycloakToApi();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -37,11 +37,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// run Persistence migrations during start up
 using (var scope = app.Services.CreateScope())
 {
+    // run Persistence migrations during start up
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     db.Migrate();
+    
+    // create keycloak realm if it does not exists
 }
 
 app.Run();

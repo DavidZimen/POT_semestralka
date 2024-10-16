@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Persistence.Entity;
+namespace Domain.Entity;
 
 /// <summary>
 /// Base entity for each entity to extend from.

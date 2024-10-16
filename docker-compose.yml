@@ -52,7 +52,10 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://${POSTGRES_SERVER}:${POSTGRES_PORT}/${POSTGRES_DB}
+      KC_DB_SCHEMA: keycloak
+      KC_DB_URL_HOST: ${POSTGRES_SERVER}
+      KC_DB_URL_PORT: ${POSTGRES_PORT}
+      KC_DB_URL_DATABASE: ${POSTGRES_DB}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
     ports: 
@@ -79,6 +82,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=${POSTGRES_SERVER};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Pooling=true
+      Keycloak__Url: http://localhost:${KEYCLOAK_LOCAL_PORT}/auth
       Keycloak__AuthorizationUrl: http://localhost:${KEYCLOAK_LOCAL_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
       Keycloak__MetadataAddress: http://keycloak:8080/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration
       Keycloak__ValidIssuer: http://localhost:${KEYCLOAK_LOCAL_PORT}/realms/${KEYCLOAK_REALM}

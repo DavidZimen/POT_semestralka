@@ -15,4 +15,8 @@ public class KeycloakOptions
     public string Username { get; init; }
     
     public string Password { get; init; }
+    
+    public string Url { get; init; }
+    
+    public string ClientName { get; init; }
 }
