@@ -1,4 +1,5 @@
-﻿using Keycloak.Net;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Keycloak.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Security.Setup;
 
@@ -6,22 +7,28 @@ namespace Security;
 
 public static class KeycloakSecurity
 {
-    public static IServiceCollection ConfigureKeycloakServices(this IServiceCollection services)
+    public static IServiceCollection ConfigureKeycloak(this IServiceCollection services)
     {
-        // map options from appsettings.json
+        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+        
         services.AddOptions<KeycloakOptions>().BindConfiguration(nameof(KeycloakOptions));
         services.ConfigureOptions<JwtBearerOptionsSetup>();
         services.ConfigureOptions<SwaggerGenOptionsSetup>();
         services.ConfigureOptions<AuthenticationOptionsSetup>();
+        services.ConfigureOptions<AuthorizationOptionsSetup>();
+        services.ConfigureOptions<CookieAuthenticationOptionsSetup>();
         
         return services;
     }
 
     public static IServiceCollection AddKeycloak(this IServiceCollection services)
     {
-        services.AddAuthorization();
-        services.AddAuthentication()
+        services
+            .AddAuthentication()
+            .AddCookie()
             .AddJwtBearer();
+        
+        services.AddAuthorization();
 
         return services;
     }

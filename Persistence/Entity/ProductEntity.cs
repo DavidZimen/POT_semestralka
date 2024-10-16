@@ -18,9 +18,9 @@ public class ProductEntity : BaseEntity
     [Required]
     public double Price { get; set; }
     
-    [ForeignKey(name: "UserId")]
-    [Column(name: "user_id", TypeName = "text")]
-    public string? UserId { get; set; }
-    
-    public UserEntity? User { get; set; }
+    // [ForeignKey(name: "UserId")]
+    // [Column(name: "user_id", TypeName = "text")]
+    // public string? UserId { get; set; }
+    //
+    // public UserEntity? User { get; set; }
 }

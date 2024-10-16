@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Persistence.Entity;
 
 namespace Persistence;
 
-public class ApplicationDbContext : IdentityDbContext<UserEntity>
+public class ApplicationDbContext : DbContext
 {
 
     private readonly ILogger<ApplicationDbContext> _logger;
