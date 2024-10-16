@@ -1,12 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using Security;
+using Persistence.Extension;
+using Security.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // configure options for Keycloak provider and add it
 builder.Services
     .ConfigureKeycloakForApi()
+    .ConfigureKeycloakServer()
     .AddKeycloakToApi();
 
 // Add services to the container.
@@ -18,7 +20,8 @@ builder.Services.AddSwaggerGen();
 
 // add db contexts
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(conn));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(conn))
+    .AddMigrationService(true);
 
 var app = builder.Build();
 
@@ -36,14 +39,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-using (var scope = app.Services.CreateScope())
-{
-    // run Persistence migrations during start up
-    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    db.Migrate();
-    
-    // create keycloak realm if it does not exists
-}
 
 app.Run();
