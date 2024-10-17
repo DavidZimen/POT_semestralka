@@ -1,5 +1,6 @@
 ﻿using Flurl.Http;
 using Keycloak.Net;
+using Keycloak.Net.Models.Clients;
 using Keycloak.Net.Models.RealmsAdmin;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -96,7 +97,23 @@ public class KeycloakService : IKeycloakService
             DuplicateEmailsAllowed = false,
             ResetPasswordAllowed = true,
             PermanentLockout = true,
-            RequiredCredentials = new List<string> { "password" } // Corrected the RequiredCredentials type
+            RequiredCredentials = new List<string> { "password" }
         };
+    }
+
+    private void CreateClient()
+    {
+        var client = new Client
+        {
+            ClientId = _keycloakOptions.ClientName,
+            Name = _keycloakOptions.ClientName,
+            PublicClient = false,
+            StandardFlowEnabled = true,
+            ImplicitFlowEnabled = true,
+            Enabled = true,
+            DirectAccessGrantsEnabled = true
+            
+        };
+        // _keycloakClient.CreateClientAsync()
     }
 }

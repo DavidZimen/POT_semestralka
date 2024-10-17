@@ -11,8 +11,12 @@ namespace Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "application_schema");
+
             migrationBuilder.CreateTable(
                 name: "hotel",
+                schema: "application_schema",
                 columns: table => new
                 {
                     hotel_id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -29,6 +33,7 @@ namespace Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "product",
+                schema: "application_schema",
                 columns: table => new
                 {
                     product_id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -50,10 +55,12 @@ namespace Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "hotel");
+                name: "hotel",
+                schema: "application_schema");
 
             migrationBuilder.DropTable(
-                name: "product");
+                name: "product",
+                schema: "application_schema");
         }
     }
 }

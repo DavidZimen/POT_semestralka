@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241016204145_001_initial_migration")]
+    [Migration("20241017125429_001_initial_migration")]
     partial class _001_initial_migration
     {
         /// <inheritdoc />
@@ -20,6 +20,7 @@ namespace Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("application_schema")
                 .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -58,7 +59,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("hotel", (string)null);
+                    b.ToTable("hotel", "application_schema");
                 });
 
             modelBuilder.Entity("Domain.Entity.ProductEntity", b =>
@@ -102,7 +103,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("product", (string)null);
+                    b.ToTable("product", "application_schema");
                 });
 #pragma warning restore 612, 618
         }

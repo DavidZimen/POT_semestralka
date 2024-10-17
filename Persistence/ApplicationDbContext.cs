@@ -4,7 +4,8 @@ namespace Persistence;
 
 public class ApplicationDbContext : DbContext
 {
-
+    private const string ApplicationSchema = "application_schema";
+    
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) 
         : base(options)
     {
@@ -12,7 +13,7 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(builder);
+        builder.HasDefaultSchema(ApplicationSchema);
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 }

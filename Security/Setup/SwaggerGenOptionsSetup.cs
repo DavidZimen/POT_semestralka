@@ -50,7 +50,7 @@ public class SwaggerGenOptionsSetup : IConfigureOptions<SwaggerGenOptions>
                         Type = ReferenceType.SecurityScheme
                     },
                     In = ParameterLocation.Cookie,
-                    Name = "access-token",
+                    Name = "access_token",
                     Scheme = "oauth2"
                 },
                 []

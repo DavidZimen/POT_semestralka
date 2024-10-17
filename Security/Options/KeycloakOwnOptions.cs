@@ -20,5 +20,7 @@ public class KeycloakOwnOptions
     
     public string ClientName { get; init; }
     
+    public string ClientSercet { get; set; }
+    
     public int AccessTokenLifeSpan { get; init; }
 }
