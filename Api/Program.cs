@@ -20,17 +20,18 @@ builder.Services.AddSwaggerGen();
 
 // add db contexts
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(conn))
+builder.Services.AddDbContext<ApplicationDbContext>(options => 
+        options.UseNpgsql(conn, x => 
+            x.MigrationsHistoryTable("__EFMigrationsHistory", ApplicationDbContext.ApplicationSchema)
+            )
+        )
     .AddMigrationService(o => o.RunMigrationsOnStartup = true);
-
-Console.WriteLine(Environment.GetEnvironmentVariable("ASPNETCORE_URLS"));
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    Console.WriteLine("DEVELOPMENT");
     app.UseSwagger();
     app.UseSwaggerUI();
 }

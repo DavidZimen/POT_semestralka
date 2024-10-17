@@ -28,6 +28,12 @@ public class DbMigrationService : IHostedService
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
         _logger.LogInformation("Beginning migration...");
+        var appliedMigrations = dbContext.Database.GetAppliedMigrations();
+        foreach (var appliedMigration in appliedMigrations)
+        {
+            _logger.LogInformation(appliedMigration);
+        }
+        
         if (dbContext.Database.GetPendingMigrations().Any())
         {
             _logger.LogInformation("Migration found -> EXECUTING...");
