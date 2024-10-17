@@ -45,7 +45,7 @@ services:
   
   keycloak:
     image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION}
-    container_name: keycloak-container
+    container_name: ${KEYCLOAK_SERVER}
     command: start-dev
     environment:
       KC_HTTP_ENABLED: true
@@ -53,7 +53,7 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: postgres
-      KC_DB_SCHEMA: keycloak
+      KC_DB_SCHEMA: keycloak_schema
       KC_DB_URL_HOST: ${POSTGRES_SERVER}
       KC_DB_URL_PORT: ${POSTGRES_PORT}
       KC_DB_URL_DATABASE: ${POSTGRES_DB}
@@ -82,11 +82,11 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=${POSTGRES_SERVER};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};Pooling=true
+      ConnectionStrings__DefaultConnection: User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=${POSTGRES_SERVER};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};SearchPath=application_schema;Pooling=true
       Keycloak__Url: http://keycloak-container:8080
-      Keycloak__AuthorizationUrl: http://keycloak-container:8080/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
+      Keycloak__AuthorizationUrl: http://${KEYCLOAK_SERVER}:8080/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
       Keycloak__MetadataAddress: http://keycloak:8080/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration
-      Keycloak__ValidIssuer: http://keycloak-container:8080/realms/${KEYCLOAK_REALM}
+      Keycloak__ValidIssuer: http://${KEYCLOAK_SERVER}:8080/realms/${KEYCLOAK_REALM}
       Keycloak__Username: ${KEYCLOAK_ADMIN}
       Keycloak__Password: ${KEYCLOAK_ADMIN_PASSWORD}
     networks:

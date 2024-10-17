@@ -1,1 +1,1 @@
-﻿CREATE SCHEMA keycloak;
+﻿CREATE SCHEMA keycloak_schema;

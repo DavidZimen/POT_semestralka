@@ -38,8 +38,7 @@ public static class KeycloakSecurityExtension
 
     public static IServiceCollection AddKeycloakToApi(this IServiceCollection services)
     {
-        services
-            .AddAuthentication()
+        services.AddAuthentication()
             .AddCookie()
             .AddJwtBearer();
         
@@ -56,7 +55,6 @@ public static class KeycloakSecurityExtension
             {
                 var options = sp.GetRequiredService<IOptions<KeycloakOwnOptions>>().Value;
                 ArgumentNullException.ThrowIfNull(options);
-                Console.WriteLine(options.Url);
                 return new KeycloakClient(options.Url, options.Username, options.Password, new KeycloakOptions(authenticationRealm:"master"));
             });
         }

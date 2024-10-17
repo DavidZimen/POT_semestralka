@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen();
 // add db contexts
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(conn))
-    .AddMigrationService(true);
+    .AddMigrationService(o => o.RunMigrationsOnStartup = true);
 
 var app = builder.Build();
 

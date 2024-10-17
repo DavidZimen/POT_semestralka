@@ -13,7 +13,7 @@ public class KeycloakService : IKeycloakService
     
     private readonly KeycloakClient _keycloakClient;
     
-    private readonly KeycloakOwnOptions _keycloakOwnOptions;
+    private readonly KeycloakOwnOptions _keycloakOptions;
 
     public KeycloakService(
         KeycloakClient keycloakClient, 
@@ -22,26 +22,81 @@ public class KeycloakService : IKeycloakService
     {
         _keycloakClient = keycloakClient;
         _logger = logger;
-        _keycloakOwnOptions = keycloakOptions.Value;
+        _keycloakOptions = keycloakOptions.Value;
     }
 
     public async void CreateRealmIfNotExists()
     {
         try
         {
-            var realm = await _keycloakClient.GetRealmAsync(_keycloakOwnOptions.Realm);
+            // Try to get the realm
+            var realm = await _keycloakClient.GetRealmAsync(_keycloakOptions.Realm);
             _logger.LogInformation($"Realm with name {realm.DisplayName} already exists.");
         }
-        catch (FlurlHttpException e)
+        catch (FlurlHttpException ex) when (ex.StatusCode == 404) // If the realm does not exist, catch 404
         {
-            _logger.LogInformation($"Creating realm with name {_keycloakOwnOptions.Realm}...");
-            var realm = new Realm();
-            // TODO make call to create realm with keycloak
+            CreateRealm();
+        }
+        catch (FlurlHttpException ex)
+        {
+            // Log any other FlurlHttpExceptions besides 404 (e.g., 500 server errors)
+            var message = $"Error retrieving realm with name {_keycloakOptions.Realm}: {ex.Message}";
+            _logger.LogCritical(message);
+            throw new ApplicationException(message);
         }
     }
 
     public void CreateClientIfNotExists()
     {
         throw new NotImplementedException();
+    }
+
+    private async void CreateRealm()
+    {
+        _logger.LogInformation($"Realm with name {_keycloakOptions.Realm} not found. Creating...");
+        try
+        {
+            // Attempt to create/import the realm
+            var result = await _keycloakClient.ImportRealmAsync(_keycloakOptions.Realm, PrepareRealmRepresentation());
+            if (result)
+            {
+                _logger.LogInformation($"Realm with name {_keycloakOptions.Realm} has been successfully created.");
+            }
+            else
+            {
+                var message = $"Failed to create realm with name {_keycloakOptions.Realm}.";
+                _logger.LogCritical(message);
+                throw new ApplicationException(message);
+            }
+        }
+        catch (FlurlHttpException importEx)
+        {
+            var message = $"Error creating realm with name {_keycloakOptions.Realm}: {importEx.Message}";
+            _logger.LogCritical(message);
+            throw new ApplicationException(message);
+        }
+    }
+
+    private Realm PrepareRealmRepresentation()
+    {
+        return new Realm
+        {
+            Id = _keycloakOptions.Realm.ToLower(),
+            _Realm = _keycloakOptions.Realm.ToLower(),
+            DisplayName = $"{char.ToUpper(_keycloakOptions.Realm[0])}{_keycloakOptions.Realm[1..]}",
+            Enabled = true,
+            RegistrationAllowed = true,
+            RegistrationEmailAsUsername = true,
+            BruteForceProtected = true,
+            AccessTokenLifespan = _keycloakOptions.AccessTokenLifeSpan * 60, // Convert minutes to seconds
+            RememberMe = true,
+            RefreshTokenMaxReuse = 30,
+            RevokeRefreshToken = true,
+            VerifyEmail = true,
+            DuplicateEmailsAllowed = false,
+            ResetPasswordAllowed = true,
+            PermanentLockout = true,
+            RequiredCredentials = new List<string> { "password" } // Corrected the RequiredCredentials type
+        };
     }
 }

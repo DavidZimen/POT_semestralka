@@ -19,4 +19,6 @@ public class KeycloakOwnOptions
     public string Url { get; init; }
     
     public string ClientName { get; init; }
+    
+    public int AccessTokenLifeSpan { get; init; }
 }

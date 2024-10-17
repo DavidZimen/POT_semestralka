@@ -1,31 +1,55 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Persistence.Migrations.Options;
 
 namespace Persistence.Migrations.Service;
 
-public class DbMigrationService : IDbMigrationService
+public class DbMigrationService : IHostedService
 {
-    private readonly DbContext _dbContext;
+    private readonly IServiceProvider _serviceProvider;
     
     private readonly ILogger<DbMigrationService> _logger;
 
-    public DbMigrationService(ApplicationDbContext dbContext, ILogger<DbMigrationService> logger)
+    private readonly MigrationsOptions _migrationsOptions;
+    
+    public DbMigrationService(IServiceProvider serviceProvider, IOptions<MigrationsOptions> migrationsOptions, ILogger<DbMigrationService> logger)
     {
-        _dbContext = dbContext;
+        _serviceProvider = serviceProvider;
         _logger = logger;
+        _migrationsOptions = migrationsOptions.Value;
     }
-
-    public void RunMigrations()
+    
+    private void RunMigrations()
     {
+        using var scope = _serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        
         _logger.LogInformation("Beginning migration...");
-        if (_dbContext.Database.GetPendingMigrations().Any())
+        if (dbContext.Database.GetPendingMigrations().Any())
         {
             _logger.LogInformation("Migration found -> EXECUTING...");
-            _dbContext.Database.Migrate();
+            dbContext.Database.Migrate();
         }
         else
         {
             _logger.LogInformation("Migration NOT found -> SKIPPING.");
         }
+    }
+
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        if (_migrationsOptions.RunMigrationsOnStartup)
+        {
+            RunMigrations();
+        }
+        return Task.CompletedTask;
+    }
+
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        return Task.CompletedTask;
     }
 }
