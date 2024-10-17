@@ -12,10 +12,10 @@ public class KeycloakServerConfiguration : IHostedService
         _keycloakService = keycloakService;
     }
 
-    public Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
-        _keycloakService.CreateRealmIfNotExists();
-        return Task.CompletedTask;
+        await _keycloakService.CreateRealmIfNotExists();
+        await _keycloakService.CreateClientIfNotExists();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

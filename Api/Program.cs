@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Extension;
@@ -35,6 +36,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapGet("users/me", (ClaimsPrincipal cp) =>
+{
+    return cp.Claims.ToDictionary(c => c.Type, c => c.Value);
+}).RequireAuthorization();
 
 app.UseHttpsRedirection();
 

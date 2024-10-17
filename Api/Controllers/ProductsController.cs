@@ -1,4 +1,5 @@
 using Domain.Entity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Persistence;
 
@@ -6,6 +7,7 @@ namespace Api.Controllers;
 
 [ApiController]
 [Route("products")]
+[Authorize]
 public class ProductsController : ControllerBase
 {
 

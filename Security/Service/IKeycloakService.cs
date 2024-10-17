@@ -2,7 +2,7 @@
 
 public interface IKeycloakService
 {
-    void CreateRealmIfNotExists();
+    Task CreateRealmIfNotExists();
 
-    void CreateClientIfNotExists();
+    Task CreateClientIfNotExists();
 }

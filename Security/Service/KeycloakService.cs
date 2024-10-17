@@ -26,7 +26,7 @@ public class KeycloakService : IKeycloakService
         _keycloakOptions = keycloakOptions.Value;
     }
 
-    public async void CreateRealmIfNotExists()
+    public async Task CreateRealmIfNotExists()
     {
         try
         {
@@ -47,9 +47,44 @@ public class KeycloakService : IKeycloakService
         }
     }
 
-    public void CreateClientIfNotExists()
+    public async Task CreateClientIfNotExists()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var clientExists = (await _keycloakClient.GetClientsAsync(_keycloakOptions.Realm))
+                .Select(client => client.ClientId == _keycloakOptions.ClientName)
+                .Any();
+
+            if (clientExists)
+            {
+                _logger.LogInformation($"Client with id {_keycloakOptions.ClientName} already exists.");
+                return;
+            }
+            
+            CreateClient();
+        }
+        catch (FlurlHttpException e) when (e.StatusCode == 404)
+        {
+            CreateClient();
+        }
+        catch (FlurlHttpException ex)
+        {
+            // Log any other FlurlHttpExceptions besides 404 (e.g., 500 server errors)
+            var message = $"Error retrieving cliend with id {_keycloakOptions.ClientName}: {ex.Message}";
+            _logger.LogCritical(message);
+            throw new ApplicationException(message);
+        }
+
+        // try to retrieve client secret for authentication
+        // try
+        // {
+        //     var credentials = await _keycloakClient.GetClientSecretAsync(_keycloakOptions.Realm, _keycloakOptions.ClientName);
+        //     _keycloakOptions.ClientSercet = credentials.Value;
+        // }
+        // catch (FlurlHttpException e)
+        // {
+        //     _logger.LogError($"Unable to retrieve client secret {_keycloakOptions.ClientName}: {e.Message}");
+        // }
     }
 
     private async void CreateRealm()
@@ -78,6 +113,31 @@ public class KeycloakService : IKeycloakService
         }
     }
 
+    private async void CreateClient()
+    {
+        _logger.LogInformation($"Creating client with id {_keycloakOptions.ClientName}");
+        try
+        {
+            var result = await _keycloakClient.CreateClientAsync(_keycloakOptions.Realm, PrepareClientRepresentation());
+            if (result)
+            {
+                _logger.LogInformation($"Client with id {_keycloakOptions.ClientName} has been successfully created.");
+            }
+            else
+            {
+                var message = $"Failed to create cliend with id {_keycloakOptions.ClientName}.";
+                _logger.LogCritical(message);
+                throw new ApplicationException(message);
+            }
+        }
+        catch (FlurlHttpException e)
+        {
+            var message = $"Error creating client with id {_keycloakOptions.ClientName}: {e.Message}";
+            _logger.LogCritical(message);
+            throw new ApplicationException(message);
+        }
+    }
+    
     private Realm PrepareRealmRepresentation()
     {
         return new Realm
@@ -101,19 +161,19 @@ public class KeycloakService : IKeycloakService
         };
     }
 
-    private void CreateClient()
+    private Client PrepareClientRepresentation()
     {
-        var client = new Client
+        return new Client
         {
             ClientId = _keycloakOptions.ClientName,
             Name = _keycloakOptions.ClientName,
-            PublicClient = false,
+            PublicClient = true,
             StandardFlowEnabled = true,
             ImplicitFlowEnabled = true,
             Enabled = true,
-            DirectAccessGrantsEnabled = true
-            
+            DirectAccessGrantsEnabled = true,
+            RedirectUris = new List<string> { "http://localhost:5000/*" },
+            WebOrigins = new List<string> { "http://localhost:5000" }
         };
-        // _keycloakClient.CreateClientAsync()
     }
 }
