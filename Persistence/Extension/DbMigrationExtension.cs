@@ -1,14 +1,14 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Persistence.Migrations.Options;
 using Persistence.Migrations.Service;
+using Persistence.Options;
 
 namespace Persistence.Extension;
 
 public static class DbMigrationExtension
 {
-    public static void AddMigrationService(this IServiceCollection services, Action<MigrationsOptions>? options = default)
+    public static void AddMigrationService(this IServiceCollection services, Action<DbConfigOptions>? options = default)
     {
-        services.Configure(options ?? (migrationsOptions => { migrationsOptions.RunMigrationsOnStartup = false; }) );
+        services.Configure(options ?? (dbConfigOptions => { dbConfigOptions.RunMigrationsOnStartup = true; }) );
         services.AddHostedService<DbMigrationService>();
     }
 }

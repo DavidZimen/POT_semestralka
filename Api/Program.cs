@@ -1,8 +1,6 @@
 using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 using Persistence.Extension;
-using Security.Config;
+using Security.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,13 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.AddSwaggerGenWithAuth();
 
 // add db contexts
-var conn = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options => 
-        options.UseNpgsql(conn, x => 
-            x.MigrationsHistoryTable("__EFMigrationsHistory", ApplicationDbContext.ApplicationSchema)
-            )
-        )
-    .AddMigrationService(o => o.RunMigrationsOnStartup = true);
+builder.ConfigureDatabase();
 
 var app = builder.Build();
 
@@ -38,7 +30,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("users/me", (ClaimsPrincipal cp) =>
 {
-    return cp.Claims.ToDictionary(c => c.Type, c => c.Value);
+    return cp.Claims.DistinctBy(c => c.Type).ToDictionary(c => c.Type, c => c.Value);
 }).RequireAuthorization();
 
 app.UseHttpsRedirection();

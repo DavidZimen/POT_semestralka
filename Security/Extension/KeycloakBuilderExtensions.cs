@@ -7,15 +7,17 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Security.Config;
 using Security.Options;
 using Security.Service;
 
-namespace Security.Config;
+namespace Security.Extension;
 
-public static class KeycloakSecurityConfiguration
+public static class KeycloakBuilderExtensions
 {
     private const string KeycloakOptionsName = "Keycloak";
-    private const string EmailVerifiedPolicy = "email_verified";
+    private const string NameClaimType = "preferred_username";
+    private const string RoleClaimType = "roles";
     
     public static IHostApplicationBuilder ConfigureKeycloakForApi(this IHostApplicationBuilder builder)
     {
@@ -55,16 +57,18 @@ public static class KeycloakSecurityConfiguration
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = keycloakSection["ValidIssuer"],
+                    NameClaimType = NameClaimType,
+                    RoleClaimType = RoleClaimType
                 };
             });
-        
-        builder.Services.AddAuthorization(o =>
-        {
-            o.DefaultPolicy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .RequireClaim(EmailVerifiedPolicy, bool.TrueString)
-                .Build();
-        });
+
+        builder.Services.AddAuthorizationBuilder()
+            .SetDefaultPolicy(
+                new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .RequireClaim("email_verified", bool.TrueString.ToLower())
+                    .Build()
+            );
 
         return builder;
     }
@@ -132,15 +136,5 @@ public static class KeycloakSecurityConfiguration
         {
             services.AddSingleton<IKeycloakService, KeycloakService>();
         }
-    }
-    
-    private static bool IsServiceRegistered<TService>(this IServiceCollection services)
-    {
-        return services.Any(s => s.ServiceType == typeof(TService));
-    }
-    
-    private static bool IsServiceRegistered<TService, TImplementation>(this IServiceCollection services)
-    {
-        return services.Any(s => s.ServiceType == typeof(TService) && s.ImplementationType == typeof(TImplementation));
     }
 }

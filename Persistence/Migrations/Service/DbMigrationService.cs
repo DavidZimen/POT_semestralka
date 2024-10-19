@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Persistence.Migrations.Options;
+using Persistence.Options;
 
 namespace Persistence.Migrations.Service;
 
@@ -13,13 +13,13 @@ public class DbMigrationService : IHostedService
     
     private readonly ILogger<DbMigrationService> _logger;
 
-    private readonly MigrationsOptions _migrationsOptions;
+    private readonly DbConfigOptions _dbConfigOptions;
     
-    public DbMigrationService(IServiceProvider serviceProvider, IOptions<MigrationsOptions> migrationsOptions, ILogger<DbMigrationService> logger)
+    public DbMigrationService(IServiceProvider serviceProvider, IOptions<DbConfigOptions> migrationsOptions, ILogger<DbMigrationService> logger)
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
-        _migrationsOptions = migrationsOptions.Value;
+        _dbConfigOptions = migrationsOptions.Value;
     }
     
     private void RunMigrations()
@@ -47,7 +47,7 @@ public class DbMigrationService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        if (_migrationsOptions.RunMigrationsOnStartup)
+        if (_dbConfigOptions.RunMigrationsOnStartup)
         {
             RunMigrations();
         }

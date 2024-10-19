@@ -10,6 +10,11 @@ namespace Security.Service;
 
 public class KeycloakService : IKeycloakService
 {
+    private const string RolesClientScope = "roles";
+    private const string RolesMapper = "realm roles";
+    private const string RolesClaimConfigProperty = "claim.name";
+    private const string NewRoleClaimName = "roles";
+    
     private readonly ILogger<KeycloakService> _logger;
     
     private readonly KeycloakClient _keycloakClient;
@@ -133,6 +138,43 @@ public class KeycloakService : IKeycloakService
         catch (FlurlHttpException e)
         {
             var message = $"Error creating client with id {_keycloakOptions.ClientName}: {e.Message}";
+            _logger.LogCritical(message);
+            throw new ApplicationException(message);
+        }
+    }
+
+    public async Task UpdateRolesClaimMapping()
+    {
+        // find scope for realm roles, throw exception if null
+        var rolesScope = (await _keycloakClient.GetClientScopesAsync(_keycloakOptions.Realm))
+            .First(clientScope => clientScope.Name == RolesClientScope);
+        
+        var rolesMapper = rolesScope.ProtocolMappers.First(mapper => mapper.Name == RolesMapper);
+        if (rolesMapper.Config[RolesClaimConfigProperty] == NewRoleClaimName)
+        {
+            _logger.LogInformation($"Roles token claim mapper in realm {_keycloakOptions.Realm} already configured to {NewRoleClaimName}");
+            return;
+        }
+        
+        // try to update roles client scope
+        try
+        {
+            rolesMapper.Config[RolesClaimConfigProperty] = NewRoleClaimName;
+            var result = await _keycloakClient.UpdateProtocolMapperAsync(_keycloakOptions.Realm, rolesScope.Id, rolesMapper.Id, rolesMapper);
+            if (result)
+            {
+                _logger.LogInformation($"Roles token claim mapper in realm {_keycloakOptions.Realm} configured to value {NewRoleClaimName}");
+            }
+            else
+            {
+                var message = $"Roles token claim mapper in realm {_keycloakOptions.Realm} configurtion failed. Cannot start application.";
+                _logger.LogCritical(message);
+                throw new ApplicationException(message);
+            }
+        }
+        catch (FlurlHttpException e)
+        {
+            var message = $"Error updating client scope for roles token mapping: {e.Message}";
             _logger.LogCritical(message);
             throw new ApplicationException(message);
         }

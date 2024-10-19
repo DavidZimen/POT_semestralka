@@ -16,6 +16,7 @@ public class KeycloakServerConfiguration : IHostedService
     {
         await _keycloakService.CreateRealmIfNotExists();
         await _keycloakService.CreateClientIfNotExists();
+        await _keycloakService.UpdateRolesClaimMapping();
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
