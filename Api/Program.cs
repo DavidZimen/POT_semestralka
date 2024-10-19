@@ -7,8 +7,7 @@ using Security.Config;
 var builder = WebApplication.CreateBuilder(args);
 
 // configure options for Keycloak provider and add it
-builder.Services
-    .ConfigureKeycloakForApi()
+builder.ConfigureKeycloakForApi()
     .ConfigureKeycloakServer()
     .AddKeycloakToApi();
 
@@ -17,7 +16,7 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.AddSwaggerGenWithAuth();
 
 // add db contexts
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
