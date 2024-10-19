@@ -9,15 +9,15 @@ builder.ConfigureKeycloakForApi()
     .ConfigureKeycloakServer()
     .AddKeycloakToApi();
 
+// configure database with migrations
+builder.ConfigureDatabase();
+
 // Add services to the container.
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.AddSwaggerGenWithAuth();
-
-// add db contexts
-builder.ConfigureDatabase();
 
 var app = builder.Build();
 
