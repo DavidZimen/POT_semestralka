@@ -28,18 +28,5 @@ public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
             ValidateIssuerSigningKey = true,
             ValidIssuer = _keycloakOwnOptions.ValidIssuer,
         };
-        
-        o.Events = new JwtBearerEvents
-        {
-            OnMessageReceived = context =>
-            {
-                var token = context.Request.Cookies[CookieAuthenticationOptionsSetup.AuthCookieName];
-                if (!string.IsNullOrEmpty(token))
-                {
-                    context.Token = token;
-                }
-                return Task.CompletedTask;
-            }
-        };
     }
 }

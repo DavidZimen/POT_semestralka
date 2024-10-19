@@ -1,6 +1,9 @@
 @POT_semestralka_backend_HostAddress = http://localhost:5177
 
-GET {{POT_semestralka_backend_HostAddress}}/weatherforecast/
+#GET {{POT_semestralka_backend_HostAddress}}/weatherforecast/
+#Accept: application/json
+
+GET http://localhost:18080/realms/semestralka/.well-known/openid-configuration
 Accept: application/json
 
 ###

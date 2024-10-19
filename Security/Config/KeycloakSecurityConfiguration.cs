@@ -2,14 +2,13 @@
 using Keycloak.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Security.Config;
 using Security.Options;
 using Security.Service;
 using Security.Setup;
 
-namespace Security.Extension;
+namespace Security.Config;
 
-public static class KeycloakSecurityExtension
+public static class KeycloakSecurityConfiguration
 {
     private const string KeycloakOptionsName = "Keycloak";
     
@@ -22,7 +21,6 @@ public static class KeycloakSecurityExtension
         services.ConfigureOptions<SwaggerGenOptionsSetup>();
         services.ConfigureOptions<AuthenticationOptionsSetup>();
         services.ConfigureOptions<AuthorizationOptionsSetup>();
-        services.ConfigureOptions<CookieAuthenticationOptionsSetup>();
         
         services.AddKeycloakServices();
         
@@ -39,7 +37,6 @@ public static class KeycloakSecurityExtension
     public static IServiceCollection AddKeycloakToApi(this IServiceCollection services)
     {
         services.AddAuthentication()
-            .AddCookie()
             .AddJwtBearer();
         
         services.AddAuthorization();

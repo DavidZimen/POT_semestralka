@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Extension;
-using Security.Extension;
+using Security.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 

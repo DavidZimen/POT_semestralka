@@ -84,9 +84,9 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=${POSTGRES_SERVER};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};SearchPath=application_schema;Pooling=true
       Keycloak__Url: http://keycloak-container:8080
-      Keycloak__AuthorizationUrl: http://${KEYCLOAK_SERVER}:8080/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
+      Keycloak__AuthorizationUrl: http://localhost:${KEYCLOAK_LOCAL_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
       Keycloak__MetadataAddress: http://keycloak:8080/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration
-      Keycloak__ValidIssuer: http://${KEYCLOAK_SERVER}:8080/realms/${KEYCLOAK_REALM}
+      Keycloak__ValidIssuer: http://localhost:${KEYCLOAK_LOCAL_PORT}/realms/${KEYCLOAK_REALM}
       Keycloak__Username: ${KEYCLOAK_ADMIN}
       Keycloak__Password: ${KEYCLOAK_ADMIN_PASSWORD}
     networks:
