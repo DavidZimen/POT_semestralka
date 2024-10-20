@@ -1,9 +1,10 @@
 ﻿namespace Security.Enums;
 
-public enum Role
+public class Role
 {
-    SuperAdmin = 1,
-    Admin = 2,
-    HotelManager = 3,
-    User = 4
+    public static readonly string SuperAdmin = "super-admin-role";
+    public static readonly string Admin = "admin-role";
+    public static readonly string HotelManager = "hotel-manager-role";
+    public static readonly string User = "user-role";
+    public static readonly string Tester = "tester-role";
 }

@@ -1,6 +1,5 @@
 ﻿using Keycloak.Net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -49,7 +48,7 @@ public static class KeycloakBuilderExtensions
                 o.RequireHttpsMetadata = false;
                 o.Audience = keycloakSection["Audience"];
                 o.MetadataAddress = keycloakSection["MetadataAddress"] ?? throw new InvalidOperationException();
-        
+
                 o.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -61,14 +60,6 @@ public static class KeycloakBuilderExtensions
                     RoleClaimType = RoleClaimType
                 };
             });
-
-        builder.Services.AddAuthorizationBuilder()
-            .SetDefaultPolicy(
-                new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .RequireClaim("email_verified", bool.TrueString.ToLower())
-                    .Build()
-            );
 
         return builder;
     }
