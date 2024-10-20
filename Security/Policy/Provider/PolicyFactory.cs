@@ -13,7 +13,7 @@ public class PolicyFactory
         _logger = logger;
     }
 
-    public (string, AuthorizationPolicy)? GetPolicy(Type policyType)
+    public PolicyTuple? GetPolicy(Type policyType)
     {
         if (!typeof(IAuthorizationPolicy).IsAssignableFrom(policyType))
         {
@@ -24,15 +24,20 @@ public class PolicyFactory
         IAuthorizationPolicy? policy = null;
         try
         {
-            policy = policyType.Assembly.CreateInstance(
-                policyType.AssemblyQualifiedName ?? throw new InvalidOperationException()
-                ) as IAuthorizationPolicy;
+            policy = Activator.CreateInstance(policyType) as IAuthorizationPolicy;
         }
         catch (Exception e)
         {
             _logger.LogError($"Failed to crate policy of type {policyType}: {e.Message}");
         }
 
-        return policy == null ? null : (nameof(policy), policy.BuildPolicy());
+        return policy == null ? null : new PolicyTuple { Name = policyType.Name, Policy = policy.BuildPolicy() };
     }
+}
+
+public class PolicyTuple
+{
+    public string Name { get; init; }
+    
+    public AuthorizationPolicy Policy { get; init; }
 }

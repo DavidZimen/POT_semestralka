@@ -2,6 +2,7 @@ using Domain.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Persistence;
+using Security.Policy;
 
 namespace Api.Controllers;
 
@@ -28,8 +29,8 @@ public class ProductsController : ControllerBase
         return products.Count > 0 ? Ok(products) : NotFound("No products found.");
     }
 
-    [HttpGet("{id:int}")]
-    public ActionResult<ProductEntity> GetProduct(int id)
+    [HttpGet("{id:guid}")]
+    public ActionResult<ProductEntity> GetProduct(Guid id)
     {
         _logger.LogInformation("Received call to GET /products/id");
         var product = _productDbContext.Set<ProductEntity>().Find(id);
@@ -37,6 +38,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = nameof(TesterPolicy))]
     public async Task<ActionResult<ProductEntity>> CreateProduct([FromBody] ProductEntity? newProduct)
     {
         _logger.LogInformation("Received call to POST /products");
@@ -50,8 +52,9 @@ public class ProductsController : ControllerBase
         return CreatedAtAction(nameof(GetProduct), new { id = newProduct.Id }, newProduct);
     }
 
-    [HttpDelete("{id:int}")]
-    public async Task<ActionResult> DeleteProduct(int id)
+    [HttpDelete("{id:guid}")]
+    [Authorize(Policy = nameof(UsernamePolicy))]
+    public async Task<ActionResult> DeleteProduct(Guid id)
     {
         _logger.LogInformation("Received call to DELETE /products/id");
 

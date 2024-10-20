@@ -1,10 +1,10 @@
 ﻿namespace Security.Enums;
 
-public class Role
+internal static class Role
 {
-    public static readonly string SuperAdmin = "super-admin-role";
-    public static readonly string Admin = "admin-role";
-    public static readonly string HotelManager = "hotel-manager-role";
-    public static readonly string User = "user-role";
-    public static readonly string Tester = "tester-role";
+    internal const string SuperAdmin = "super-admin-role";
+    internal const string Admin = "admin-role";
+    internal const string HotelManager = "hotel-manager-role";
+    internal const string User = "user-role";
+    internal const string Test = "test-role";
 }

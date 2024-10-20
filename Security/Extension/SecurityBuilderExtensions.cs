@@ -1,5 +1,6 @@
 ﻿using Keycloak.Net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,15 +9,15 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Security.Config;
 using Security.Options;
+using Security.Policy.Provider;
 using Security.Service;
 
 namespace Security.Extension;
 
-public static class KeycloakBuilderExtensions
+public static class SecurityBuilderExtensions
 {
     private const string KeycloakOptionsName = "Keycloak";
     private const string NameClaimType = "preferred_username";
-    private const string RoleClaimType = "roles";
     
     public static IHostApplicationBuilder ConfigureKeycloakForApi(this IHostApplicationBuilder builder)
     {
@@ -56,11 +57,13 @@ public static class KeycloakBuilderExtensions
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = keycloakSection["ValidIssuer"],
-                    NameClaimType = NameClaimType,
-                    RoleClaimType = RoleClaimType
+                    NameClaimType = NameClaimType
                 };
             });
 
+        // add own provider for policies and authorization
+        builder.AddAuthorizationWithPolicies();
+        
         return builder;
     }
 
@@ -109,6 +112,13 @@ public static class KeycloakBuilderExtensions
             o.AddSecurityRequirement(securityRequirement);
         });
         return builder;
+    }
+    
+    private static void AddAuthorizationWithPolicies(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<PolicyFactory>();
+        builder.Services.AddSingleton<IAuthorizationPolicyProvider, PolicyProvider>();
+        builder.Services.AddAuthorization();
     }
 
     private static void AddKeycloakServices(this IServiceCollection services)
