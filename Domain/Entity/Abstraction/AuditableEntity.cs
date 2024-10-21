@@ -5,13 +5,13 @@ namespace Domain.Entity.Abstraction;
 
 public abstract class AuditableEntity : BaseEntity
 {
-    [Column(name: "created_at", TypeName = "timestamp")]
+    [Column(name: "created_at", TypeName = "timestamp with time zone")]
     [Required]
     public DateTime CreatedDate { get; set; }
     
-    [Column(name: "modified_at", TypeName = "timestamp")]
+    [Column(name: "modified_at", TypeName = "timestamp with time zone")]
     public DateTime? ModifiedDate { get; set; }
     
-    [Column(name: "deleted_at", TypeName = "timestamp")]
+    [Column(name: "deleted_at", TypeName = "timestamp with time zone")]
     public DateTime? DeletedDate { get; set; }
 }

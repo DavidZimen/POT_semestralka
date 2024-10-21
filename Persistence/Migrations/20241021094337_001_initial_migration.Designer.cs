@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241017131457_001_initial_migration")]
+    [Migration("20241021094337_001_initial_migration")]
     partial class _001_initial_migration
     {
         /// <inheritdoc />
@@ -34,28 +34,21 @@ namespace Persistence.Migrations
                         .HasColumnName("hotel_id");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("timestamp")
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
                     b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified_at");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
                         .HasColumnName("name");
-
-                    b.Property<byte[]>("Version")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasColumnName("version");
 
                     b.HasKey("Id");
 
@@ -70,11 +63,11 @@ namespace Persistence.Migrations
                         .HasColumnName("product_id");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
 
-                    b.Property<DateTime?>("DeletionDate")
-                        .HasColumnType("timestamp")
+                    b.Property<DateTime?>("DeletedDate")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
                     b.Property<string>("Description")
@@ -82,7 +75,7 @@ namespace Persistence.Migrations
                         .HasColumnName("description");
 
                     b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("timestamp")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified_at");
 
                     b.Property<string>("Name")
@@ -93,13 +86,6 @@ namespace Persistence.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("double precision")
                         .HasColumnName("price");
-
-                    b.Property<byte[]>("Version")
-                        .IsConcurrencyToken()
-                        .IsRequired()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("bytea")
-                        .HasColumnName("version");
 
                     b.HasKey("Id");
 

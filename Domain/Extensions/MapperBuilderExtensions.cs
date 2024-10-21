@@ -11,13 +11,14 @@ public static class MapperBuilderExtensions
     
     public static void AddMappers(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddAutoMapper(o => o.AddProfiles(GetAutoMapperProfiles()));
+        var mapperProfiles = GetAutoMapperProfiles();
+        builder.Services.AddAutoMapper(o => o.AddProfiles(mapperProfiles));
     }
 
     private static IEnumerable<Profile> GetAutoMapperProfiles()
         => Assembly.GetExecutingAssembly().GetTypes()
             .Where(type => type.Namespace == MappersNamespace)
             .Where(type => type.IsClass)
-            .Where(type => type.IsAssignableFrom(typeof(Profile)))
+            .Where(type => typeof(Profile).IsAssignableFrom(type))
             .Select(type => Activator.CreateInstance(type) as Profile)!;
 }

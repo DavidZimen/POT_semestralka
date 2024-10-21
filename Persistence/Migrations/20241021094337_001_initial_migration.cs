@@ -21,10 +21,9 @@ namespace Persistence.Migrations
                 {
                     hotel_id = table.Column<Guid>(type: "uuid", nullable: false),
                     name = table.Column<string>(type: "varchar(255)", nullable: false),
-                    version = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp", nullable: false),
-                    modified_at = table.Column<DateTime>(type: "timestamp", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true)
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    modified_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,10 +39,9 @@ namespace Persistence.Migrations
                     name = table.Column<string>(type: "varchar(255)", nullable: false),
                     description = table.Column<string>(type: "varchar(255)", nullable: true),
                     price = table.Column<double>(type: "double precision", nullable: false),
-                    version = table.Column<byte[]>(type: "bytea", rowVersion: true, nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp", nullable: false),
-                    modified_at = table.Column<DateTime>(type: "timestamp", nullable: true),
-                    deleted_at = table.Column<DateTime>(type: "timestamp", nullable: true)
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    modified_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    deleted_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
