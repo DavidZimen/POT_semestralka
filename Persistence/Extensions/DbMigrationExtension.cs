@@ -2,7 +2,7 @@
 using Persistence.Migrations.Service;
 using Persistence.Options;
 
-namespace Persistence.Extension;
+namespace Persistence.Extensions;
 
 public static class DbMigrationExtension
 {

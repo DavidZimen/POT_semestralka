@@ -1,5 +1,5 @@
 using System.Security.Claims;
-using Persistence.Extension;
+using Persistence.Extensions;
 using Security.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
