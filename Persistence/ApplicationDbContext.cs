@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Persistence.Extensions;
 
 namespace Persistence;
 
@@ -22,5 +23,6 @@ public class ApplicationDbContext : DbContext
     {
         builder.HasDefaultSchema(ApplicationSchema);
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        builder.ApplyDeletionQueryFilterToEntities();
     }
 }
