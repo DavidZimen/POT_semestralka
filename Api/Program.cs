@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Domain.Extensions;
 using Persistence.Extensions;
 using Security.Extension;
 
@@ -11,6 +12,9 @@ builder.ConfigureKeycloakForApi()
 
 // configure database with migrations
 builder.ConfigureDatabase();
+
+// add mappers between Dto and entities
+builder.AddMappers();
 
 // Add services to the container.
 builder.Services.AddControllers();
