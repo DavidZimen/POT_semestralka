@@ -31,7 +31,7 @@ public class ProductsController : ControllerBase
     {
         _logger.LogInformation("Received call to GET /products");
 
-        var products = (await _productRepository.GetAllProductsAsync())
+        var products = (await _productRepository.GetAllAsync())
             .Select(productEntity => _mapper.Map<Product>(productEntity))
             .ToList();
         
@@ -43,7 +43,7 @@ public class ProductsController : ControllerBase
     {
         _logger.LogInformation("Received call to GET /products/id");
 
-        var productEntity = await _productRepository.FindProductByIdAsync(id);
+        var productEntity = await _productRepository.FindByIdAsync(id);
         
         return productEntity != null ? Ok(_mapper.Map<Product>(productEntity)) : NotFound($"Product with id {id} not found.");
     }
@@ -53,12 +53,12 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<Product>> CreateProduct([FromBody] Product? newProduct)
     {
         _logger.LogInformation("Received call to POST /products");
-        if (newProduct == null)
+        if (newProduct is null)
         {
             return BadRequest("Product cannot be null");
         }
 
-        var product = await _productRepository.CreateProductAsync(_mapper.Map<ProductEntity>(newProduct));
+        var product = await _productRepository.CreateAsync(_mapper.Map<ProductEntity>(newProduct));
 
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, newProduct);
     }
@@ -69,15 +69,15 @@ public class ProductsController : ControllerBase
     {
         _logger.LogInformation("Received call to DELETE /products/id");
 
-        var productToDelete = await _productRepository.FindProductByIdAsync(id);
-        if (productToDelete == null)
+        var productToDelete = await _productRepository.FindByIdAsync(id);
+        if (productToDelete is null)
         {
             var message = $"Product with id {id} not found.";
             _logger.LogError(message);
             return NotFound(message);
         }
 
-        var result = await _productRepository.DeleteProductAsync(productToDelete);
+        var result = await _productRepository.DeleteAsync(productToDelete);
 
         return result ? NoContent() : StatusCode((int)HttpStatusCode.InternalServerError);
     }

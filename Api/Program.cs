@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Domain.Extensions;
 using Persistence.Extensions;
 using Security.Extension;
@@ -32,11 +31,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.MapGet("users/me", (ClaimsPrincipal cp) =>
-{
-    return cp.Claims.DistinctBy(c => c.Type).ToDictionary(c => c.Type, c => c.Value);
-}).RequireAuthorization();
 
 app.UseHttpsRedirection();
 
