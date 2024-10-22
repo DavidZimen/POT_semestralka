@@ -11,7 +11,8 @@ builder.ConfigureKeycloakForApi()
     .AddKeycloakToApi();
 
 // configure database with migrations
-builder.ConfigureDatabase();
+builder.ConfigureDatabase()
+    .AddRepositories();
 
 // add mappers between Dto and entities
 builder.AddMappers();

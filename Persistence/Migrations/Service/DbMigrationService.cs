@@ -7,7 +7,7 @@ using Persistence.Options;
 
 namespace Persistence.Migrations.Service;
 
-public class DbMigrationService : IHostedService
+internal sealed class DbMigrationService : IHostedService
 {
     private readonly IServiceProvider _serviceProvider;
     

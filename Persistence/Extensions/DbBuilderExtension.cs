@@ -4,12 +4,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Persistence.Interceptors;
 using Persistence.Options;
+using Persistence.Repository;
+using Persistence.Repository.Abstractions;
 
 namespace Persistence.Extensions;
 
 public static class DbBuilderExtension
 {
-    public static void ConfigureDatabase(
+    public static IHostApplicationBuilder ConfigureDatabase(
         this IHostApplicationBuilder builder,
         Action<DbConfigOptions>? options = default)
     {
@@ -21,5 +23,11 @@ public static class DbBuilderExtension
                     .UseNpgsql(conn, x => x.MigrationsHistoryTable("__EFMigrationsHistory", ApplicationDbContext.ApplicationSchema))
                     .AddInterceptors(sp.GetRequiredService<AuditableEntityInterceptor>()))
             .AddMigrationService(options);
+        return builder;
+    }
+
+    public static void AddRepositories(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddScoped<IProductRepository, ProductRepository>();
     }
 }

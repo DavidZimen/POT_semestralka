@@ -7,7 +7,7 @@ namespace Persistence;
 /// Own DbContext for providing connection to the PostgreSQL database
 /// and retrieving data for API.
 /// </summary>
-public class ApplicationDbContext : DbContext
+public sealed class ApplicationDbContext : DbContext
 {
     /// <summary>
     /// Schema in database where data will be persisted.

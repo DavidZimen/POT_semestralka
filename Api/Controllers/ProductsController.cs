@@ -1,9 +1,10 @@
+using System.Net;
 using AutoMapper;
 using Domain.Dto;
 using Domain.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Persistence;
+using Persistence.Repository.Abstractions;
 using Security.Policy;
 
 namespace Api.Controllers;
@@ -15,22 +16,22 @@ public class ProductsController : ControllerBase
 {
 
     private readonly ILogger<ProductsController> _logger;
-    private readonly ApplicationDbContext _productDbContext;
+    private readonly IProductRepository _productRepository;
     private readonly IMapper _mapper;
 
-    public ProductsController(ILogger<ProductsController> logger, ApplicationDbContext productDbContext, IMapper mapper)
+    public ProductsController(ILogger<ProductsController> logger, IProductRepository productRepository, IMapper mapper)
     {
         _logger = logger;
-        _productDbContext = productDbContext;
+        _productRepository = productRepository;
         _mapper = mapper;
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Product>> GetProducts()
+    public async Task<ActionResult<ICollection<Product>>> GetProducts()
     {
         _logger.LogInformation("Received call to GET /products");
-        
-        var products = _productDbContext.Set<ProductEntity>()
+
+        var products = (await _productRepository.GetAllProductsAsync())
             .Select(productEntity => _mapper.Map<Product>(productEntity))
             .ToList();
         
@@ -38,12 +39,11 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
-    public ActionResult<Product> GetProduct(Guid id)
+    public async Task<ActionResult<Product>> GetProduct(Guid id)
     {
         _logger.LogInformation("Received call to GET /products/id");
-        
-        var productEntity = _productDbContext.Set<ProductEntity>()
-            .Find(id);
+
+        var productEntity = await _productRepository.FindProductByIdAsync(id);
         
         return productEntity != null ? Ok(_mapper.Map<Product>(productEntity)) : NotFound($"Product with id {id} not found.");
     }
@@ -57,12 +57,8 @@ public class ProductsController : ControllerBase
         {
             return BadRequest("Product cannot be null");
         }
-        
-        var product = _productDbContext.Set<ProductEntity>()
-            .Add(_mapper.Map<ProductEntity>(newProduct))
-            .Entity;
-        
-        await _productDbContext.SaveChangesAsync();
+
+        var product = await _productRepository.CreateProductAsync(_mapper.Map<ProductEntity>(newProduct));
 
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, newProduct);
     }
@@ -73,7 +69,7 @@ public class ProductsController : ControllerBase
     {
         _logger.LogInformation("Received call to DELETE /products/id");
 
-        var productToDelete = await _productDbContext.Set<ProductEntity>().FindAsync(id);
+        var productToDelete = await _productRepository.FindProductByIdAsync(id);
         if (productToDelete == null)
         {
             var message = $"Product with id {id} not found.";
@@ -81,9 +77,8 @@ public class ProductsController : ControllerBase
             return NotFound(message);
         }
 
-        _productDbContext.Set<ProductEntity>().Remove(productToDelete);
-        await _productDbContext.SaveChangesAsync();
+        var result = await _productRepository.DeleteProductAsync(productToDelete);
 
-        return NoContent();
+        return result ? NoContent() : StatusCode((int)HttpStatusCode.InternalServerError);
     }
 }
