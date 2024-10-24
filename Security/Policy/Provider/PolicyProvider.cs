@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using Security.Policy.Abstraction;
 
 namespace Security.Policy.Provider;
 
@@ -10,8 +11,8 @@ public class PolicyProvider : IAuthorizationPolicyProvider
     /// Namespace/directory, where all the possible policies for application are defined.
     /// All classes that inherit <b>IAuthorizationPolicy</b> will be added to the <b>PolicyProvider</b>.
     /// </summary>
-    private static readonly string PoliciesNamespace = "Security.Policy";
-    
+    private const string PoliciesNamespace = "Security.Policy";
+
     /// <summary>
     /// Factory, where all the policies will be created.
     /// </summary>
@@ -27,7 +28,7 @@ public class PolicyProvider : IAuthorizationPolicyProvider
     {
         _policyFactory = policyFactory;
         _authorizationPolicies = InitializePolicies();
-        logger.LogInformation($"Policies loaded: {_authorizationPolicies.Count}, Names: {string.Join(", ", _authorizationPolicies.Keys)}");
+        logger.LogInformation("Policies loaded: {Count}, Names: {Names}", _authorizationPolicies.Count, string.Join(", ", _authorizationPolicies.Keys));
     }
 
     public Task<AuthorizationPolicy?> GetPolicyAsync(string policyName) 
@@ -39,10 +40,10 @@ public class PolicyProvider : IAuthorizationPolicyProvider
     public Task<AuthorizationPolicy?> GetFallbackPolicyAsync() => Task.FromResult<AuthorizationPolicy?>(null);
 
     private Dictionary<string, AuthorizationPolicy> InitializePolicies() 
-        => Assembly.GetExecutingAssembly().GetTypes()
+        => typeof(IAuthorizationPolicy).Assembly.GetTypes()
             .Where(type => type.Namespace == PoliciesNamespace)
             .Where(type => type.IsClass)
-            .Select(type => _policyFactory.GetPolicy(type))
+            .Select(_policyFactory.GetPolicy)
             .Where(policyTuple => policyTuple is not null)
             .ToDictionary(policyTuple => policyTuple!.Name, policyTuple => policyTuple!.Policy);
 }

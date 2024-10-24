@@ -4,6 +4,7 @@ using Keycloak.Net.Models.Clients;
 using Keycloak.Net.Models.RealmsAdmin;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Security.Exception;
 using Security.Options;
 
 namespace Security.Service;
@@ -35,20 +36,19 @@ public class KeycloakService : IKeycloakService
     {
         try
         {
-            // Try to get the realm
             var realm = await _keycloakClient.GetRealmAsync(_keycloakOptions.Realm);
-            _logger.LogInformation($"Realm with name {realm.DisplayName} already exists.");
+            _logger.LogInformation("Realm with name {Realm} already exists.", realm.DisplayName);
         }
         catch (FlurlHttpException ex) when (ex.StatusCode == 404) // If the realm does not exist, catch 404
         {
-            CreateRealm();
+            await CreateRealm();
         }
         catch (FlurlHttpException ex)
         {
             // Log any other FlurlHttpExceptions besides 404 (e.g., 500 server errors)
             var message = $"Error retrieving realm with name {_keycloakOptions.Realm}: {ex.Message}";
             _logger.LogCritical(message);
-            throw new ApplicationException(message);
+            throw new KeycloakInitializationException(message);
         }
     }
 
@@ -62,84 +62,67 @@ public class KeycloakService : IKeycloakService
 
             if (clientExists)
             {
-                _logger.LogInformation($"Client with id {_keycloakOptions.ClientName} already exists.");
+                _logger.LogInformation("Client with id {Realm} already exists.", _keycloakOptions.ClientName);
                 return;
             }
             
-            CreateClient();
+            await CreateClient();
         }
         catch (FlurlHttpException e) when (e.StatusCode == 404)
         {
-            CreateClient();
+            await CreateClient();
         }
         catch (FlurlHttpException ex)
         {
-            // Log any other FlurlHttpExceptions besides 404 (e.g., 500 server errors)
-            var message = $"Error retrieving cliend with id {_keycloakOptions.ClientName}: {ex.Message}";
-            _logger.LogCritical(message);
-            throw new ApplicationException(message);
+            _logger.LogCritical("Error retrieving cliend with id {Client}: {ErrorMessage}", _keycloakOptions.ClientName, ex.Message);
+            throw new KeycloakInitializationException(ex.Message);
         }
-
-        // try to retrieve client secret for authentication
-        // try
-        // {
-        //     var credentials = await _keycloakClient.GetClientSecretAsync(_keycloakOptions.Realm, _keycloakOptions.ClientName);
-        //     _keycloakOptions.ClientSercet = credentials.Value;
-        // }
-        // catch (FlurlHttpException e)
-        // {
-        //     _logger.LogError($"Unable to retrieve client secret {_keycloakOptions.ClientName}: {e.Message}");
-        // }
     }
 
-    private async void CreateRealm()
+    private async Task CreateRealm()
     {
-        _logger.LogInformation($"Realm with name {_keycloakOptions.Realm} not found. Creating...");
+        _logger.LogInformation("Realm with name {Realm} not found. Creating...", _keycloakOptions.Realm);
         try
         {
             // Attempt to create/import the realm
             var result = await _keycloakClient.ImportRealmAsync(_keycloakOptions.Realm, PrepareRealmRepresentation());
             if (result)
             {
-                _logger.LogInformation($"Realm with name {_keycloakOptions.Realm} has been successfully created.");
+                _logger.LogInformation("Realm with name {Realm} has been successfully created.", _keycloakOptions.Realm);
             }
             else
             {
-                var message = $"Failed to create realm with name {_keycloakOptions.Realm}.";
-                _logger.LogCritical(message);
-                throw new ApplicationException(message);
+                _logger.LogCritical("Failed to create realm with name {Realm}.", _keycloakOptions.Realm);
+                throw new KeycloakInitializationException();
             }
         }
         catch (FlurlHttpException importEx)
         {
-            var message = $"Error creating realm with name {_keycloakOptions.Realm}: {importEx.Message}";
-            _logger.LogCritical(message);
-            throw new ApplicationException(message);
+            _logger.LogCritical("Error creating realm with name {Realm}: {ErrorMessage}", _keycloakOptions.Realm, importEx.Message);
+            throw new KeycloakInitializationException(importEx.Message);
         }
     }
 
-    private async void CreateClient()
+    private async Task CreateClient()
     {
-        _logger.LogInformation($"Creating client with id {_keycloakOptions.ClientName}");
+        _logger.LogInformation("Creating client with id {Client}", _keycloakOptions.ClientName);
         try
         {
             var result = await _keycloakClient.CreateClientAsync(_keycloakOptions.Realm, PrepareClientRepresentation());
             if (result)
             {
-                _logger.LogInformation($"Client with id {_keycloakOptions.ClientName} has been successfully created.");
+                _logger.LogInformation("Client with id {Client} has been successfully created.", _keycloakOptions.ClientName);
             }
             else
             {
-                var message = $"Failed to create cliend with id {_keycloakOptions.ClientName}.";
-                _logger.LogCritical(message);
-                throw new ApplicationException(message);
+                _logger.LogCritical("Failed to create client with id {Client}.", _keycloakOptions.ClientName);
+                throw new KeycloakInitializationException();
             }
         }
         catch (FlurlHttpException e)
         {
-            var message = $"Error creating client with id {_keycloakOptions.ClientName}: {e.Message}";
-            _logger.LogCritical(message);
-            throw new ApplicationException(message);
+            _logger.LogCritical("Error creating client with id {Client}: {ErrorMessage}", _keycloakOptions.ClientName, e.Message);
+            throw new KeycloakInitializationException(e.Message);
         }
     }
 
@@ -152,7 +135,7 @@ public class KeycloakService : IKeycloakService
         var rolesMapper = rolesScope.ProtocolMappers.First(mapper => mapper.Name == RolesMapper);
         if (rolesMapper.Config[RolesClaimConfigProperty] == NewRoleClaimName)
         {
-            _logger.LogInformation($"Roles token claim mapper in realm {_keycloakOptions.Realm} already configured to {NewRoleClaimName}");
+            _logger.LogInformation("Roles token claim mapper in realm {Realm} already configured to {ClaimName}", _keycloakOptions.Realm, NewRoleClaimName);
             return;
         }
         
@@ -163,20 +146,18 @@ public class KeycloakService : IKeycloakService
             var result = await _keycloakClient.UpdateProtocolMapperAsync(_keycloakOptions.Realm, rolesScope.Id, rolesMapper.Id, rolesMapper);
             if (result)
             {
-                _logger.LogInformation($"Roles token claim mapper in realm {_keycloakOptions.Realm} configured to value {NewRoleClaimName}");
+                _logger.LogInformation("Roles token claim mapper in realm {Realm} configured to value {ClaimName}", _keycloakOptions.Realm, NewRoleClaimName);
             }
             else
             {
-                var message = $"Roles token claim mapper in realm {_keycloakOptions.Realm} configurtion failed. Cannot start application.";
-                _logger.LogCritical(message);
-                throw new ApplicationException(message);
+                _logger.LogCritical("Roles token claim mapper in realm {Realm} configuration failed. Cannot start application.", _keycloakOptions.Realm);
+                throw new KeycloakInitializationException();
             }
         }
         catch (FlurlHttpException e)
         {
-            var message = $"Error updating client scope for roles token mapping: {e.Message}";
-            _logger.LogCritical(message);
-            throw new ApplicationException(message);
+            _logger.LogCritical("Error updating client scope for roles token mapping: {ErrorMessage}", e.Message);
+            throw new KeycloakInitializationException(e.Message);
         }
     }
     

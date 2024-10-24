@@ -46,14 +46,8 @@ internal sealed class AuditableEntityInterceptor : SaveChangesInterceptor
                     entry.State = EntityState.Modified;
                     SetCurrentPropertyValue(entry, nameof(AuditableEntity.DeletedDate), now);
                     break;
-                case EntityState.Detached:
-                case EntityState.Unchanged:
-                default:
-                    break;
             }
         }
-
-        return;
 
         static void SetCurrentPropertyValue(EntityEntry entry, string propertyName, DateTime utcNow) 
             => entry.Property(propertyName).CurrentValue = utcNow;

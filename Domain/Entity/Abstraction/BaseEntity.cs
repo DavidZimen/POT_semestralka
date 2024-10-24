@@ -12,6 +12,5 @@ public abstract class BaseEntity
     // Concurrency token for optimistic concurrency control
     [Column(name: "version")]
     [ConcurrencyCheck]
-    [Timestamp]
-    public byte[] Version { get; } 
+    public int Version { get; } 
 }

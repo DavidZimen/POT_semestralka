@@ -19,10 +19,10 @@ public sealed class ApplicationDbContext : DbContext
     {
     }
 
-    protected override void OnModelCreating(ModelBuilder builder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        builder.HasDefaultSchema(ApplicationSchema);
-        builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
-        builder.ApplyDeletionQueryFilterToEntities();
+        modelBuilder.HasDefaultSchema(ApplicationSchema);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        modelBuilder.ApplyDeletionQueryFilterToEntities();
     }
 }

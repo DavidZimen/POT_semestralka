@@ -17,7 +17,7 @@ public class PolicyFactory
     {
         if (!typeof(IAuthorizationPolicy).IsAssignableFrom(policyType))
         {
-            _logger.LogError($"Type {policyType} does not implement IAuthorizationPolicy.");
+            _logger.LogError("Type {PolicyType} does not implement IAuthorizationPolicy.", policyType);
             return null;
         }
 
@@ -26,9 +26,9 @@ public class PolicyFactory
         {
             policy = Activator.CreateInstance(policyType) as IAuthorizationPolicy;
         }
-        catch (Exception e)
+        catch (System.Exception e)
         {
-            _logger.LogError($"Failed to crate policy of type {policyType}: {e.Message}");
+            _logger.LogError("Failed to crate policy of type {PolicyType}: {ErrorMessage}", policyType, e.Message);
         }
 
         return policy == null ? null : new PolicyTuple { Name = policyType.Name, Policy = policy.BuildPolicy() };
