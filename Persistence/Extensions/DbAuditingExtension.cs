@@ -12,11 +12,11 @@ public static class DbAuditingExtension
         // Apply global query filter to all entities that inherit from AuditableEntity
         foreach (var entityType in builder.Model.GetEntityTypes())
         {
-            if (!typeof(AuditableEntity).IsAssignableFrom(entityType.ClrType)) 
+            if (!typeof(IAuditableEntity).IsAssignableFrom(entityType.ClrType)) 
                 continue;
             
             // Get the 'DeletedDate' property
-            var deletedDateProperty = entityType.FindProperty(nameof(AuditableEntity.DeletedDate));
+            var deletedDateProperty = entityType.FindProperty(nameof(IAuditableEntity.DeletedDate));
                 
             // Apply the global filter where DeletedDate is null
             builder.Entity(entityType.ClrType).HasQueryFilter(CreateIsNotDeletedExpression(entityType.ClrType, deletedDateProperty!));

@@ -3,11 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entity.Abstraction;
 
-public abstract class BaseEntity
+public abstract class BaseEntity<TKey>
 {
     [Key]
     [Column(name: "id")]
-    public Guid Id { get; }
+    public TKey Id { get; }
     
     // Concurrency token for optimistic concurrency control
     [Column(name: "version")]

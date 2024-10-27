@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entity.Abstraction;
 
-public abstract class AuditableEntity : BaseEntity
+public abstract class AuditableEntity<TKey> : BaseEntity<TKey>, IAuditableEntity
 {
     [Column(name: "created_at", TypeName = "timestamp with time zone")]
     [Required]

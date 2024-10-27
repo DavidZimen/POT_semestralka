@@ -58,9 +58,9 @@ public class ProductsController : ControllerBase
             return BadRequest("Product cannot be null");
         }
 
-        var product = await _productRepository.CreateAsync(_mapper.Map<ProductEntity>(newProduct));
+        var productId = await _productRepository.CreateAsync(_mapper.Map<ProductEntity>(newProduct));
 
-        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, newProduct);
+        return CreatedAtAction(nameof(GetProduct), new { id = productId }, newProduct);
     }
 
     [HttpDelete("{id:guid}")]

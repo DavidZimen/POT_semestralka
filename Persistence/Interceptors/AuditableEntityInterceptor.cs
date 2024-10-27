@@ -28,23 +28,23 @@ internal sealed class AuditableEntityInterceptor : SaveChangesInterceptor
     {
         if (dbContext is null)
             return;
-        
+
         var now = DateTime.UtcNow;
-        var entities = dbContext.ChangeTracker.Entries<AuditableEntity>().ToList();
+        var entities = dbContext.ChangeTracker.Entries<IAuditableEntity>().ToList();
 
         foreach (var entry in entities)
         {
             switch (entry.State)
             {
                 case EntityState.Added: 
-                    SetCurrentPropertyValue(entry, nameof(AuditableEntity.CreatedDate), now);
+                    SetCurrentPropertyValue(entry, nameof(IAuditableEntity.CreatedDate), now);
                     break;
                 case EntityState.Modified:
-                    SetCurrentPropertyValue(entry, nameof(AuditableEntity.ModifiedDate), now);
+                    SetCurrentPropertyValue(entry, nameof(IAuditableEntity.ModifiedDate), now);
                     break;
                 case EntityState.Deleted:
                     entry.State = EntityState.Modified;
-                    SetCurrentPropertyValue(entry, nameof(AuditableEntity.DeletedDate), now);
+                    SetCurrentPropertyValue(entry, nameof(IAuditableEntity.DeletedDate), now);
                     break;
             }
         }

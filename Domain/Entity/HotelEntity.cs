@@ -4,7 +4,7 @@ using Domain.Entity.Abstraction;
 
 namespace Domain.Entity;
 
-public class HotelEntity : AuditableEntity
+public class HotelEntity : AuditableEntity<Guid>
 {
     [Column(name: "name", TypeName = "varchar(255)")]
     [Required]
