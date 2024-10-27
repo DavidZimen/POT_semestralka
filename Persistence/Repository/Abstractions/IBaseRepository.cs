@@ -2,7 +2,9 @@
 
 namespace Persistence.Repository.Abstractions;
 
-public interface IBaseRepository<TEntity, TKey> 
+public interface IRepository;
+
+public interface IBaseRepository<TEntity, TKey> : IRepository
     where TEntity : BaseEntity<TKey>
 {
     Task<TEntity?> FindByIdAsync(TKey entityId);

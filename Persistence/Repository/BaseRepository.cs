@@ -4,7 +4,7 @@ using Persistence.Repository.Abstractions;
 
 namespace Persistence.Repository;
 
-public class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey>
+public abstract class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey>
     where TEntity : BaseEntity<TKey>
 {
     private readonly ApplicationDbContext _dbContext;
