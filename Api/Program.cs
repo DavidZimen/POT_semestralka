@@ -1,3 +1,4 @@
+using Api.Extensions;
 using Domain.Extensions;
 using Persistence.Extensions;
 using Security.Extension;
@@ -9,15 +10,21 @@ builder.ConfigureKeycloakForApi()
     .ConfigureKeycloakServer()
     .AddKeycloakToApi();
 
-// configure database with migrations
+// configure database with migrations and add repositories
 builder.ConfigureDatabase()
     .AddRepositories();
 
 // add mappers between Dto and entities
 builder.AddMappers();
 
-// Add services to the container.
+// add services
+builder.AddServices();
+
+// Add endpoints to the container.
 builder.Services.AddControllers();
+
+// add exception handlers
+builder.AddExceptionHandlers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -32,6 +39,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler();
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -39,4 +48,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

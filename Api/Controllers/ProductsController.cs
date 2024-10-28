@@ -1,10 +1,8 @@
-using System.Net;
+using Api.Services.Abstraction;
 using AutoMapper;
 using Domain.Dto;
-using Domain.Entity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Persistence.Repository.Abstractions;
 using Security.Policy;
 
 namespace Api.Controllers;
@@ -16,14 +14,12 @@ public class ProductsController : ControllerBase
 {
 
     private readonly ILogger<ProductsController> _logger;
-    private readonly IProductRepository _productRepository;
-    private readonly IMapper _mapper;
+    private readonly IProductService _productService;
 
-    public ProductsController(ILogger<ProductsController> logger, IProductRepository productRepository, IMapper mapper)
+    public ProductsController(ILogger<ProductsController> logger, IProductService productService, IMapper mapper)
     {
         _logger = logger;
-        _productRepository = productRepository;
-        _mapper = mapper;
+        _productService = productService;
     }
 
     [HttpGet]
@@ -31,9 +27,7 @@ public class ProductsController : ControllerBase
     {
         _logger.LogInformation("Received call to GET /products");
 
-        var products = (await _productRepository.GetAllAsync())
-            .Select(productEntity => _mapper.Map<Product>(productEntity))
-            .ToList();
+        var products = await _productService.GetAllProductsAsync();
         
         return products.Count > 0 ? Ok(products) : NotFound("No products found.");
     }
@@ -43,23 +37,20 @@ public class ProductsController : ControllerBase
     {
         _logger.LogInformation("Received call to GET /products/id");
 
-        var productEntity = await _productRepository.FindByIdAsync(id);
-        
-        return productEntity != null ? Ok(_mapper.Map<Product>(productEntity)) : NotFound($"Product with id {id} not found.");
+        var product = await _productService.GetProductByIdAsync(id);
+
+        return Ok(product);
     }
 
     [HttpPost]
     [Authorize(Policy = nameof(TesterPolicy))]
-    public async Task<ActionResult<Product>> CreateProduct([FromBody] Product? newProduct)
+    public async Task<ActionResult<Product>> CreateProduct([FromBody] Product newProduct)
     {
         _logger.LogInformation("Received call to POST /products");
-        if (newProduct is null)
-        {
-            return BadRequest("Product cannot be null");
-        }
-
-        var productId = await _productRepository.CreateAsync(_mapper.Map<ProductEntity>(newProduct));
-
+        
+        var productId = await _productService.CreateProductAsync(newProduct);
+        newProduct.Id = productId;
+        
         return CreatedAtAction(nameof(GetProduct), new { id = productId }, newProduct);
     }
 
@@ -68,17 +59,9 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult> DeleteProduct(Guid id)
     {
         _logger.LogInformation("Received call to DELETE /products/id");
+        
+        var result = await _productService.DeleteProductAsync(id);
 
-        var productToDelete = await _productRepository.FindByIdAsync(id);
-        if (productToDelete is null)
-        {
-            var message = $"Product with id {id} not found.";
-            _logger.LogError(message);
-            return NotFound(message);
-        }
-
-        var result = await _productRepository.DeleteAsync(productToDelete);
-
-        return result ? NoContent() : StatusCode((int)HttpStatusCode.InternalServerError);
+        return result ? NoContent() : StatusCode(StatusCodes.Status500InternalServerError);
     }
 }

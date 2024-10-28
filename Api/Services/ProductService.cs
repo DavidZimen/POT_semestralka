@@ -1,4 +1,5 @@
-using Api.Services.Absttraction;
+using Api.Exceptions;
+using Api.Services.Abstraction;
 using AutoMapper;
 using Domain.Dto;
 using Domain.Entity;
@@ -17,23 +18,36 @@ public class ProductService : IProductService
         _mapper = mapper;
     }
 
-    public async Task<Product?> GetProductByIdAsync(Guid productId)
+    public async Task<Product> GetProductByIdAsync(Guid productId)
     {
         var productEntity = await _productRepository.FindByIdAsync(productId);
-        return productEntity is null ? null : _mapper.Map<Product>(productEntity);
+        
+        if (productEntity is null)
+            throw new ProductNotFoundException(productId);
+        
+        return _mapper.Map<Product>(productEntity);
     }
 
-    public async Task<Product?> GetProductByNameAsync(string productName)
+    public async Task<Product> GetProductByNameAsync(string productName)
     {
         var productEntity = await _productRepository.FindProductByNameAsync(productName);
-        return productEntity is null ? null : _mapper.Map<Product>(productEntity);
+        
+        if (productEntity is null)
+            throw new ProductNotFoundException(productName);
+        
+        return _mapper.Map<Product>(productEntity);
     }
 
     public async Task<ICollection<Product>> GetAllProductsAsync()
     {
-        return (await _productRepository.GetAllAsync())
+        var products =  (await _productRepository.GetAllAsync())
             .Select(productEntity => _mapper.Map<Product>(productEntity))
             .ToList();
+
+        if (products.Count == 0)
+            throw new ProductsNotFoundException();
+
+        return products;
     }
 
     public Task<Guid> CreateProductAsync(Product product)
@@ -45,7 +59,7 @@ public class ProductService : IProductService
     {
         var productEntity = await _productRepository.FindByIdAsync(productId);
         if (productEntity is null)
-            throw new NullReferenceException("Product not found");
+            throw new ProductNotFoundException(productId);
 
         return await _productRepository.DeleteAsync(productEntity);
     }

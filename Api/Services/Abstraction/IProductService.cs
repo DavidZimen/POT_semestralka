@@ -1,12 +1,12 @@
 using Domain.Dto;
 
-namespace Api.Services.Absttraction;
+namespace Api.Services.Abstraction;
 
-public interface IProductService
+public interface IProductService : IService
 {
-    Task<Product?> GetProductByIdAsync(Guid productId);
+    Task<Product> GetProductByIdAsync(Guid productId);
     
-    Task<Product?> GetProductByNameAsync(string productName);
+    Task<Product> GetProductByNameAsync(string productName);
     
     Task<ICollection<Product>> GetAllProductsAsync();
     

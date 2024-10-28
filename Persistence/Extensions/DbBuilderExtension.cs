@@ -30,16 +30,12 @@ public static class DbBuilderExtension
 
     public static void AddRepositories(this IHostApplicationBuilder builder)
     {
-        var repositories = typeof(IRepository).Assembly
+        typeof(IRepository).Assembly
             .GetTypes()
             .Where(type => type.Namespace == RepositoriesNameSpace)
             .Where(type => type.GetInterface(nameof(IRepository)) is not null)
             .Where(type => type is { IsClass: true, IsAbstract: false, IsInterface: false })
-            .ToList();
-
-        foreach (var repoType in repositories)
-        {
-            builder.Services.AddScoped(repoType.GetInterface($"I{repoType.Name}")!, repoType);
-        }
+            .ToList()
+            .ForEach(type => builder.Services.AddScoped(type.GetInterface($"I{type.Name}")!, type));
     }
 }

@@ -74,7 +74,7 @@ public class KeycloakService : IKeycloakService
         }
         catch (FlurlHttpException ex)
         {
-            _logger.LogCritical("Error retrieving cliend with id {Client}: {ErrorMessage}", _keycloakOptions.ClientName, ex.Message);
+            _logger.LogCritical("Error retrieving client with id {Client}: {ErrorMessage}", _keycloakOptions.ClientName, ex.Message);
             throw new KeycloakInitializationException(ex.Message);
         }
     }
