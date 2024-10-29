@@ -1,7 +1,5 @@
-using System.Runtime.CompilerServices;
 using Api.Exceptions.Handlers;
 using Api.Services.Abstraction;
-using Microsoft.AspNetCore.Diagnostics;
 
 namespace Api.Extensions;
 
@@ -25,6 +23,7 @@ public static class ApiBuilderExtensions
         builder.Services.AddExceptionHandler<NotFoundExceptionHandler>();
         builder.Services.AddExceptionHandler<ConflictExceptionHandler>();
         builder.Services.AddExceptionHandler<BadRequestExceptionHandler>();
+        builder.Services.AddExceptionHandler<ForbiddenExceptionHandler>();
 
         builder.Services.AddProblemDetails();
     }
