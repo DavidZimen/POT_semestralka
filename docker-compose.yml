@@ -45,14 +45,14 @@ services:
       - semka
   
   keycloak:
-    image: quay.io/keycloak/keycloak:${KEYCLOAK_VERSION}
+    build:
+      context: ./keycloak
+      dockerfile: Dockerfile
     container_name: ${KEYCLOAK_SERVER}
     depends_on:
       postgres_db:
         condition: service_healthy
     environment:
-      KC_HTTP_ENABLED: true
-      KC_HEALTH_ENABLED: true
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: postgres
@@ -62,23 +62,18 @@ services:
       KC_DB_URL_DATABASE: ${POSTGRES_DB}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
-      KC_SPI_EMAIL_SENDER_PROVIDER: gmail-api-sender
     networks:
       - semka
     volumes:
       - keycloak_data:/opt/keycloak
-      - ./keycloak-plugins/keycloak-gmail-api-provider.jar:/opt/keycloak/providers/gmail-api-provider.jar
-    healthcheck:
-      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000;echo -e 'GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n' >&3;if [ $? -eq 0 ]; then echo 'Healthcheck Successful';exit 0;else echo 'Healthcheck Failed';exit 1;fi;" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    command: start-dev
     ports:
       - ${KEYCLOAK_LOCAL_PORT}:8080
     restart: always
       
   pot_api:
+    build:
+      context: .
+      dockerfile: Api/Dockerfile
     container_name: api
     depends_on:
       postgres_db:
@@ -88,17 +83,14 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=${POSTGRES_SERVER};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};SearchPath=application_schema;Pooling=true
-      Keycloak__Url: http://keycloak-container:8080
+      Keycloak__Url: http://${KEYCLOAK_SERVER}:8080
       Keycloak__AuthorizationUrl: http://localhost:${KEYCLOAK_LOCAL_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
-      Keycloak__MetadataAddress: http://keycloak:8080/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration
+      Keycloak__MetadataAddress: http://${KEYCLOAK_SERVER}:8080/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration
       Keycloak__ValidIssuer: http://localhost:${KEYCLOAK_LOCAL_PORT}/realms/${KEYCLOAK_REALM}
       Keycloak__Username: ${KEYCLOAK_ADMIN}
       Keycloak__Password: ${KEYCLOAK_ADMIN_PASSWORD}
     networks:
       - semka
-    build:
-      context: .
-      dockerfile: Api/Dockerfile
     ports:
       - "5000:8080"
       - "5001:8081"

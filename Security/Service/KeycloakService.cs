@@ -62,7 +62,7 @@ public class KeycloakService : IKeycloakService
 
             if (clientExists)
             {
-                _logger.LogInformation("Client with id {Realm} already exists.", _keycloakOptions.ClientName);
+                _logger.LogInformation("Client with name {Client} already exists.", _keycloakOptions.ClientName.ToLower());
                 return;
             }
             
@@ -105,17 +105,17 @@ public class KeycloakService : IKeycloakService
 
     private async Task CreateClient()
     {
-        _logger.LogInformation("Creating client with id {Client}", _keycloakOptions.ClientName);
+        _logger.LogInformation("Creating client with name {Client}", _keycloakOptions.ClientName);
         try
         {
             var result = await _keycloakClient.CreateClientAsync(_keycloakOptions.Realm, PrepareClientRepresentation());
             if (result)
             {
-                _logger.LogInformation("Client with id {Client} has been successfully created.", _keycloakOptions.ClientName);
+                _logger.LogInformation("Client with name {Client} has been successfully created.", _keycloakOptions.ClientName);
             }
             else
             {
-                _logger.LogCritical("Failed to create client with id {Client}.", _keycloakOptions.ClientName);
+                _logger.LogCritical("Failed to create client with name {Client}.", _keycloakOptions.ClientName);
                 throw new KeycloakInitializationException();
             }
         }
@@ -165,8 +165,8 @@ public class KeycloakService : IKeycloakService
     {
         return new Realm
         {
-            Id = _keycloakOptions.Realm.ToLower(),
-            _Realm = _keycloakOptions.Realm.ToLower(),
+            Id = _keycloakOptions.Realm,
+            _Realm = _keycloakOptions.Realm,
             DisplayName = $"{char.ToUpper(_keycloakOptions.Realm[0])}{_keycloakOptions.Realm[1..]}",
             Enabled = true,
             RegistrationAllowed = true,
