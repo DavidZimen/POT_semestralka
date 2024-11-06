@@ -56,9 +56,8 @@ public class KeycloakService : IKeycloakService
     {
         try
         {
-            var clientExists = (await _keycloakClient.GetClientsAsync(_keycloakOptions.Realm))
-                .Select(client => client.ClientId == _keycloakOptions.ClientName)
-                .Any();
+            var clients = await _keycloakClient.GetClientsAsync(_keycloakOptions.Realm);
+            var clientExists = clients.Any(client => client.ClientId == _keycloakOptions.ClientName);
 
             if (clientExists)
             {

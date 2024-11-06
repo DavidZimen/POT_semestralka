@@ -23,7 +23,7 @@ COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
 EXPOSE 8080
 
-# Set default environment variables
+# Set environment variables
 ENV KC_HTTP_ENABLED=true
 ENV KC_HEALTH_ENABLED=true
 ENV KC_DB=postgres

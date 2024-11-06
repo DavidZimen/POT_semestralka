@@ -1,76 +1,72 @@
-﻿version: '4.34.3'
-
-networks:
+﻿networks:
   semka:
     driver: bridge
 
 volumes:
   postgres_data:
+  pgAdmin_data:
   keycloak_data:
 
 services:
   postgres_db:
-    image: postgres:${POSTGRES_VERSION}
-    container_name: ${POSTGRES_SERVER}
+    build:
+      context: ./postgres
+      dockerfile: Dockerfile
+    container_name: ${DB_HOST}
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5433:5432"
-    restart: always
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
     networks:
       - semka
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./sql-scripts:/docker-entrypoint-initdb.d/
-    healthcheck:
-      test: [ "CMD", "pg_isready" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+    ports:
+      - 5433:${DB_PORT}
   
   pgAdmin4:
     image: dpage/pgadmin4
     container_name: pgAdmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5434:80"
     depends_on:
       postgres_db:
         condition: service_healthy
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgAdmin_data:/var/lib/pgadmin
     networks:
       - semka
+    ports:
+      - "5434:80"
   
   keycloak:
     build:
       context: ./keycloak
       dockerfile: Dockerfile
-    container_name: ${KEYCLOAK_SERVER}
+    container_name: ${KC_SERVER}
     depends_on:
       postgres_db:
         condition: service_healthy
     environment:
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_DB: postgres
-      KC_DB_SCHEMA: keycloak_schema
-      KC_DB_URL_HOST: ${POSTGRES_SERVER}
-      KC_DB_URL_PORT: ${POSTGRES_PORT}
-      KC_DB_URL_DATABASE: ${POSTGRES_DB}
-      KC_DB_USERNAME: ${POSTGRES_USER}
-      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_DB_URL_HOST: ${DB_HOST}
+      KC_DB_URL_PORT: ${DB_PORT}
+      KC_DB_URL_DATABASE: ${DB_DATABASE}
+      KC_DB_USERNAME: ${DB_USER}
+      KC_DB_PASSWORD: ${DB_PASSWORD}
+      KEYCLOAK_ADMIN: ${KC_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KC_PASSWORD}
     networks:
       - semka
     volumes:
       - keycloak_data:/opt/keycloak
     ports:
-      - ${KEYCLOAK_LOCAL_PORT}:8080
+      - ${KC_LOCAL_PORT}:8080
     restart: always
       
   pot_api:
+    env_file:
+      - .env
     build:
       context: .
       dockerfile: Api/Dockerfile
@@ -82,13 +78,13 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: User ID=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Server=${POSTGRES_SERVER};Port=${POSTGRES_PORT};Database=${POSTGRES_DB};SearchPath=application_schema;Pooling=true
-      Keycloak__Url: http://${KEYCLOAK_SERVER}:8080
-      Keycloak__AuthorizationUrl: http://localhost:${KEYCLOAK_LOCAL_PORT}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
-      Keycloak__MetadataAddress: http://${KEYCLOAK_SERVER}:8080/realms/${KEYCLOAK_REALM}/.well-known/openid-configuration
-      Keycloak__ValidIssuer: http://localhost:${KEYCLOAK_LOCAL_PORT}/realms/${KEYCLOAK_REALM}
-      Keycloak__Username: ${KEYCLOAK_ADMIN}
-      Keycloak__Password: ${KEYCLOAK_ADMIN_PASSWORD}
+      ConnectionStrings__DefaultConnection: User ID=${DB_USER};Password=${DB_PASSWORD};Server=${DB_HOST};Port=${DB_PORT};Database=${DB_DATABASE};SearchPath=application_schema;Pooling=true
+      Keycloak__Url: http://${KC_SERVER}:8080
+      Keycloak__AuthorizationUrl: http://localhost:${KC_LOCAL_PORT}/realms/${KC_REALM}/protocol/openid-connect/auth
+      Keycloak__MetadataAddress: http://${KC_SERVER}:8080/realms/${KC_REALM}/.well-known/openid-configuration
+      Keycloak__ValidIssuer: http://localhost:${KC_LOCAL_PORT}/realms/${KC_REALM}
+      Keycloak__Username: ${KC_USER}
+      Keycloak__Password: ${KC_PASSWORD}
     networks:
       - semka
     ports:
