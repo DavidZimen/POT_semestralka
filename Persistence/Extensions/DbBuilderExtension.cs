@@ -4,8 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Persistence.Interceptors;
 using Persistence.Options;
-using Persistence.Repository;
-using Persistence.Repository.Abstractions;
+using Persistence.Repositories.Abstractions;
 
 namespace Persistence.Extensions;
 

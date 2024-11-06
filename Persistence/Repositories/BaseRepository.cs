@@ -1,8 +1,8 @@
 ﻿using Domain.Entity.Abstraction;
 using Microsoft.EntityFrameworkCore;
-using Persistence.Repository.Abstractions;
+using Persistence.Repositories.Abstractions;
 
-namespace Persistence.Repository;
+namespace Persistence.Repositories;
 
 public abstract class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey>
     where TEntity : BaseEntity<TKey>

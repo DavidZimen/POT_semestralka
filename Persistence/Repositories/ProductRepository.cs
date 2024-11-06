@@ -1,8 +1,8 @@
 ﻿using Domain.Entity;
 using Microsoft.EntityFrameworkCore;
-using Persistence.Repository.Abstractions;
+using Persistence.Repositories.Abstractions;
 
-namespace Persistence.Repository;
+namespace Persistence.Repositories;
 
 public class ProductRepository : BaseRepository<ProductEntity, Guid>, IProductRepository
 {

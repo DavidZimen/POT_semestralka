@@ -1,6 +1,6 @@
 ﻿using Domain.Entity;
 
-namespace Persistence.Repository.Abstractions;
+namespace Persistence.Repositories.Abstractions;
 
 public interface IProductRepository : IBaseRepository<ProductEntity, Guid>
 {
