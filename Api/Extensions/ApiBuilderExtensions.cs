@@ -15,7 +15,7 @@ public static class ApiBuilderExtensions
             .Where(type => type.GetInterface(nameof(IService)) is not null)
             .Where(type => type is { IsClass: true, IsAbstract: false, IsInterface: false })
             .ToList()
-            .ForEach(type => builder.Services.AddTransient(type.GetInterface($"I{type.Name}")!, type));
+            .ForEach(type => builder.Services.AddScoped(type.GetInterface($"I{type.Name}")!, type));
     }
 
     public static void AddExceptionHandlers(this IHostApplicationBuilder builder)

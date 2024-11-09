@@ -1,0 +1,79 @@
+﻿@page "/weather"
+@using System.Net
+@using Domain.Dto
+
+@inject IHttpClientFactory ClientFactory
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (_products is null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+    switch (_products)
+    {
+        case null when _status == HttpStatusCode.NotFound:
+            <p>
+                <em> No Products found</em>
+            </p>
+            break;
+        case null when _status is not null:
+            <p>
+                <em>Error loading products. Status: @_status</em>
+            </p>
+            break;
+        default:
+        {
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var forecast in _products!)
+                {
+                    <tr>
+                        <td>@forecast.Id</td>
+                        <td>@forecast.Name</td>
+                        <td>@forecast.Description</td>
+                        <td>@forecast.Price</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            break;
+        }
+    }
+
+@code {
+    
+    private Product[]? _products;
+    private HttpStatusCode? _status;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var client = ClientFactory.CreateClient("Default");
+
+        var response = await client.GetAsync("products");
+
+        if (response.IsSuccessStatusCode)
+        {
+            _products = await response.Content.ReadFromJsonAsync<Product[]>() ?? [];
+        }
+        else
+        {
+            _status = response.StatusCode;
+        }
+    }
+}

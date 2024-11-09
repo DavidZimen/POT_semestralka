@@ -179,7 +179,10 @@ public class KeycloakService : IKeycloakService
             DuplicateEmailsAllowed = false,
             ResetPasswordAllowed = true,
             PermanentLockout = true,
-            RequiredCredentials = new List<string> { "password" }
+            RequiredCredentials = ["password"],
+            InternationalizationEnabled = true,
+            DefaultLocale = "sk_SK",
+            SupportedLocales = ["sk_SK"]
         };
     }
 
@@ -194,8 +197,8 @@ public class KeycloakService : IKeycloakService
             ImplicitFlowEnabled = true,
             Enabled = true,
             DirectAccessGrantsEnabled = true,
-            RedirectUris = new List<string> { "http://localhost:5000/*" },
-            WebOrigins = new List<string> { "http://localhost:5000" }
+            RedirectUris = new List<string> { "http://localhost:5000/*", "http://localhost:5177/*" },
+            WebOrigins = new List<string> { "http://localhost:5000", "http://localhost:5177" }
         };
     }
 }

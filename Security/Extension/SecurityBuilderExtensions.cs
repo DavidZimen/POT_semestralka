@@ -1,6 +1,7 @@
 ﻿using Keycloak.Net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -67,6 +68,30 @@ public static class SecurityBuilderExtensions
         return builder;
     }
 
+    public static WebAssemblyHostBuilder AddKeycloakToClient(this WebAssemblyHostBuilder builder)
+    {
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+        
+        builder.Services.AddOidcAuthentication(o =>
+        {
+            var keycloakSection = builder.Configuration.GetRequiredSection(KeycloakOptionsName);
+            
+            o.ProviderOptions.MetadataUrl = keycloakSection["MetadataAddress"] ?? throw new InvalidOperationException();
+            o.ProviderOptions.ClientId = keycloakSection["ClientName"];
+            o.ProviderOptions.Authority = keycloakSection["ValidIssuer"];
+            o.ProviderOptions.ResponseType = "id_token token";
+            o.ProviderOptions.DefaultScopes.Add("openid");
+            o.ProviderOptions.DefaultScopes.Add("profile");
+            o.ProviderOptions.DefaultScopes.Add("email");
+
+            o.UserOptions.NameClaim = NameClaimType;
+            o.UserOptions.ScopeClaim = "scope";
+            o.UserOptions.RoleClaim = "role";
+        });
+
+        return builder;
+    }
+
     public static IHostApplicationBuilder AddSwaggerGenWithAuth(this IHostApplicationBuilder builder)
     {
         builder.Services.AddSwaggerGen(o =>
@@ -90,7 +115,7 @@ public static class SecurityBuilderExtensions
                     }
                 }
             };
-            o.AddSecurityDefinition(KeycloakOptionsName,securityDefinition );
+            o.AddSecurityDefinition(KeycloakOptionsName,securityDefinition);
 
             var securityRequirement = new OpenApiSecurityRequirement
             {
@@ -104,7 +129,7 @@ public static class SecurityBuilderExtensions
                         },
                         In = ParameterLocation.Header,
                         Name = "Bearer",
-                        Scheme = "Bearer"
+                        Scheme = JwtBearerDefaults.AuthenticationScheme
                     },
                     []
                 }

@@ -10,7 +10,7 @@ namespace Persistence.Extensions;
 
 public static class DbBuilderExtension
 {
-    private const string RepositoriesNameSpace = "Persistence.Repository";
+    private const string RepositoriesNameSpace = "Persistence.Repositories";
     
     public static IHostApplicationBuilder ConfigureDatabase(
         this IHostApplicationBuilder builder,
