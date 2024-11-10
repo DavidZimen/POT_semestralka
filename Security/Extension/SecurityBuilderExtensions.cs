@@ -70,8 +70,6 @@ public static class SecurityBuilderExtensions
 
     public static WebAssemblyHostBuilder AddKeycloakToClient(this WebAssemblyHostBuilder builder)
     {
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
-        
         builder.Services.AddOidcAuthentication(o =>
         {
             var keycloakSection = builder.Configuration.GetRequiredSection(KeycloakOptionsName);
