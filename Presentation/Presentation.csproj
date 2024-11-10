@@ -14,12 +14,19 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Domain\Domain.csproj" />
+        <None Update="../appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <Link>wwwroot/appsettings.json</Link>
+        </None>
+        <None Update="../appsettings.Development.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <Link>wwwroot/appsettings.Development.json</Link>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Update="wwwroot\appsettings.Development.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 </Project>
