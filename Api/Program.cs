@@ -5,12 +5,6 @@ using Security.Server.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration
-    .SetBasePath(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName)
-    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables();
-
 // configure options for Keycloak provider and add it
 builder.ConfigureKeycloakForApi()
     .ConfigureKeycloakServer()
