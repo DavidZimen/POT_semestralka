@@ -8,11 +8,8 @@
 
     <ItemGroup>
         <PackageReference Include="Keycloak.Net.Core" Version="1.0.30" />
-        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.9.0" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.10" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.10" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.1" />
     </ItemGroup>
 
 </Project>

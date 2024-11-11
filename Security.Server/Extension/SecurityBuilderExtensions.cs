@@ -1,7 +1,6 @@
 ﻿using Keycloak.Net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,20 +8,19 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Security.Config;
+using Security.Constants;
+using Security.Extension;
 using Security.Options;
 using Security.Policy.Provider;
 using Security.Service;
 
-namespace Security.Extension;
+namespace Security.Server.Extension;
 
 public static class SecurityBuilderExtensions
 {
-    private const string KeycloakOptionsName = "Keycloak";
-    private const string NameClaimType = "preferred_username";
-    
     public static IHostApplicationBuilder ConfigureKeycloakForApi(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddOptions<KeycloakOwnOptions>().BindConfiguration(KeycloakOptionsName);
+        builder.Services.AddOptions<KeycloakOwnOptions>().BindConfiguration(SecurityConstants.KeycloakOptionsName);
         
         builder.Services.AddKeycloakServices();
         
@@ -46,7 +44,7 @@ public static class SecurityBuilderExtensions
             })
             .AddJwtBearer(o =>
             {
-                var keycloakSection = builder.Configuration.GetRequiredSection(KeycloakOptionsName);
+                var keycloakSection = builder.Configuration.GetRequiredSection(SecurityConstants.KeycloakOptionsName);
                 o.RequireHttpsMetadata = false;
                 o.Audience = keycloakSection["Audience"];
                 o.MetadataAddress = keycloakSection["MetadataAddress"] ?? throw new InvalidOperationException();
@@ -58,7 +56,7 @@ public static class SecurityBuilderExtensions
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = keycloakSection["ValidIssuer"],
-                    NameClaimType = NameClaimType
+                    NameClaimType = SecurityConstants.UsernameClaim
                 };
             });
 
@@ -68,31 +66,9 @@ public static class SecurityBuilderExtensions
         return builder;
     }
 
-    public static WebAssemblyHostBuilder AddKeycloakToClient(this WebAssemblyHostBuilder builder)
+    public static void AddSwaggerGenWithAuth(this IServiceCollection services, IConfiguration config)
     {
-        builder.Services.AddOidcAuthentication(o =>
-        {
-            var keycloakSection = builder.Configuration.GetRequiredSection(KeycloakOptionsName);
-            
-            o.ProviderOptions.MetadataUrl = keycloakSection["MetadataAddress"] ?? throw new InvalidOperationException();
-            o.ProviderOptions.ClientId = keycloakSection["ClientName"];
-            o.ProviderOptions.Authority = keycloakSection["ValidIssuer"];
-            o.ProviderOptions.ResponseType = "id_token token";
-            o.ProviderOptions.DefaultScopes.Add("openid");
-            o.ProviderOptions.DefaultScopes.Add("profile");
-            o.ProviderOptions.DefaultScopes.Add("email");
-
-            o.UserOptions.NameClaim = NameClaimType;
-            o.UserOptions.ScopeClaim = "scope";
-            o.UserOptions.RoleClaim = "role";
-        });
-
-        return builder;
-    }
-
-    public static IHostApplicationBuilder AddSwaggerGenWithAuth(this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddSwaggerGen(o =>
+        services.AddSwaggerGen(o =>
         {
             o.CustomSchemaIds(id => id.FullName!.Replace("+", "-"));
 
@@ -103,7 +79,7 @@ public static class SecurityBuilderExtensions
                 {
                     Implicit = new OpenApiOAuthFlow
                     {
-                        AuthorizationUrl = new Uri(builder.Configuration["Keycloak:AuthorizationUrl"] ?? throw new InvalidOperationException()),
+                        AuthorizationUrl = new Uri(config["Keycloak:AuthorizationUrl"] ?? throw new InvalidOperationException()),
                         Scopes = new Dictionary<string, string>
                         {
                             { "openid", "openid" },
@@ -113,7 +89,7 @@ public static class SecurityBuilderExtensions
                     }
                 }
             };
-            o.AddSecurityDefinition(KeycloakOptionsName,securityDefinition);
+            o.AddSecurityDefinition(SecurityConstants.KeycloakOptionsName, securityDefinition);
 
             var securityRequirement = new OpenApiSecurityRequirement
             {
@@ -122,7 +98,7 @@ public static class SecurityBuilderExtensions
                     {
                         Reference = new OpenApiReference
                         {
-                            Id = KeycloakOptionsName,
+                            Id = SecurityConstants.KeycloakOptionsName,
                             Type = ReferenceType.SecurityScheme
                         },
                         In = ParameterLocation.Header,
@@ -134,7 +110,6 @@ public static class SecurityBuilderExtensions
             };
             o.AddSecurityRequirement(securityRequirement);
         });
-        return builder;
     }
     
     private static void AddAuthorizationWithPolicies(this IHostApplicationBuilder builder)

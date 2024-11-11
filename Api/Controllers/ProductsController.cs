@@ -23,6 +23,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Policy = nameof(TesterPolicy))]
     public async Task<ActionResult<ICollection<Product>>> GetProducts()
     {
         _logger.LogInformation("Received call to GET /products");

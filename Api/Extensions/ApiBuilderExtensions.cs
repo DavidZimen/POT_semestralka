@@ -27,4 +27,17 @@ public static class ApiBuilderExtensions
 
         builder.Services.AddProblemDetails();
     }
+
+    public static void AddCors(this IHostApplicationBuilder builder)
+    {
+        builder.Services.AddCors(o =>
+        {
+            o.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyHeader();
+                policy.AllowAnyMethod();
+                policy.AllowAnyOrigin();
+            });
+        });
+    }
 }
