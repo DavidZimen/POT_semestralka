@@ -22,7 +22,7 @@ public static class SecurityClientExtensions
             o.ProviderOptions.DefaultScopes.Add(OpenIdConnectScope.Email);
 
             o.UserOptions.NameClaim = SecurityConstants.UsernameClaim;
-            o.UserOptions.RoleClaim = "role";
+            o.UserOptions.RoleClaim = SecurityConstants.RoleClaim;
         });
 
         return builder;
