@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Security.Constants;
 
 namespace Security.Client.Extensions;
@@ -17,9 +18,7 @@ public static class SecurityClientExtensions
             o.ProviderOptions.MetadataUrl = keycloakSection["MetadataAddress"] ?? throw new InvalidOperationException();
             o.ProviderOptions.ClientId = keycloakSection["ClientName"];
             o.ProviderOptions.Authority = keycloakSection["ValidIssuer"];
-            o.ProviderOptions.ResponseType = "id_token token";
-            o.ProviderOptions.DefaultScopes.Add("openid");
-            o.ProviderOptions.DefaultScopes.Add("profile");
+            o.ProviderOptions.ResponseType = OpenIdConnectResponseType.IdTokenToken;
             o.ProviderOptions.DefaultScopes.Add("email");
 
             o.UserOptions.NameClaim = SecurityConstants.UsernameClaim;
