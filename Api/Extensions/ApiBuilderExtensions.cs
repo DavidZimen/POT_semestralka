@@ -36,7 +36,7 @@ public static class ApiBuilderExtensions
             {
                 policy.AllowAnyHeader();
                 policy.AllowAnyMethod();
-                policy.AllowAnyOrigin();
+                policy.WithOrigins(builder.Configuration["BlazorUrl"] ?? throw new InvalidOperationException("BlazorUrl is missing"));
             });
         });
     }
