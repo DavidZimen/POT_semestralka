@@ -26,6 +26,8 @@ builder.AddServices();
 // Add endpoints to the container.
 builder.Services.AddControllers();
 
+builder.Services.AddHttpContextAccessor();
+
 // add exception handlers
 builder.AddExceptionHandlers();
 

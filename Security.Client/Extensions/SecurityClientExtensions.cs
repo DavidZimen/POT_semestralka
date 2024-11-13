@@ -18,8 +18,7 @@ public static class SecurityClientExtensions
             o.ProviderOptions.MetadataUrl = keycloakSection["MetadataAddress"] ?? throw new InvalidOperationException();
             o.ProviderOptions.ClientId = keycloakSection["ClientName"];
             o.ProviderOptions.Authority = keycloakSection["ValidIssuer"];
-            o.ProviderOptions.ResponseType = OpenIdConnectResponseType.IdTokenToken;
-            o.ProviderOptions.DefaultScopes.Add(OpenIdConnectScope.Email);
+            o.ProviderOptions.ResponseType = OpenIdConnectResponseType.Code;
 
             o.UserOptions.NameClaim = SecurityConstants.UsernameClaim;
             o.UserOptions.RoleClaim = SecurityConstants.RoleClaim;

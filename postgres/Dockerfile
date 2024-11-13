@@ -7,5 +7,4 @@ COPY init-scripts /docker-entrypoint-initdb.d/
 EXPOSE 5432
 
 # Enable Health check
-HEALTHCHECK --interval=10s --timeout=5s --retries=5 CMD pg_isready
-
+HEALTHCHECK --interval=10s --timeout=5s --retries=5 CMD pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
