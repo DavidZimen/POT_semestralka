@@ -12,7 +12,7 @@ services:
     build:
       context: ./postgres
       dockerfile: Dockerfile
-    container_name: ${DB_HOST}
+    container_name: database
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -22,18 +22,18 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - 5433:${DB_PORT}
+      - "5432:5432"
   
   keycloak:
     build:
       context: ./keycloak
       dockerfile: Dockerfile
-    container_name: ${KC_SERVER}
+    container_name: keycloak
     depends_on:
       postgres_db:
         condition: service_healthy
     environment:
-      KC_DB_URL_HOST: ${DB_HOST}
+      KC_DB_URL_HOST: database
       KC_DB_URL_PORT: ${DB_PORT}
       KC_DB_URL_DATABASE: ${DB_DATABASE}
       KC_DB_USERNAME: ${DB_USER}
@@ -45,13 +45,13 @@ services:
     volumes:
       - keycloak_data:/opt/keycloak
     ports:
-      - ${KC_LOCAL_PORT}:8080
+      - "18080:8080"
       
   pot_api:
     build:
       context: .
       dockerfile: Api/Dockerfile
-    container_name: ${API_SERVER}
+    container_name: api
     depends_on:
       postgres_db:
         condition: service_healthy
@@ -59,33 +59,33 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: User ID=${DB_USER};Password=${DB_PASSWORD};Server=${DB_HOST};Port=${DB_PORT};Database=${DB_DATABASE};SearchPath=application_schema;Pooling=true
-      Keycloak__Url: http://${KC_SERVER}:8080
-      Keycloak__AuthorizationUrl: http://localhost:${KC_LOCAL_PORT}/realms/${KC_REALM}/protocol/openid-connect/auth
-      Keycloak__MetadataAddress: http://${KC_SERVER}:8080/realms/${KC_REALM}/.well-known/openid-configuration
-      Keycloak__ValidIssuer: http://localhost:${KC_LOCAL_PORT}/realms/${KC_REALM}
+      ConnectionStrings__DefaultConnection: User ID=${DB_USER};Password=${DB_PASSWORD};Server=database;Port=5432;Database=${DB_DATABASE};SearchPath=application_schema;Pooling=true
+      Keycloak__Url: http://keycloak:8080
+      Keycloak__AuthorizationUrl: http://localhost:18080/realms/${KC_REALM}/protocol/openid-connect/auth
+      Keycloak__MetadataAddress: http://keycloak:8080/realms/${KC_REALM}/.well-known/openid-configuration
+      Keycloak__ValidIssuer: http://localhost:18080/realms/${KC_REALM}
       Keycloak__Username: ${KC_USER}
       Keycloak__Password: ${KC_PASSWORD}
-      BlazorUrl: http://${BLAZOR_SERVER}:8080
+      BlazorUrl: http://client:8080
     networks:
       - semka
     ports:
-      - "5000:8080"
+      - "5177:8080"
       - "5001:8081"
   
   pot_frontend:
     build:
       context: .
       dockerfile: Presentation/Dockerfile
-    container_name: ${BLAZOR_SERVER}
+    container_name: client
     depends_on:
       pot_api:
         condition: service_started
     environment:
-      Keycloak__MetadataAddress: http://${KC_SERVER}:8080/realms/${KC_REALM}/.well-known/openid-configuration
-      Keycloak__ValidIssuer: http://localhost:${KC_LOCAL_PORT}/realms/${KC_REALM}
-      ApiUrl: http://${API_SERVER}:8080/
+      Keycloak__MetadataAddress: http://keycloak:8080/realms/${KC_REALM}/.well-known/openid-configuration
+      Keycloak__ValidIssuer: http://localhost:18080/realms/${KC_REALM}
+      ApiUrl: http://api:8080/
     networks:
       - semka
     ports:
-      - "5002:8080"
+      - "5116:8080"
