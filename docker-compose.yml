@@ -24,22 +24,6 @@ services:
     ports:
       - 5433:${DB_PORT}
   
-  pgAdmin4:
-    image: dpage/pgadmin4
-    container_name: pgAdmin4
-    depends_on:
-      postgres_db:
-        condition: service_healthy
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - pgAdmin_data:/var/lib/pgadmin
-    networks:
-      - semka
-    ports:
-      - "5434:80"
-  
   keycloak:
     build:
       context: ./keycloak
@@ -91,8 +75,8 @@ services:
   
   pot_frontend:
     build:
-      context: ./Presentation
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Presentation/Dockerfile
     container_name: ${BLAZOR_SERVER}
     depends_on:
       pot_api:
