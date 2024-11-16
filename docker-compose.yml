@@ -16,7 +16,6 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
     networks:
       - semka
     volumes:
@@ -33,9 +32,6 @@ services:
       postgres_db:
         condition: service_healthy
     environment:
-      KC_DB_URL_HOST: database
-      KC_DB_URL_PORT: ${DB_PORT}
-      KC_DB_URL_DATABASE: ${DB_DATABASE}
       KC_DB_USERNAME: ${DB_USER}
       KC_DB_PASSWORD: ${DB_PASSWORD}
       KEYCLOAK_ADMIN: ${KC_USER}
@@ -59,14 +55,14 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: User ID=${DB_USER};Password=${DB_PASSWORD};Server=database;Port=5432;Database=${DB_DATABASE};SearchPath=application_schema;Pooling=true
+      ConnectionStrings__DefaultConnection: User ID=${DB_USER};Password=${DB_PASSWORD};Server=database;Port=5432;Database=semestralka;SearchPath=application_schema;Pooling=true
       Keycloak__Url: http://keycloak:8080
       Keycloak__AuthorizationUrl: http://localhost:18080/realms/${KC_REALM}/protocol/openid-connect/auth
       Keycloak__MetadataAddress: http://keycloak:8080/realms/${KC_REALM}/.well-known/openid-configuration
       Keycloak__ValidIssuer: http://localhost:18080/realms/${KC_REALM}
       Keycloak__Username: ${KC_USER}
       Keycloak__Password: ${KC_PASSWORD}
-      BlazorUrl: http://client:8080
+      BlazorUrl: http://localhost:5116
     networks:
       - semka
     ports:
@@ -84,7 +80,7 @@ services:
     environment:
       Keycloak__MetadataAddress: http://keycloak:8080/realms/${KC_REALM}/.well-known/openid-configuration
       Keycloak__ValidIssuer: http://localhost:18080/realms/${KC_REALM}
-      ApiUrl: http://api:8080/
+      ApiUrl: http://localhost:5177/
     networks:
       - semka
     ports:
