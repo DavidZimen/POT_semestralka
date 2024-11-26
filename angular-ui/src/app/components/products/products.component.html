@@ -1,1 +1,25 @@
-<p>first-component works!</p>
+<p-table [value]="(products$ | async) ?? []"
+         [loading]="loading$ | async"
+         [paginator]="true"
+         [rows]="10"
+         [tableStyle]="{ 'min-width': '50rem' }">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Price</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-product>
+    <tr>
+      <td>{{ product.id }}</td>
+      <td>{{ product.name }}</td>
+      <td>{{ product.description }}</td>
+      <td>{{ product.price }}</td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    No products found.
+  </ng-template>
+</p-table>

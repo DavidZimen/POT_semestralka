@@ -21,7 +21,7 @@ import {UiRoutes} from '../../constants/UiRoutes';
   ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.scss',
-  standalone: true
+
 })
 export class NavBarComponent {
   items: MenuItem[] = [
