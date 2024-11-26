@@ -1,6 +1,6 @@
 import {KeycloakBearerInterceptor, KeycloakService} from 'keycloak-angular';
 import {environment} from '../../environments/environment';
-import {provideAppInitializer, Provider} from '@angular/core';
+import {APP_INITIALIZER, Provider} from '@angular/core';
 import {HTTP_INTERCEPTORS} from '@angular/common/http';
 
 export function initializeKeycloak(keycloak: KeycloakService) {
@@ -30,7 +30,7 @@ export const KeycloakBearerInterceptorProvider: Provider = {
 
 // Provider for Keycloak Initialization
 export const KeycloakInitializerProvider: Provider = {
-  provide: provideAppInitializer,
+  provide: APP_INITIALIZER,
   useFactory: initializeKeycloak,
   multi: true,
   deps: [KeycloakService]

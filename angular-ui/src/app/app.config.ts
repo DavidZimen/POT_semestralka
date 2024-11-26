@@ -1,11 +1,11 @@
 import { ApplicationConfig, provideExperimentalZonelessChangeDetection } from '@angular/core';
-import {provideRouter, withComponentInputBinding, withViewTransitions} from '@angular/router';
+import {provideRouter, withComponentInputBinding} from '@angular/router';
 
 import { routes } from './app.routes';
 import {provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi} from '@angular/common/http';
 import {KeycloakBearerInterceptorProvider, KeycloakInitializerProvider} from './config/keycloak.config';
-import {KeycloakService} from 'keycloak-angular';
 import {apiUrlInterceptor} from './interceptors/api.interceptor';
+import {KeycloakService} from 'keycloak-angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,9 +15,9 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([apiUrlInterceptor]),
       withInterceptorsFromDi()
     ),
-    provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
+    provideRouter(routes, withComponentInputBinding()),
+    KeycloakService,
     KeycloakInitializerProvider,
     KeycloakBearerInterceptorProvider,
-    KeycloakService
   ]
 };
