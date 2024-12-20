@@ -7,4 +7,6 @@ public interface IAuditableEntity
     public DateTime? ModifiedDate { get; set; }
     
     public DateTime? DeletedDate { get; set; }
+    
+    public string LastModifiedBy { get; set; }
 }

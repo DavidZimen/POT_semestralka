@@ -6,7 +6,7 @@ namespace Domain.Entity.Abstraction;
 public abstract class BaseEntity<TKey>
 {
     [Key]
-    [Column(name: "id")]
+    [Column(name: "id", TypeName = "uuid")]
     public TKey Id { get; }
     
     // Concurrency token for optimistic concurrency control

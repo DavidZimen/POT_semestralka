@@ -17,6 +17,5 @@ export const authGuard: CanActivateFn = async (route, state) => {
     }
   }
 
-  console.log(keycloak.getKeycloakInstance())
   return true;
 };

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {MenubarModule} from 'primeng/menubar';
 import {MenuItem} from 'primeng/api';
 import {Ripple} from 'primeng/ripple';
@@ -7,6 +7,7 @@ import {NgClass, NgIf} from '@angular/common';
 import {ChipsModule} from 'primeng/chips';
 import {AvatarModule} from 'primeng/avatar';
 import {UiRoutes} from '../../constants/UiRoutes';
+import {KeycloakService} from 'keycloak-angular';
 
 @Component({
   selector: 'app-nav-bar',
@@ -36,5 +37,8 @@ export class NavBarComponent {
       routerLink: UiRoutes.Products
     }
   ]
+
+  keycloakService = inject(KeycloakService)
+
   protected readonly UiRoutes = UiRoutes;
 }
