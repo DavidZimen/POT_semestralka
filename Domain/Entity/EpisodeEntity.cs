@@ -4,7 +4,7 @@ using Domain.Entity.Abstraction;
 
 namespace Domain.Entity;
 
-public class FilmEntity : AuditableEntity<Guid>
+public class EpisodeEntity : AuditableEntity<Guid>
 {
     [Column(name: "title", TypeName = "varchar(100)")]
     [Required]
@@ -28,4 +28,10 @@ public class FilmEntity : AuditableEntity<Guid>
     public Guid DirectorId { get; set; }
     
     public DirectorEntity Director { get; set; }
+    
+    [Column(name: "season_id", TypeName = "uuid")]
+    [Required]
+    public Guid SeasonId { get; set; }
+    
+    public SeasonEntity Season { get; set; }
 }

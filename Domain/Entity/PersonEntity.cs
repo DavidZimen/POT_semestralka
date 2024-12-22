@@ -1,7 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Entity.Abstraction;
 
-namespace Domain.Entity.Abstraction;
+namespace Domain.Entity;
 
 public class PersonEntity : AuditableEntity<Guid>
 {

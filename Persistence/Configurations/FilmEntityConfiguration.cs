@@ -22,7 +22,8 @@ public class FilmEntityConfiguration : IEntityTypeConfiguration<FilmEntity>
                 "film_actor",
                 e => e.HasOne(typeof(FilmEntity)).WithMany().HasForeignKey(FilmId).HasPrincipalKey(nameof(FilmEntity.Id)),
                 e => e.HasOne(typeof(ActorEntity)).WithMany().HasForeignKey(ActorId).HasPrincipalKey(nameof(ActorEntity.Id)),
-                j => j.HasKey(FilmId, ActorId))
-            ;
+                j => j.HasKey(FilmId, ActorId)
+                
+                );
     }
 }

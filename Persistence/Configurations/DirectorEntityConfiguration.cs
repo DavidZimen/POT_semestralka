@@ -12,6 +12,16 @@ public class DirectorEntityConfiguration : IEntityTypeConfiguration<DirectorEnti
         builder.ToTable(TableNames.Director);
         
         builder.HasKey(e => e.Id);
+
+        builder.HasMany(e => e.Episodes)
+            .WithOne(e => e.Director)
+            .HasForeignKey(e => e.DirectorId)
+            .IsRequired();
+        
+        builder.HasMany(e => e.Films)
+            .WithOne(e => e.Director)
+            .HasForeignKey(e => e.DirectorId)
+            .IsRequired();
         
         builder.HasOne(e => e.Person)
             .WithOne(e => e.Director)

@@ -12,4 +12,6 @@ public class ActorEntity : AuditableEntity<Guid>
     public PersonEntity Person { get; set; }
     
     public List<FilmEntity> Films { get; set; } = [];
+    
+    public List<EpisodeEntity> Episodes { get; set; } = [];
 }
