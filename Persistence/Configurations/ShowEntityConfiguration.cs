@@ -17,5 +17,10 @@ public class ShowEntityConfiguration : IEntityTypeConfiguration<ShowEntity>
             .WithOne(e => e.Show)
             .HasForeignKey(e => e.ShowId)
             .IsRequired();
+        
+        builder.HasMany(e => e.Ratings)
+            .WithOne(e => e.Show)
+            .HasForeignKey(e => e.ShowId)
+            .IsRequired(false);
     }
 }

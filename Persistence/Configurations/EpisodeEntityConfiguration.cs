@@ -26,6 +26,11 @@ public class EpisodeEntityConfiguration : IEntityTypeConfiguration<EpisodeEntity
             .HasForeignKey(e => e.SeasonId)
             .IsRequired();
         
+        builder.HasMany(e => e.Ratings)
+            .WithOne(e => e.Episode)
+            .HasForeignKey(e => e.EpisodeId)
+            .IsRequired(false);
+        
         builder.HasMany(e => e.Actors)
             .WithMany(e => e.Episodes)
             .UsingEntity(

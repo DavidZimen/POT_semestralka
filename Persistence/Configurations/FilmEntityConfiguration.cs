@@ -15,6 +15,11 @@ public class FilmEntityConfiguration : IEntityTypeConfiguration<FilmEntity>
         builder.ToTable(TableNames.Film);
 
         builder.HasKey(e => e.Id);
+
+        builder.HasMany(e => e.Ratings)
+            .WithOne(e => e.Film)
+            .HasForeignKey(e => e.FilmId)
+            .IsRequired(false);
         
         builder.HasMany(e => e.Actors)
             .WithMany(e => e.Films)

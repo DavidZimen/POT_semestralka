@@ -34,4 +34,6 @@ public class EpisodeEntity : AuditableEntity<Guid>
     public Guid SeasonId { get; set; }
     
     public SeasonEntity Season { get; set; }
+    
+    public List<RatingEntity> Ratings { get; set; } = [];
 }
