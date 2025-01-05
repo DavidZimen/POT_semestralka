@@ -17,4 +17,6 @@ public class ShowEntity : AuditableEntity<Guid>
     public List<SeasonEntity> Seasons { get; set; }
     
     public List<RatingEntity> Ratings { get; set; } = [];
+
+    public List<GenreEntity> Genres { get; set; } = [];
 }

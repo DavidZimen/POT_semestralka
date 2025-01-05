@@ -9,12 +9,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Security.Config;
 using Security.Constants;
-using Security.Extension;
 using Security.Options;
 using Security.Policy.Provider;
 using Security.Service;
 
-namespace Security.Server.Extension;
+namespace Security.Extension;
 
 public static class SecurityBuilderExtensions
 {

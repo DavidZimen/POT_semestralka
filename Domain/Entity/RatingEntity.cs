@@ -4,11 +4,14 @@ using Domain.Entity.Abstraction;
 
 namespace Domain.Entity;
 
-public class RatingEntity : AuditableEntity<Guid>
+public class RatingEntity : BaseEntity<Guid>
 {
     [Column(name: "value", TypeName = "integer")]
     [Required]
     public int Value { get; set; }
+    
+    [Column(name: "description", TypeName = "text")]
+    public string? Description { get; set; }
     
     [Column(name: "user_id", TypeName = "varchar(36)")]
     public string UserId { get; set; }

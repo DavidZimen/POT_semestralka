@@ -2,9 +2,7 @@
 
 internal static class Role
 {
-    internal const string SuperAdmin = "super-admin-role";
-    internal const string Admin = "admin-role";
-    internal const string HotelManager = "hotel-manager-role";
-    internal const string User = "user-role";
-    internal const string Test = "test-role";
+    internal const string Admin = "ROLE_ADMIN";
+    internal const string Author = "ROLE_AUTHOR";
+    internal const string Test = "ROLE_TEST";
 }

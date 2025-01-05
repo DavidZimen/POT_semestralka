@@ -11,4 +11,5 @@ public static class TableNames
     public const string Season = "season";
     public const string Episode = "episode";
     public const string Rating = "rating";
+    public const string Genre = "genre";
 }

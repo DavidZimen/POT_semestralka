@@ -1,7 +1,7 @@
 using Api.Extensions;
 using Domain.Extensions;
 using Persistence.Extensions;
-using Security.Server.Extension;
+using Security.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 

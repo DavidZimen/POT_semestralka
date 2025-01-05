@@ -30,4 +30,6 @@ public class FilmEntity : AuditableEntity<Guid>
     public DirectorEntity Director { get; set; }
     
     public List<RatingEntity> Ratings { get; set; } = [];
+    
+    public List<GenreEntity> Genres { get; set; } = [];
 }

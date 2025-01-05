@@ -4,13 +4,15 @@ using Persistence.Repositories.Abstractions;
 
 namespace Persistence.Repositories;
 
+/// <summary>
+/// Implementation of the <see cref="IBaseRepository{TEntity,TKey}"/>
+/// </summary>
 public abstract class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, TKey>
     where TEntity : BaseEntity<TKey>
 {
     private readonly ApplicationDbContext _dbContext;
     
     protected readonly DbSet<TEntity> DbSet;
-    
     
     protected BaseRepository(ApplicationDbContext dbContext)
     {
@@ -28,6 +30,11 @@ public abstract class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, T
         return await DbSet.FindAsync(entityId);
     }
 
+    public async Task<int> CountAsync()
+    {
+        return await DbSet.CountAsync();
+    }
+
     public async Task<ICollection<TEntity>> GetAllAsync()
     {
         return await DbSet.ToListAsync();
@@ -35,9 +42,9 @@ public abstract class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, T
 
     public async Task<TKey> CreateAsync(TEntity entity)
     {
-        var entityRes = (await DbSet.AddAsync(entity)).Entity;
+        var entityRes = await DbSet.AddAsync(entity);
         await SaveChangesAsync();
-        return entityRes.Id;
+        return entityRes.Entity.Id;
     }
 
     public async Task<bool> UpdateAsync(TEntity entity)
