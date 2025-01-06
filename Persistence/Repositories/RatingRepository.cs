@@ -11,7 +11,7 @@ namespace Persistence.Repositories;
 public class RatingRepository(ApplicationDbContext dbContext)
     : BaseRepository<RatingEntity, Guid>(dbContext), IRatingRepository
 {
-    public async Task<(double? Average, int count)> GetAverageRating(Guid? filmId = null, Guid? showId = null, Guid? episodeId = null)
+    public async Task<(double? Average, int Count)> GetAverageRating(Guid? filmId = null, Guid? showId = null, Guid? episodeId = null)
     {
         var result = await FilterRatings(filmId, showId, episodeId)
             .GroupBy(_ => 1)

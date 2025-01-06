@@ -46,7 +46,7 @@ public interface IBaseRepository<TEntity, TKey> : IRepository
     /// </summary>
     /// <param name="entity">New state of the entity to be persisted.</param>
     /// <returns>True if update operation was successful, otherwise false.</returns>
-    Task<bool> UpdateAsync(TEntity entity);
+    Task<TEntity?> UpdateAsync(TEntity entity);
     
     /// <summary>
     /// Deletes the provided entity from the DB.

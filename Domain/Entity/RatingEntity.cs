@@ -4,7 +4,7 @@ using Domain.Entity.Abstraction;
 
 namespace Domain.Entity;
 
-public class RatingEntity : BaseEntity<Guid>
+public class RatingEntity : BaseEntity<Guid>, IOwnerableEntity
 {
     [Column(name: "value", TypeName = "integer")]
     [Required]
@@ -32,4 +32,9 @@ public class RatingEntity : BaseEntity<Guid>
     public Guid? EpisodeId { get; set; }
     
     public EpisodeEntity? Episode { get; set; }
+
+    public bool IsOwner(string? userId)
+    {
+        return UserId.Equals(userId);
+    }
 }

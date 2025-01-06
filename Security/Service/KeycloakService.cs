@@ -2,8 +2,10 @@
 using Keycloak.Net;
 using Keycloak.Net.Models.Clients;
 using Keycloak.Net.Models.RealmsAdmin;
+using Keycloak.Net.Models.Users;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Security.Dto;
 using Security.Exception;
 using Security.Options;
 
@@ -157,6 +159,57 @@ public class KeycloakService : IKeycloakService
         {
             _logger.LogCritical("Error updating client scope for roles token mapping: {ErrorMessage}", e.Message);
             throw new KeycloakInitializationException(e.Message);
+        }
+    }
+
+    public async Task<string?> CreateUserAsync(KeycloakUser user)
+    {
+        try
+        {
+            var result = await _keycloakClient.CreateUserAsync(_keycloakOptions.Realm, new User
+            {
+                Email = user.Email,
+                UserName = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                RealmRoles = [user.Role],
+                Credentials =
+                [
+                    new Credentials
+                    {
+                        Type = "password",
+                        Value = user.Password,
+                        Temporary = false
+                    }
+                ],
+                EmailVerified = false,
+                RequiredActions = ["VERIFY_EMAIL"]
+            });
+
+            if (!result)
+            {
+                _logger.LogError("Failed to create user with email {Email}", user.Email);
+                return null;
+            }
+
+            var users = await _keycloakClient.GetUsersAsync(_keycloakOptions.Realm, email: user.Email);
+            var userId = users.FirstOrDefault(u => u.Email == user.Email)?.Id;
+
+            if (userId is not null)
+            {
+                _logger.LogInformation("User with email {Email} created successfully.", user.Email);
+            }
+            else
+            {
+                _logger.LogError("Failed to create user with email {Email}", user.Email);
+            }
+
+            return userId;
+        }
+        catch (FlurlHttpException _)
+        {
+            _logger.LogError("Failed to create user with email {Email}", user.Email);
+            return null;
         }
     }
     

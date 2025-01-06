@@ -44,7 +44,7 @@ namespace Persistence.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    name = table.Column<string>(type: "varchar(50", nullable: false)
+                    name = table.Column<string>(type: "varchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {

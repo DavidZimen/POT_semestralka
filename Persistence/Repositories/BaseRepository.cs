@@ -47,10 +47,11 @@ public abstract class BaseRepository<TEntity, TKey> : IBaseRepository<TEntity, T
         return entityRes.Entity.Id;
     }
 
-    public async Task<bool> UpdateAsync(TEntity entity)
+    public async Task<TEntity?> UpdateAsync(TEntity entity)
     {
         DbSet.Update(entity);
-        return await SaveChangesAsync() > 0;
+        var result = await SaveChangesAsync();
+        return result > 0 ? entity : null;
     }
 
     public async Task<bool> DeleteAsync(TEntity entity)

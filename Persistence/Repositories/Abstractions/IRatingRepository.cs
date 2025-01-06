@@ -7,13 +7,13 @@ namespace Persistence.Repositories.Abstractions;
 /// <summary>
 /// Repository for processing rating in the application.
 /// </summary>
-public interface IRatingRepository
+public interface IRatingRepository : IBaseRepository<RatingEntity, Guid>
 {
     /// <summary>
     /// Calculates the average rating with count based on provided search criteria.
     /// Only on of the parameters has to be not null.
     /// </summary>
-    Task<(double? Average, int count)> GetAverageRating(
+    Task<(double? Average, int Count)> GetAverageRating(
         Guid? filmId = null, Guid? showId = null, Guid? episodeId = null);
     
     /// <summary>

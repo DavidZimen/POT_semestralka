@@ -1,4 +1,6 @@
-﻿namespace Security.Service;
+﻿using Security.Dto;
+
+namespace Security.Service;
 
 public interface IKeycloakService
 {
@@ -17,4 +19,10 @@ public interface IKeycloakService
     /// Updates mapping of roles claim in JWT token from realm_access.roles to roles.
     /// </summary>
     Task UpdateRolesClaimMapping();
+
+    /// <summary>
+    /// Creates user in the 'semestralka' realm inside the keycloak.
+    /// </summary>
+    /// <returns>UserId, if the user was successfully created in the realm, null otherwise.</returns>
+    Task<string?> CreateUserAsync(KeycloakUser user);
 }

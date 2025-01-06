@@ -216,7 +216,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(50")
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("name");
 
                     b.HasKey("Id");

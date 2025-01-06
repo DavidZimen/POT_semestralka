@@ -1,4 +1,5 @@
 using Api.Extensions;
+using Api.MinimalApi;
 using Domain.Extensions;
 using Persistence.Extensions;
 using Security.Extension;
@@ -21,12 +22,9 @@ builder.AddMappers();
 builder.AddCors();
 
 // add services
+builder.Services.AddHttpContextAccessor();
 builder.AddServices();
 
-// Add endpoints to the container.
-builder.Services.AddControllers();
-
-builder.Services.AddHttpContextAccessor();
 
 // add exception handlers
 builder.AddExceptionHandlers();
@@ -53,6 +51,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapRatingEndpoints();
 
 await app.RunAsync();
