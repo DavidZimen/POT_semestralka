@@ -18,7 +18,7 @@ public class SeasonEntity : AuditableEntity<Guid>
     [Required]
     public Guid ShowId { get; set; }
     
-    public ShowEntity Show { get; set; }
+    public virtual ShowEntity Show { get; set; }
     
-    public List<EpisodeEntity> Episodes { get; set; }
+    public virtual List<EpisodeEntity> Episodes { get; set; }
 }

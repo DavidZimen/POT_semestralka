@@ -1,8 +1,8 @@
 ﻿namespace Security.Enums;
 
-internal static class Role
+public static class Role
 {
-    internal const string Admin = "ROLE_ADMIN";
-    internal const string Author = "ROLE_AUTHOR";
-    internal const string Test = "ROLE_TEST";
+    public const string Admin = "ROLE_ADMIN";
+    public const string Author = "ROLE_AUTHOR";
+    public const string Test = "ROLE_TEST";
 }

@@ -14,9 +14,9 @@ public class ShowEntity : AuditableEntity<Guid>
     [Required]
     public string Description { get; set; }
     
-    public List<SeasonEntity> Seasons { get; set; }
+    public virtual List<SeasonEntity> Seasons { get; set; }
     
-    public List<RatingEntity> Ratings { get; set; } = [];
+    public virtual List<RatingEntity> Ratings { get; set; } = [];
 
-    public List<GenreEntity> Genres { get; set; } = [];
+    public virtual List<GenreEntity> Genres { get; set; } = [];
 }

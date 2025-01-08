@@ -113,6 +113,7 @@ public static class SecurityBuilderExtensions
     
     private static void AddAuthorizationWithPolicies(this IHostApplicationBuilder builder)
     {
+        builder.Services.AddHttpContextAccessor();
         builder.Services.AddSingleton<PolicyFactory>();
         builder.Services.AddSingleton<IAuthorizationPolicyProvider, PolicyProvider>();
         builder.Services.AddAuthorization();
@@ -133,6 +134,11 @@ public static class SecurityBuilderExtensions
         if (!services.IsServiceRegistered<IKeycloakService, KeycloakService>())
         {
             services.AddSingleton<IKeycloakService, KeycloakService>();
+        }
+
+        if (!services.IsServiceRegistered<IAuthService, AuthService>())
+        {
+            services.AddScoped<IAuthService, AuthService>();
         }
     }
 }

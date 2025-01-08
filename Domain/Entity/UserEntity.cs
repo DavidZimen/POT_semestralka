@@ -11,5 +11,5 @@ public class UserEntity
     [Column(name: "enabled", TypeName = "boolean")]
     public bool Enabled { get; set; }
     
-    public List<RatingEntity> Ratings { get; set; } = [];
+    public virtual List<RatingEntity> Ratings { get; set; } = [];
 }

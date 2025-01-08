@@ -1,10 +1,11 @@
-using System.Security.Claims;
 using Api.Exceptions;
 using Api.Services.Abstraction;
 using AutoMapper;
 using Domain.Dto;
 using Domain.Entity;
 using Persistence.Repositories.Abstractions;
+using Security.Enums;
+using Security.Service;
 
 namespace Api.Services;
 
@@ -12,13 +13,13 @@ public class RatingService : IRatingService
 {
     private readonly IRatingRepository _ratingRepository;
     private readonly IMapper _mapper;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IAuthService _authService;
 
-    public RatingService(IRatingRepository ratingRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+    public RatingService(IRatingRepository ratingRepository, IMapper mapper, IAuthService authService)
     {
         _ratingRepository = ratingRepository;
         _mapper = mapper;
-        _httpContextAccessor = httpContextAccessor;
+        _authService = authService;
     }
 
     public async Task<ICollection<RatingDto>> GetRatingsAsync(Guid? filmId = null, Guid? showId = null, Guid? episodeId = null)
@@ -43,7 +44,7 @@ public class RatingService : IRatingService
     public Task<Guid> CreateRatingAsync(CreateRatingRequest createRating)
     {
         var ratingEntity = _mapper.Map<RatingEntity>(createRating);
-        ratingEntity.UserId = GetUserId() ?? throw new UnauthorizedAccessException();
+        ratingEntity.UserId = _authService.GetCurrentUserId() ?? throw new UnauthorizedAccessException();
         return _ratingRepository.CreateAsync(ratingEntity);
     }
 
@@ -58,7 +59,7 @@ public class RatingService : IRatingService
         }
         
         // owner or admin
-        if (!ratingEntity.IsOwner(GetUserId()))
+        if (!ratingEntity.IsOwner(_authService.GetCurrentUserId()) && !_authService.IsUserInRole(Role.Admin))
         {
             throw new ForbiddenException("You are not authorized to update this rating.");
         }
@@ -80,7 +81,7 @@ public class RatingService : IRatingService
         }
         
         // owner or admin
-        if (!ratingEntity.IsOwner(GetUserId()))
+        if (!ratingEntity.IsOwner(_authService.GetCurrentUserId()) && !_authService.IsUserInRole(Role.Admin))
         {
             throw new ForbiddenException("You are not authorized to delete this rating.");
         }
@@ -93,10 +94,5 @@ public class RatingService : IRatingService
         var ratingOfUser = await _ratingRepository.GetRatingOfUser(userRatingRequest.UserId, userRatingRequest.FilmId,
             userRatingRequest.ShowId, userRatingRequest.EpisodeId);
         return ratingOfUser is not null ? _mapper.Map<RatingDto>(ratingOfUser) : null;
-    }
-
-    private string? GetUserId()
-    {
-        return _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name);
     }
 }

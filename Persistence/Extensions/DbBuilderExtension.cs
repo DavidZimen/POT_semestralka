@@ -22,7 +22,8 @@ public static class DbBuilderExtension
         builder.Services.AddDbContext<ApplicationDbContext>(
                 (sp, opt) => opt
                     .UseNpgsql(conn, x => x.MigrationsHistoryTable("__EFMigrationsHistory", ApplicationDbContext.ApplicationSchema))
-                    .AddInterceptors(sp.GetRequiredService<AuditableEntityInterceptor>()))
+                    .AddInterceptors(sp.GetRequiredService<AuditableEntityInterceptor>())
+                    .UseLazyLoadingProxies())
             .AddMigrationService(options);
         return builder;
     }

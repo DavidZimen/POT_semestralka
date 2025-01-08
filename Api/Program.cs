@@ -22,7 +22,6 @@ builder.AddMappers();
 builder.AddCors();
 
 // add services
-builder.Services.AddHttpContextAccessor();
 builder.AddServices();
 
 

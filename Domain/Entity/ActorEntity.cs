@@ -9,9 +9,9 @@ public class ActorEntity : AuditableEntity<Guid>
     [Column(name: "person_id", TypeName = "uuid")]
     public Guid PersonId { get; set; }
     
-    public PersonEntity Person { get; set; }
+    public virtual PersonEntity Person { get; set; }
     
-    public List<FilmEntity> Films { get; set; } = [];
+    public virtual List<FilmEntity> Films { get; set; } = [];
     
-    public List<EpisodeEntity> Episodes { get; set; } = [];
+    public virtual List<EpisodeEntity> Episodes { get; set; } = [];
 }
