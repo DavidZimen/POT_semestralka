@@ -50,6 +50,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapRatingEndpoints();
+app.MapRatingEndpoints()
+    .MapUserEndpoints();
 
 await app.RunAsync();

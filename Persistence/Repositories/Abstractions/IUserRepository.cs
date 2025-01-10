@@ -6,7 +6,7 @@ public interface IUserRepository : IRepository
 {
     Task<UserEntity?> FindByIdAsync(string entityId);
     
-    Task<UserEntity> CreateAsync(UserEntity user);
+    Task<UserEntity?> CreateAsync(UserEntity user);
     
     Task<bool> UpdateAsync(UserEntity user);
 }

@@ -17,7 +17,7 @@ public class UserRepository : IUserRepository
         return await _dbContext.Set<UserEntity>().FindAsync(entityId);
     }
 
-    public async Task<UserEntity> CreateAsync(UserEntity user)
+    public async Task<UserEntity?> CreateAsync(UserEntity user)
     {
         var userEntry = await _dbContext.Set<UserEntity>().AddAsync(user);
         await _dbContext.SaveChangesAsync();

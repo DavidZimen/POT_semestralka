@@ -173,6 +173,7 @@ public class KeycloakService : IKeycloakService
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 RealmRoles = [user.Role],
+                Enabled = true,
                 Credentials =
                 [
                     new Credentials
@@ -183,7 +184,7 @@ public class KeycloakService : IKeycloakService
                     }
                 ],
                 EmailVerified = false,
-                RequiredActions = ["VERIFY_EMAIL"]
+                // RequiredActions = ["VERIFY_EMAIL"]
             });
 
             if (!result)

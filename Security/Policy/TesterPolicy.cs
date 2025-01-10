@@ -9,6 +9,6 @@ public class TesterPolicy : IAuthorizationPolicy
     public AuthorizationPolicy BuildPolicy()
         => DefaultPolicy
             .DefaultPolicyBuilder()
-            .RequireRole(Role.Test, Role.Admin)
+            .RequireRole(Role.User, Role.Admin)
             .Build();
 }

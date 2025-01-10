@@ -28,7 +28,7 @@ public class PersonEntity : AuditableEntity<Guid>
     [Required]
     public string Country { get; set; }
     
-    public ActorEntity? Actor { get; set; }
+    public virtual ActorEntity? Actor { get; set; }
     
-    public DirectorEntity? Director { get; set; }
+    public virtual DirectorEntity? Director { get; set; }
 }

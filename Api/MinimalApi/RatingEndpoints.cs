@@ -13,7 +13,8 @@ public static class RatingEndpoints
         {
             var rating = await ratingService.GetRatingAsync(id);
             return rating is not null ? Results.Ok(rating) : Results.NotFound();
-        }).RequireAuthorization();
+        }).RequireAuthorization()
+        .WithTags("rating");
 
         return app;
     }
@@ -24,7 +25,8 @@ public static class RatingEndpoints
         {
             var ratingId = await ratingService.CreateRatingAsync(request);
             return Results.CreatedAtRoute($"/rating/{ratingId}");
-        }).RequireAuthorization();
+        }).RequireAuthorization()
+        .WithTags("rating");
 
         return app;
     }
@@ -42,7 +44,8 @@ public static class RatingEndpoints
                 var result = await ratingService.UpdateRatingAsync(request);
 
                 return Results.Ok(result);
-            }).RequireAuthorization();
+            }).RequireAuthorization()
+            .WithTags("rating");
 
         return app;
     }
@@ -59,7 +62,8 @@ public static class RatingEndpoints
                 
                 await ratingService.DeleteRatingAsync(request.Id);
                 return Results.NoContent();
-            }).RequireAuthorization();
+            }).RequireAuthorization()
+            .WithTags("rating");
 
         return app;
     }
@@ -70,7 +74,8 @@ public static class RatingEndpoints
         {
             var userRating = await ratingService.GetUserRatingAsync(request);
             return userRating is not null ? Results.Ok(userRating) : Results.NotFound();
-        }).RequireAuthorization();
+        }).RequireAuthorization()
+        .WithTags("rating");
 
         return app;
     }
@@ -82,7 +87,7 @@ public static class RatingEndpoints
             {
                 var averageRating = await ratingService.GetAverageRatingAsync(request.FilmId, request.ShowId, request.EpisodeId);
                 return Results.Ok(averageRating);
-            });
+            }).WithTags("rating");
 
         return app;
     }
