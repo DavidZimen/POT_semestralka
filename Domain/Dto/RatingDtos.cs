@@ -1,13 +1,38 @@
 namespace Domain.Dto;
 
 /// <summary>
-/// Dto object for transferring rating entity to the UI.
+/// Class for transferring rating entity to the UI.
 /// </summary>
-/// <param name="Id">Unique ID of the rating.</param>
-/// <param name="UserId">ID of user, that submitted the rating.</param>
-/// <param name="Value">Numeric 1-10 value.</param>
-/// <param name="Description">Brief text description.</param>
-public record RatingDto(Guid Id, string UserId, int Value, string? Description);
+public class RatingDto
+{
+    /// <summary>
+    /// Unique ID of the rating.
+    /// </summary>
+    public Guid Id { get; set; }
+
+    /// <summary>
+    /// ID of the user who submitted the rating.
+    /// </summary>
+    public string UserId { get; set; }
+
+    /// <summary>
+    /// Numeric 1-10 value.
+    /// </summary>
+    public int Value { get; set; }
+
+    /// <summary>
+    /// Brief text description.
+    /// </summary>
+    public string? Description { get; set; }
+
+    public RatingDto(Guid id, string userId, int value, string? description)
+    {
+        Id = id;
+        UserId = userId;
+        Value = value;
+        Description = description;
+    }
+}
 
 /// <summary>
 /// Dto for transferring average rating of the film, show or episode to the UI.

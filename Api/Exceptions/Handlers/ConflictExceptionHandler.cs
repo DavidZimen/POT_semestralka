@@ -17,18 +17,18 @@ public class ConflictExceptionHandler : IExceptionHandler
         Exception exception, 
         CancellationToken cancellationToken)
     {
-        if (exception is not NotFoundException notFoundException)
+        if (exception is not ConflictException conflictException)
         {
             return false;
         }
         
-        _logger.LogError(notFoundException, "Exception occurred: {Message}", notFoundException.Message);
+        _logger.LogError(conflictException, "Exception occurred: {Message}", conflictException.Message);
 
         var problemDetails = new ProblemDetails
         {
             Status = StatusCodes.Status409Conflict,
             Title = "Conflict",
-            Detail = notFoundException.Message
+            Detail = conflictException.Message
         };
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;

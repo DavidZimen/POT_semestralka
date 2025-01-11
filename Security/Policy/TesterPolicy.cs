@@ -7,8 +7,7 @@ namespace Security.Policy;
 public class TesterPolicy : IAuthorizationPolicy
 {
     public AuthorizationPolicy BuildPolicy()
-        => DefaultPolicy
-            .DefaultPolicyBuilder()
+        => DefaultPolicy.DefaultPolicyBuilder()
             .RequireRole(Role.User, Role.Admin)
             .Build();
 }
