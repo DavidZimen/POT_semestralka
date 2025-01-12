@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Persistence.Interceptors;
 using Persistence.Options;
-using Persistence.Repositories.Abstractions;
+using Persistence.Repositories;
 
 namespace Persistence.Extensions;
 
@@ -18,7 +18,7 @@ public static class DbBuilderExtension
     {
         var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 
-        builder.Services.AddSingleton<AuditableEntityInterceptor>();
+        builder.Services.AddScoped<AuditableEntityInterceptor>();
         builder.Services.AddDbContext<ApplicationDbContext>(
                 (sp, opt) => opt
                     .UseNpgsql(conn, x => x.MigrationsHistoryTable("__EFMigrationsHistory", ApplicationDbContext.ApplicationSchema))

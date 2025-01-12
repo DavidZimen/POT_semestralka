@@ -14,7 +14,14 @@ public class ShowEntity : AuditableEntity<Guid>
     [Required]
     public string Description { get; set; }
     
-    public virtual List<SeasonEntity> Seasons { get; set; }
+    [Column(name: "release_date", TypeName = "date")]
+    [Required]
+    public DateOnly ReleaseDate { get; set; }
+    
+    [Column(name: "end_date", TypeName = "date")]
+    public DateOnly? EndDate { get; set; }
+
+    public virtual List<SeasonEntity> Seasons { get; set; } = [];
     
     public virtual List<RatingEntity> Ratings { get; set; } = [];
 

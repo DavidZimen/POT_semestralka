@@ -19,8 +19,7 @@ public class GenreController : ControllerBase
     }
 
     [HttpGet]
-    [Route("")]
-    public async Task<IActionResult> GetGenres()
+    public async Task<ActionResult<ICollection<GenreDto>>> GetGenres()
     {
         var genres = await _genreService.GetGenresAsync();
         return genres.Count > 0 ? Ok(genres) : NotFound();
@@ -28,7 +27,7 @@ public class GenreController : ControllerBase
 
     [HttpGet]
     [Route("{id:guid}")]
-    public async Task<IActionResult> GetGenre(Guid id)
+    public async Task<ActionResult<GenreDto>> GetGenre(Guid id)
     {
         var genre = await _genreService.GetGenreByIdAsync(id);
         return genre is not null ? Ok(genre) : NotFound();
@@ -39,13 +38,13 @@ public class GenreController : ControllerBase
     public async Task<IActionResult> CreateGenre([FromBody] CreateGenre genre)
     {
         var genreId = await _genreService.CreateGenreAsync(genre.Name);
-        return genreId is not null ? Created($"api/genre/{genreId}", null) : Problem();
+        return genreId is not null ? Created($"genre/{genreId}", null) : Problem();
     }
 
     [HttpPut]
     [Route("{id:guid}")]
     [Authorize(Policy = nameof(AdminPolicy))]
-    public async Task<IActionResult> UpdateGenre(Guid id, [FromBody] UpdateGenre updateGenre)
+    public async Task<ActionResult<GenreDto>> UpdateGenre(Guid id, [FromBody] UpdateGenre updateGenre)
     {
         if (!id.Equals(updateGenre.GenreId))
         {

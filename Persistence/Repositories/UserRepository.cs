@@ -1,7 +1,15 @@
 using Domain.Entity;
-using Persistence.Repositories.Abstractions;
 
 namespace Persistence.Repositories;
+
+public interface IUserRepository : IRepository
+{
+    Task<UserEntity?> FindByIdAsync(string entityId);
+    
+    Task<UserEntity?> CreateAsync(UserEntity user);
+    
+    Task<bool> UpdateAsync(UserEntity user);
+}
 
 public class UserRepository : IUserRepository
 {

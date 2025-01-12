@@ -1,7 +1,7 @@
 using Api.Services.Abstraction;
 using Domain.Dto;
 using Domain.Entity;
-using Persistence.Repositories.Abstractions;
+using Persistence.Repositories;
 using Security.Dto;
 using Security.Service;
 

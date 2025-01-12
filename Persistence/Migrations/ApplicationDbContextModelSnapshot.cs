@@ -19,6 +19,9 @@ namespace Persistence.Migrations
             modelBuilder
                 .HasDefaultSchema("application_schema")
                 .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -193,7 +196,7 @@ namespace Persistence.Migrations
 
                     b.Property<DateOnly>("ReleaseDate")
                         .HasColumnType("date")
-                        .HasColumnName("release_data");
+                        .HasColumnName("release_date");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -399,6 +402,10 @@ namespace Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("description");
 
+                    b.Property<DateOnly?>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
                     b.Property<string>("LastModifiedBy")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
@@ -407,6 +414,10 @@ namespace Persistence.Migrations
                     b.Property<DateTime?>("ModifiedDate")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified_at");
+
+                    b.Property<DateOnly>("ReleaseDate")
+                        .HasColumnType("date")
+                        .HasColumnName("release_date");
 
                     b.Property<string>("Title")
                         .IsRequired()

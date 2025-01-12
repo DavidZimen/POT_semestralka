@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Security.Service;
 
 namespace Persistence.Interceptors;
 
@@ -11,6 +12,13 @@ namespace Persistence.Interceptors;
 /// </summary>
 internal sealed class AuditableEntityInterceptor : SaveChangesInterceptor
 {
+    private readonly IAuthService _authService;
+
+    public AuditableEntityInterceptor(IAuthService authService)
+    {
+        _authService = authService;
+    }
+
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
         UpdateAuditableEntities(eventData.Context);
@@ -24,7 +32,7 @@ internal sealed class AuditableEntityInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private static void UpdateAuditableEntities(DbContext? dbContext)
+    private void UpdateAuditableEntities(DbContext? dbContext)
     {
         if (dbContext is null)
             return;
@@ -47,6 +55,7 @@ internal sealed class AuditableEntityInterceptor : SaveChangesInterceptor
                     SetCurrentPropertyValue(entry, nameof(IAuditableEntity.DeletedDate), now);
                     break;
             }
+            entry.Entity.LastModifiedBy = _authService.GetCurrentUserId() ?? string.Empty;
         }
 
         static void SetCurrentPropertyValue(EntityEntry entry, string propertyName, DateTime utcNow) 

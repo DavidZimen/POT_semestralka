@@ -3,7 +3,7 @@ using Api.Services.Abstraction;
 using AutoMapper;
 using Domain.Dto;
 using Domain.Entity;
-using Persistence.Repositories.Abstractions;
+using Persistence.Repositories;
 using Security.Enums;
 using Security.Service;
 

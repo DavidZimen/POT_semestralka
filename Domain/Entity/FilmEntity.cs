@@ -14,7 +14,7 @@ public class FilmEntity : AuditableEntity<Guid>
     [Required]
     public string Description { get; set; }
     
-    [Column(name: "release_data", TypeName = "date")]
+    [Column(name: "release_date", TypeName = "date")]
     [Required]
     public DateOnly ReleaseDate { get; set; }
     
