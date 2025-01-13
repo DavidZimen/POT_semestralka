@@ -63,6 +63,7 @@ public class ActorService : IActorService
         }
         
         return actor.Characters
+            .Where(characterEntity => characterEntity.Film is not null || characterEntity.Show is not null)
             .Select(_mapper.Map<CharacterMediaDto>)
             .ToList();
     }

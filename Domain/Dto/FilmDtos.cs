@@ -13,6 +13,8 @@ public class FilmDto
     public int Duration { get; set; }
     
     public Guid DirectorId { get; set; }
+    
+    public List<GenreDto> Genres { get; set; }
 }
 
 /// <summary>
@@ -24,3 +26,13 @@ public class FilmDto
 /// <param name="Duration">Duration in minutes.</param>
 /// <param name="DirectorPersonId">PersonId of the director.</param>
 public record FilmCreate(string Title, string Description, DateOnly ReleaseDate, int Duration, Guid DirectorPersonId);
+
+/// <summary>
+/// Dto for requesting updating of the film.
+/// </summary>
+/// <param name="Title">Film name</param>
+/// <param name="Description">Brief description of the film.</param>
+/// <param name="ReleaseDate">Date of premiere.</param>
+/// <param name="Duration">Duration in minutes.</param>
+/// <param name="DirectorPersonId">PersonId of the director.</param>
+public record FilmUpdate(Guid FilmId, string Title, string Description, DateOnly ReleaseDate, int Duration, Guid DirectorPersonId);
