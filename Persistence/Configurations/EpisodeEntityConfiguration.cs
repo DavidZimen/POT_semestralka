@@ -7,9 +7,6 @@ namespace Persistence.Configurations;
 
 public class EpisodeEntityConfiguration : IEntityTypeConfiguration<EpisodeEntity>
 {
-    private const string ActorId = "actor_id";
-    private const string EpisodeId = "episode_id";
-    
     public void Configure(EntityTypeBuilder<EpisodeEntity> builder)
     {
         builder.ToTable(TableNames.Episode);
@@ -30,14 +27,5 @@ public class EpisodeEntityConfiguration : IEntityTypeConfiguration<EpisodeEntity
             .WithOne(e => e.Episode)
             .HasForeignKey(e => e.EpisodeId)
             .IsRequired(false);
-        
-        builder.HasMany(e => e.Actors)
-            .WithMany(e => e.Episodes)
-            .UsingEntity(
-                "episode_actor",
-                e => e.HasOne(typeof(EpisodeEntity)).WithMany().HasForeignKey(EpisodeId).HasPrincipalKey(nameof(EpisodeEntity.Id)),
-                e => e.HasOne(typeof(ActorEntity)).WithMany().HasForeignKey(ActorId).HasPrincipalKey(nameof(ActorEntity.Id)),
-                j => j.HasKey(EpisodeId, ActorId)
-            );
     }
 }

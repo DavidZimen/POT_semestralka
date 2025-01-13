@@ -18,6 +18,10 @@ public class PersonDto
     public DateOnly BirthDate { get; set; }
     
     public string Country { get; set; }
+    
+    public Guid? ActorId { get; set; }
+    
+    public Guid? DirectorId { get; set; }
 }
 
 /// <summary>

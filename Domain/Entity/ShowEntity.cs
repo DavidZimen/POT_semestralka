@@ -26,4 +26,8 @@ public class ShowEntity : AuditableEntity<Guid>
     public virtual List<RatingEntity> Ratings { get; set; } = [];
 
     public virtual List<GenreEntity> Genres { get; set; } = [];
+    
+    public virtual List<ActorEntity> Actors { get; set; } = [];
+    
+    public virtual List<CharacterEntity> Characters { get; set; } = [];
 }

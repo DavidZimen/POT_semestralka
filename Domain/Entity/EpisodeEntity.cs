@@ -20,8 +20,6 @@ public class EpisodeEntity : AuditableEntity<Guid>
     
     [Column(name: "duration", TypeName = "integer")]
     public int Duration { get; set; }
-
-    public virtual List<ActorEntity> Actors { get; set; } = [];
     
     [Column(name: "director_id", TypeName = "uuid")]
     [Required]

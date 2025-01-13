@@ -10,9 +10,9 @@ public interface IRatingService : IService
 
     Task<RatingDto?> GetRatingAsync(Guid ratingId);
     
-    Task<Guid> CreateRatingAsync(CreateRatingRequest createRating);
+    Task<Guid> CreateRatingAsync(RatingCreate ratingCreate);
     
-    Task<RatingDto?> UpdateRatingAsync(UpdateRatingRequest updateRating);
+    Task<RatingDto?> UpdateRatingAsync(RatingUpdate ratingUpdate);
     
     Task<bool> DeleteRatingAsync(Guid ratingId);
 

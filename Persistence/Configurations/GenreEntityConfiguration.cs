@@ -1,6 +1,7 @@
 using Domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Persistence.Constants;
 
 namespace Persistence.Configurations;
@@ -24,7 +25,7 @@ public class GenreEntityConfiguration : IEntityTypeConfiguration<GenreEntity>
         builder.HasMany(e => e.Films)
             .WithMany(e => e.Genres)
             .UsingEntity(
-                "film_genre",
+                TableNames.FilmGenre,
                 e => e.HasOne(typeof(FilmEntity)).WithMany().HasForeignKey(FilmId).HasPrincipalKey(nameof(FilmEntity.Id)),
                 e => e.HasOne(typeof(GenreEntity)).WithMany().HasForeignKey(GenreId).HasPrincipalKey(nameof(GenreEntity.Id)),
                 j => j.HasKey(GenreId, FilmId));
@@ -32,7 +33,7 @@ public class GenreEntityConfiguration : IEntityTypeConfiguration<GenreEntity>
         builder.HasMany(e => e.Shows)
             .WithMany(e => e.Genres)
             .UsingEntity(
-                "show_genre",
+                TableNames.ShowGenre,
                 e => e.HasOne(typeof(ShowEntity)).WithMany().HasForeignKey(ShowId).HasPrincipalKey(nameof(ShowEntity.Id)),
                 e => e.HasOne(typeof(GenreEntity)).WithMany().HasForeignKey(GenreId).HasPrincipalKey(nameof(GenreEntity.Id)),
                 j => j.HasKey(GenreId, ShowId));

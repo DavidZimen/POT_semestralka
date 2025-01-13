@@ -28,7 +28,7 @@ public class RatingController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> CreateRating([FromBody] CreateRatingRequest request)
+    public async Task<IActionResult> CreateRating([FromBody] RatingCreate request)
     {
         var ratingId = await _ratingService.CreateRatingAsync(request);
         return CreatedAtRoute($"/rating/{ratingId}", null);
@@ -37,7 +37,7 @@ public class RatingController : ControllerBase
     [HttpPut]
     [Route("{id:guid}")]
     [Authorize]
-    public async Task<IActionResult> UpdateRating(Guid id, [FromBody] UpdateRatingRequest request)
+    public async Task<IActionResult> UpdateRating(Guid id, [FromBody] RatingUpdate request)
     {
         if (!id.Equals(request.Id))
         {
@@ -51,7 +51,7 @@ public class RatingController : ControllerBase
     [HttpDelete]
     [Route("{id:guid}")]
     [Authorize]
-    public async Task<IActionResult> DeleteRating(Guid id, [FromBody] DeleteRatingRequest request)
+    public async Task<IActionResult> DeleteRating(Guid id, [FromBody] RatingDelete request)
     {
         if (!id.Equals(request.Id))
         {

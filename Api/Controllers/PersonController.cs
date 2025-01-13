@@ -19,7 +19,6 @@ public class PersonController : ControllerBase
     }
 
     [HttpGet]
-    [Route("")]
     public async Task<ActionResult<ICollection<PersonDto>>> GetPersons()
     {
         var persons = await _personService.GetPersonsAsync();

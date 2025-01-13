@@ -4,14 +4,14 @@ namespace Domain.Dto;
 /// Dto for creating new genre in DB.
 /// </summary>
 /// <param name="Name">Name of the genre to be created.</param>
-public record CreateGenre(string Name);
+public record GenreCreate(string Name);
 
 /// <summary>
 /// Dto for requesting update of the genre.
 /// </summary>
 /// <param name="GenreId"></param>
 /// <param name="Name"></param>
-public record UpdateGenre(Guid GenreId, string Name);
+public record GenreUpdate(Guid GenreId, string Name);
 
 /// <summary>
 /// Dto for sending data to the application UI.

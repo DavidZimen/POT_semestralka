@@ -40,24 +40,24 @@ public class GenreService : IGenreService
         }
         
         var genreEntity = new GenreEntity { Name = name };
-        return await _genreRepository.CreateAsync(genreEntity);
+        return (await _genreRepository.CreateAsync(genreEntity)).Id;
     }
 
-    public async Task<GenreDto?> UpdateGenreAsync(UpdateGenre updateGenre)
+    public async Task<GenreDto?> UpdateGenreAsync(GenreUpdate genreUpdate)
     {
-        var genreEntity = await _genreRepository.FindByIdAsync(updateGenre.GenreId);
+        var genreEntity = await _genreRepository.FindByIdAsync(genreUpdate.GenreId);
         if (genreEntity is null)
         {
-            throw new NotFoundException($"Genre with id {updateGenre.GenreId} does not exist.");
+            throw new NotFoundException($"Genre with id {genreUpdate.GenreId} does not exist.");
         }
         
-        var existGenreWithName = await _genreRepository.GetGenreByName(updateGenre.Name) is not null;
+        var existGenreWithName = await _genreRepository.GetGenreByName(genreUpdate.Name) is not null;
         if (existGenreWithName)
         {
-            throw new ConflictException($"Genre with name {updateGenre.Name} already exists.");
+            throw new ConflictException($"Genre with name {genreUpdate.Name} already exists.");
         }
         
-        genreEntity.Name = updateGenre.Name;
+        genreEntity.Name = genreUpdate.Name;
         return _mapper.Map<GenreDto>(await _genreRepository.UpdateAsync(genreEntity));
     }
 

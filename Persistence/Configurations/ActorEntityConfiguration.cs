@@ -9,7 +9,7 @@ public class ActorEntityConfiguration : IEntityTypeConfiguration<ActorEntity>
 {
     private const string ActorId = "actor_id";
     private const string FilmId = "film_id";
-    private const string EpisodeId = "episode_id";
+    private const string ShowId = "show_id";
     
     public void Configure(EntityTypeBuilder<ActorEntity> builder)
     {
@@ -21,23 +21,28 @@ public class ActorEntityConfiguration : IEntityTypeConfiguration<ActorEntity>
             .WithOne(e => e.Actor)
             .HasForeignKey<ActorEntity>(e => e.PersonId)
             .IsRequired();
+
+        builder.HasMany(e => e.Characters)
+            .WithOne(e => e.Actor)
+            .HasForeignKey(e => e.ActorId)
+            .IsRequired();
         
         builder.HasMany(e => e.Films)
             .WithMany(e => e.Actors)
             .UsingEntity(
-                "film_actor",
+                TableNames.FilmActor,
                 e => e.HasOne(typeof(FilmEntity)).WithMany().HasForeignKey(FilmId).HasPrincipalKey(nameof(FilmEntity.Id)),
                 e => e.HasOne(typeof(ActorEntity)).WithMany().HasForeignKey(ActorId).HasPrincipalKey(nameof(ActorEntity.Id)),
                 j => j.HasKey(FilmId, ActorId)
                 );
 
-        builder.HasMany(e => e.Episodes)
+        builder.HasMany(e => e.Shows)
             .WithMany(e => e.Actors)
             .UsingEntity(
-                "episode_actor",
-                e => e.HasOne(typeof(EpisodeEntity)).WithMany().HasForeignKey(EpisodeId).HasPrincipalKey(nameof(EpisodeEntity.Id)),
+                TableNames.ShowActor,
+                e => e.HasOne(typeof(ShowEntity)).WithMany().HasForeignKey(ShowId).HasPrincipalKey(nameof(ShowEntity.Id)),
                 e => e.HasOne(typeof(ActorEntity)).WithMany().HasForeignKey(ActorId).HasPrincipalKey(nameof(ActorEntity.Id)),
-                j => j.HasKey(EpisodeId, ActorId)
+                j => j.HasKey(ShowId, ActorId)
             );
     }
 }

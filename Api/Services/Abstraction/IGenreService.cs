@@ -27,7 +27,7 @@ public interface IGenreService : IService
     /// <summary>
     /// Updates the genre entity based on new requirements.
     /// </summary>
-    Task<GenreDto?> UpdateGenreAsync(UpdateGenre updateGenre);
+    Task<GenreDto?> UpdateGenreAsync(GenreUpdate genreUpdate);
     
     /// <summary>
     /// Deletes genre with provided ID from DB.

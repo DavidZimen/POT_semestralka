@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Persistence;
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250113085744_006_add_characters")]
+    partial class _006_add_characters
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -81,6 +84,10 @@ namespace Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("deleted_at");
 
+                    b.Property<Guid?>("EpisodeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("episode_id");
+
                     b.Property<Guid?>("FilmId")
                         .HasColumnType("uuid")
                         .HasColumnName("film_id");
@@ -94,27 +101,15 @@ namespace Persistence.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified_at");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("name");
-
-                    b.Property<Guid?>("ShowId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("show_id");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ActorId");
 
+                    b.HasIndex("EpisodeId");
+
                     b.HasIndex("FilmId");
 
-                    b.HasIndex("ShowId");
-
-                    b.ToTable("character", "application_schema", t =>
-                        {
-                            t.HasCheckConstraint("CHK_Character_FilmOrShow", "(film_id IS NOT NULL AND show_id IS NULL) OR (film_id IS NULL AND show_id IS NOT NULL)");
-                        });
+                    b.ToTable("character", "application_schema");
                 });
 
             modelBuilder.Entity("Domain.Entity.DirectorEntity", b =>
@@ -499,6 +494,21 @@ namespace Persistence.Migrations
                     b.ToTable("user", "application_schema");
                 });
 
+            modelBuilder.Entity("episode_actor", b =>
+                {
+                    b.Property<Guid>("episode_id")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("actor_id")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("episode_id", "actor_id");
+
+                    b.HasIndex("actor_id");
+
+                    b.ToTable("episode_actor", "application_schema");
+                });
+
             modelBuilder.Entity("film_actor", b =>
                 {
                     b.Property<Guid>("film_id")
@@ -527,21 +537,6 @@ namespace Persistence.Migrations
                     b.HasIndex("film_id");
 
                     b.ToTable("film_genre", "application_schema");
-                });
-
-            modelBuilder.Entity("show_actor", b =>
-                {
-                    b.Property<Guid>("show_id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("actor_id")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("show_id", "actor_id");
-
-                    b.HasIndex("actor_id");
-
-                    b.ToTable("show_actor", "application_schema");
                 });
 
             modelBuilder.Entity("show_genre", b =>
@@ -578,19 +573,19 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entity.EpisodeEntity", "Episode")
+                        .WithMany("Characters")
+                        .HasForeignKey("EpisodeId");
+
                     b.HasOne("Domain.Entity.FilmEntity", "Film")
                         .WithMany("Characters")
                         .HasForeignKey("FilmId");
 
-                    b.HasOne("Domain.Entity.ShowEntity", "Show")
-                        .WithMany("Characters")
-                        .HasForeignKey("ShowId");
-
                     b.Navigation("Actor");
 
-                    b.Navigation("Film");
+                    b.Navigation("Episode");
 
-                    b.Navigation("Show");
+                    b.Navigation("Film");
                 });
 
             modelBuilder.Entity("Domain.Entity.DirectorEntity", b =>
@@ -674,6 +669,21 @@ namespace Persistence.Migrations
                     b.Navigation("Show");
                 });
 
+            modelBuilder.Entity("episode_actor", b =>
+                {
+                    b.HasOne("Domain.Entity.ActorEntity", null)
+                        .WithMany()
+                        .HasForeignKey("actor_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entity.EpisodeEntity", null)
+                        .WithMany()
+                        .HasForeignKey("episode_id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("film_actor", b =>
                 {
                     b.HasOne("Domain.Entity.ActorEntity", null)
@@ -700,21 +710,6 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entity.GenreEntity", null)
                         .WithMany()
                         .HasForeignKey("genre_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("show_actor", b =>
-                {
-                    b.HasOne("Domain.Entity.ActorEntity", null)
-                        .WithMany()
-                        .HasForeignKey("actor_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entity.ShowEntity", null)
-                        .WithMany()
-                        .HasForeignKey("show_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -748,6 +743,8 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entity.EpisodeEntity", b =>
                 {
+                    b.Navigation("Characters");
+
                     b.Navigation("Ratings");
                 });
 
@@ -772,8 +769,6 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Entity.ShowEntity", b =>
                 {
-                    b.Navigation("Characters");
-
                     b.Navigation("Ratings");
 
                     b.Navigation("Seasons");

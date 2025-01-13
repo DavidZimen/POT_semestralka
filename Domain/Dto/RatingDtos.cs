@@ -50,7 +50,7 @@ public record AverageRatingDto(double? Average, int Count);
 /// <param name="FilmId">Film to be rated.</param>
 /// <param name="ShowId">Show to be rated.</param>
 /// <param name="EpisodeId">Episode to be rated.</param>
-public record CreateRatingRequest(int Value, string? Description, Guid? FilmId = null, Guid? ShowId = null, Guid? EpisodeId = null);
+public record RatingCreate(int Value, string? Description, Guid? FilmId = null, Guid? ShowId = null, Guid? EpisodeId = null);
 
 /// <summary>
 /// Dto for updating existing rating entry.
@@ -59,13 +59,13 @@ public record CreateRatingRequest(int Value, string? Description, Guid? FilmId =
 /// <param name="UserId">User that submitted the rating.</param>
 /// <param name="Value">New numeric value 1-10.</param>
 /// <param name="Description">New brief text description.</param>
-public record UpdateRatingRequest(Guid Id, string UserId, int Value, string? Description);
+public record RatingUpdate(Guid Id, string UserId, int Value, string? Description);
 
 /// <summary>
 /// Dto for deleting rating from DB.
 /// </summary>
 /// <param name="UserId"></param>
-public record DeleteRatingRequest(Guid Id, string UserId);
+public record RatingDelete(Guid Id, string UserId);
 
 /// <summary>
 /// Dto for requesting users rating to the film, show or episode.

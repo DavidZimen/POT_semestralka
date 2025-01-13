@@ -34,7 +34,7 @@ public class PersonService : IPersonService
     public async Task<Guid?> CreatePersonAsync(CreatePerson createPerson)
     {
         var personEntity = _mapper.Map<PersonEntity>(createPerson);
-        return await _personRepository.CreateAsync(personEntity);
+        return (await _personRepository.CreateAsync(personEntity)).Id;
     }
 
     public async Task<PersonDto?> UpdatePersonAsync(UpdatePerson updatePerson)

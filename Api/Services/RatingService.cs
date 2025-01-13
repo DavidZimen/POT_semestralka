@@ -41,21 +41,21 @@ public class RatingService : IRatingService
         return rating is not null ? _mapper.Map<RatingDto>(rating) : null;
     }
 
-    public Task<Guid> CreateRatingAsync(CreateRatingRequest createRating)
+    public async Task<Guid> CreateRatingAsync(RatingCreate ratingCreate)
     {
-        var ratingEntity = _mapper.Map<RatingEntity>(createRating);
+        var ratingEntity = _mapper.Map<RatingEntity>(ratingCreate);
         ratingEntity.UserId = _authService.GetCurrentUserId() ?? throw new UnauthorizedAccessException();
-        return _ratingRepository.CreateAsync(ratingEntity);
+        return (await _ratingRepository.CreateAsync(ratingEntity)).Id;
     }
 
-    public async Task<RatingDto?> UpdateRatingAsync(UpdateRatingRequest updateRating)
+    public async Task<RatingDto?> UpdateRatingAsync(RatingUpdate ratingUpdate)
     {
-        var ratingEntity = await _ratingRepository.FindByIdAsync(updateRating.Id);
+        var ratingEntity = await _ratingRepository.FindByIdAsync(ratingUpdate.Id);
 
         // not found
         if (ratingEntity is null)
         {
-            throw new NotFoundException($"Rating entity with id {updateRating.Id} does not exist.");
+            throw new NotFoundException($"Rating entity with id {ratingUpdate.Id} does not exist.");
         }
         
         // owner or admin
@@ -64,8 +64,8 @@ public class RatingService : IRatingService
             throw new ForbiddenException("You are not authorized to update this rating.");
         }
         
-        ratingEntity.Value = updateRating.Value;
-        ratingEntity.Description = updateRating.Description;
+        ratingEntity.Value = ratingUpdate.Value;
+        ratingEntity.Description = ratingUpdate.Description;
         
         return _mapper.Map<RatingDto>(await _ratingRepository.UpdateAsync(ratingEntity));
     }

@@ -20,8 +20,6 @@ public class FilmEntity : AuditableEntity<Guid>
     
     [Column(name: "duration", TypeName = "integer")]
     public int Duration { get; set; }
-
-    public virtual List<ActorEntity> Actors { get; set; } = [];
     
     [Column(name: "director_id", TypeName = "uuid")]
     [Required]
@@ -29,7 +27,11 @@ public class FilmEntity : AuditableEntity<Guid>
     
     public virtual DirectorEntity Director { get; set; }
     
+    public virtual List<ActorEntity> Actors { get; set; } = [];
+    
     public virtual List<RatingEntity> Ratings { get; set; } = [];
     
     public virtual List<GenreEntity> Genres { get; set; } = [];
+    
+    public virtual List<CharacterEntity> Characters { get; set; } = [];
 }

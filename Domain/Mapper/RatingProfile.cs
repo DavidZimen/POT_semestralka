@@ -16,7 +16,7 @@ public class RatingProfile : Profile
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description));
         
         // Map from CreateRatingRequest to RatingEntity
-        CreateMap<CreateRatingRequest, RatingEntity>()
+        CreateMap<RatingCreate, RatingEntity>()
             .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Value))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
             .ForMember(dest => dest.FilmId, opt => opt.MapFrom(src => src.FilmId))

@@ -35,7 +35,7 @@ public class GenreController : ControllerBase
 
     [HttpPost]
     [Authorize(Policy = nameof(AdminPolicy))]
-    public async Task<IActionResult> CreateGenre([FromBody] CreateGenre genre)
+    public async Task<IActionResult> CreateGenre([FromBody] GenreCreate genre)
     {
         var genreId = await _genreService.CreateGenreAsync(genre.Name);
         return genreId is not null ? Created($"genre/{genreId}", null) : Problem();
@@ -44,14 +44,14 @@ public class GenreController : ControllerBase
     [HttpPut]
     [Route("{id:guid}")]
     [Authorize(Policy = nameof(AdminPolicy))]
-    public async Task<ActionResult<GenreDto>> UpdateGenre(Guid id, [FromBody] UpdateGenre updateGenre)
+    public async Task<ActionResult<GenreDto>> UpdateGenre(Guid id, [FromBody] GenreUpdate genreUpdate)
     {
-        if (!id.Equals(updateGenre.GenreId))
+        if (!id.Equals(genreUpdate.GenreId))
         {
             throw new ConflictException("Genre IDs in path and body do not match. Cannot perform update.");
         }
 
-        var genre = await _genreService.UpdateGenreAsync(updateGenre);
+        var genre = await _genreService.UpdateGenreAsync(genreUpdate);
         return genre is not null ? Ok(genre) : Problem();
     }
 

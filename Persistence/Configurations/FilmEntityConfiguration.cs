@@ -22,10 +22,15 @@ public class FilmEntityConfiguration : IEntityTypeConfiguration<FilmEntity>
             .HasForeignKey(e => e.FilmId)
             .IsRequired(false);
         
+        builder.HasMany(e => e.Characters)
+            .WithOne(e => e.Film)
+            .HasForeignKey(f => f.FilmId)
+            .IsRequired(false);
+        
         builder.HasMany(e => e.Actors)
             .WithMany(e => e.Films)
             .UsingEntity(
-                "film_actor",
+                TableNames.FilmActor,
                 e => e.HasOne(typeof(FilmEntity)).WithMany().HasForeignKey(FilmId).HasPrincipalKey(nameof(FilmEntity.Id)),
                 e => e.HasOne(typeof(ActorEntity)).WithMany().HasForeignKey(ActorId).HasPrincipalKey(nameof(ActorEntity.Id)),
                 j => j.HasKey(FilmId, ActorId)
@@ -35,7 +40,7 @@ public class FilmEntityConfiguration : IEntityTypeConfiguration<FilmEntity>
         builder.HasMany(e => e.Genres)
             .WithMany(e => e.Films)
             .UsingEntity(
-                "film_genre",
+                TableNames.FilmGenre,
                 e => e.HasOne(typeof(FilmEntity)).WithMany().HasForeignKey(FilmId)
                     .HasPrincipalKey(nameof(FilmEntity.Id)),
                 e => e.HasOne(typeof(GenreEntity)).WithMany().HasForeignKey(GenreId)
