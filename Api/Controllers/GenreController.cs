@@ -26,10 +26,10 @@ public class GenreController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:guid}")]
-    public async Task<ActionResult<GenreDto>> GetGenre(Guid id)
+    [Route("{genreId:guid}")]
+    public async Task<ActionResult<GenreDto>> GetGenre(Guid genreId)
     {
-        var genre = await _genreService.GetGenreByIdAsync(id);
+        var genre = await _genreService.GetGenreByIdAsync(genreId);
         return genre is not null ? Ok(genre) : NotFound();
     }
 
@@ -42,11 +42,11 @@ public class GenreController : ControllerBase
     }
 
     [HttpPut]
-    [Route("{id:guid}")]
+    [Route("{genreId:guid}")]
     [Authorize(Policy = nameof(AdminPolicy))]
-    public async Task<ActionResult<GenreDto>> UpdateGenre(Guid id, [FromBody] GenreUpdate genreUpdate)
+    public async Task<ActionResult<GenreDto>> UpdateGenre(Guid genreId, [FromBody] GenreUpdate genreUpdate)
     {
-        if (!id.Equals(genreUpdate.GenreId))
+        if (!genreId.Equals(genreUpdate.GenreId))
         {
             throw new ConflictException("Genre IDs in path and body do not match. Cannot perform update.");
         }
@@ -56,11 +56,11 @@ public class GenreController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("{id:guid}")]
+    [Route("{genreId:guid}")]
     [Authorize(Policy = nameof(AdminPolicy))]
-    public async Task<IActionResult> DeleteGenre(Guid id)
+    public async Task<IActionResult> DeleteGenre(Guid genreId)
     {
-        var success = await _genreService.DeleteGenreAsync(id);
+        var success = await _genreService.DeleteGenreAsync(genreId);
         return success ? NoContent() : Problem();
     }
 }

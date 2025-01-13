@@ -28,5 +28,8 @@ public class PersonProfile : Profile
         
         CreateMap<PersonEntity, PersonDto>()
             .ForMember(dest => dest.PersonId, opt => opt.MapFrom(src => src.Id));
+        
+        CreateMap<PersonEntity, PersonMinimalDto>()
+            .ForMember(dest => dest.PersonId, opt => opt.MapFrom(src => src.Id));
     }
 }

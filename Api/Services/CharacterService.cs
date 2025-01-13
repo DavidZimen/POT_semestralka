@@ -13,18 +13,35 @@ namespace Api.Services;
 public interface ICharacterService : IService
 {
     /// <summary>
-    /// Creates a new character for film or show with provided person as actor.
-    /// </summary>
-    /// <param name="characterCreate">Information about character.</param>
-    /// <returns>Created character.</returns>
-    Task<CharacterDto> CreateCharacterAsync(CharacterCreate characterCreate);
-
-    /// <summary>
     /// Finds all characters, or filters them based on provided parameters.
     /// </summary>
     /// <param name="filmId">ID of the film for filtering.</param>
     /// <param name="showId">ID of the show for filtering.</param>
     Task<ICollection<CharacterDto>> GetCharactersAsync(Guid? filmId, Guid? showId);
+    
+    /// <summary>
+    /// Creates a new character for film or show with provided person as actor.
+    /// </summary>
+    /// <param name="characterCreate">Information about character.</param>
+    /// <returns>Created character.</returns>
+    Task<CharacterDto> CreateCharacterAsync(CharacterCreate characterCreate);
+    
+    /// <summary>
+    /// Deletes character from DB based on provided ID.
+    /// </summary>
+    /// <param name="characterId"></param>
+    /// <returns></returns>
+    Task<bool> DeleteCharacterAsync(Guid characterId);
+    
+    /// <summary>
+    /// Retrieves characters, that belong to the film with provided ID.
+    /// </summary>
+    Task<ICollection<CharacterMediaDto>> GetCharactersForFilmAsync(Guid filmId);
+    
+    /// <summary>
+    /// Retrieves characters, that belong to the show with provided ID.
+    /// </summary>
+    Task<ICollection<CharacterMediaDto>> GetCharactersForShowAsync(Guid showId);
 }
 
 public class CharacterService : ICharacterService
@@ -70,6 +87,30 @@ public class CharacterService : ICharacterService
         }
         characterEntity = await _characterRepository.CreateAsync(characterEntity);
         return _mapper.Map<CharacterDto>(characterEntity);
+    }
+
+    public async Task<bool> DeleteCharacterAsync(Guid characterId)
+    {
+        var characterEntity = await _characterRepository.FindByIdAsync(characterId);
+        if (characterEntity is null)
+        {
+            throw new NotFoundException($"Character with id {characterId} does not exist.");
+        }
+        return await _characterRepository.DeleteAsync(characterEntity);
+    }
+
+    public async Task<ICollection<CharacterMediaDto>> GetCharactersForFilmAsync(Guid filmId)
+    {
+        return (await _characterRepository.GetCharactersAsync(filmId: filmId))
+            .Select(_mapper.Map<CharacterMediaDto>)
+            .ToList();
+    }
+
+    public async Task<ICollection<CharacterMediaDto>> GetCharactersForShowAsync(Guid showId)
+    {
+        return (await _characterRepository.GetCharactersAsync(showId: showId))
+            .Select(_mapper.Map<CharacterMediaDto>)
+            .ToList();
     }
 
     public async Task<ICollection<CharacterDto>> GetCharactersAsync(Guid? filmId, Guid? showId)

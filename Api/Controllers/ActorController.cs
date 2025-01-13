@@ -25,7 +25,7 @@ public class ActorController : ControllerBase
 
     [HttpGet]
     [Route("{actorId:guid}/media")]
-    public async Task<ActionResult<ICollection<CharacterMediaDto>>> GetActorMedias(Guid actorId)
+    public async Task<ActionResult<ICollection<CharacterActorDto>>> GetActorMedias(Guid actorId)
     {
         var media = await _actorService.GetActorCharacters(actorId);
         return media.Count > 0 ? Ok(media) : NoContent();

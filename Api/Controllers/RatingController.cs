@@ -18,11 +18,11 @@ public class RatingController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:guid}")]
+    [Route("{ratingId:guid}")]
     [Authorize]
-    public async Task<IActionResult> GetRating(Guid id)
+    public async Task<IActionResult> GetRating(Guid ratingId)
     {
-        var rating = await _ratingService.GetRatingAsync(id);
+        var rating = await _ratingService.GetRatingAsync(ratingId);
         return rating is not null ? Ok(rating) : NotFound();
     }
 
@@ -35,11 +35,11 @@ public class RatingController : ControllerBase
     }
 
     [HttpPut]
-    [Route("{id:guid}")]
+    [Route("{ratingId:guid}")]
     [Authorize]
-    public async Task<IActionResult> UpdateRating(Guid id, [FromBody] RatingUpdate request)
+    public async Task<IActionResult> UpdateRating(Guid ratingId, [FromBody] RatingUpdate request)
     {
-        if (!id.Equals(request.Id))
+        if (!ratingId.Equals(request.Id))
         {
             throw new ConflictException("Rating IDs in path and body do not match. Cannot perform update.");
         }
@@ -49,11 +49,11 @@ public class RatingController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("{id:guid}")]
+    [Route("{ratingId:guid}")]
     [Authorize]
-    public async Task<IActionResult> DeleteRating(Guid id, [FromBody] RatingDelete request)
+    public async Task<IActionResult> DeleteRating(Guid ratingId, [FromBody] RatingDelete request)
     {
-        if (!id.Equals(request.Id))
+        if (!ratingId.Equals(request.Id))
         {
             throw new ConflictException("Rating IDs in path and body do not match. Cannot perform delete.");
         }

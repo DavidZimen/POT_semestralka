@@ -16,7 +16,7 @@ public class CharacterDto
 /// <summary>
 /// Dto for sending data about media with relate character of the actor.
 /// </summary>
-public class CharacterMediaDto
+public class CharacterActorDto
 {
     /// <summary>
     /// Name of the show, or film.
@@ -38,6 +38,18 @@ public class CharacterMediaDto
     /// With film always null.
     /// </summary>
     public DateOnly? EndDate { get; set; }
+}
+
+/// <summary>
+/// Dto for sending character information in film.
+/// </summary>
+public class CharacterMediaDto
+{
+    public string Title { get; set; }
+    
+    public string CharacterName { get; set; }
+    
+    public PersonMinimalDto Actor { get; set; }
 }
 
 /// <summary>

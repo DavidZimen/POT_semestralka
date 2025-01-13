@@ -25,6 +25,18 @@ public class PersonDto
 }
 
 /// <summary>
+/// Minimal representation about person.
+/// </summary>
+public class PersonMinimalDto
+{
+    public Guid PersonId { get; set; }
+    
+    public string FirstName { get; set; }
+    
+    public string LastName { get; set; }
+}
+
+/// <summary>
 /// Request to create a new person in the database.
 /// </summary>
 /// <param name="FirstName">First name of person</param>
