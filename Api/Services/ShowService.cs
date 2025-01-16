@@ -61,7 +61,7 @@ public interface IShowService : IService
     Task<bool> RemoveGenreAsync(Guid showId, Guid genreId);
 }
 
-
+// TODO episode count to the show
 public class ShowService : IShowService
 {
     private readonly IShowRepository _showRepository;
