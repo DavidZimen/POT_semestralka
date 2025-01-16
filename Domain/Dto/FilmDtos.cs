@@ -2,7 +2,7 @@ namespace Domain.Dto;
 
 public class FilmDto
 {
-    public string FilmId { get; set; }
+    public Guid FilmId { get; set; }
     
     public string Title { get; set; }
     

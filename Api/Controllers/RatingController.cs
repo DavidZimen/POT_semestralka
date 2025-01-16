@@ -63,19 +63,22 @@ public class RatingController : ControllerBase
     }
 
     [HttpGet]
-    [Route("user")]
+    [Route("user/{userId}")]
     [Authorize]
-    public async Task<IActionResult> GetUserRating([FromBody] UserRatingRequest request)
+    public async Task<IActionResult> GetUserRating(
+        [FromRoute] string userId, [FromQuery] Guid? filmId, [FromQuery] Guid? showId, [FromQuery] Guid? episodeId)
     {
-        var userRating = await _ratingService.GetUserRatingAsync(request);
+        var userRatingRequest = new UserRatingRequest(userId, filmId, showId, episodeId);
+        var userRating = await _ratingService.GetUserRatingAsync(userRatingRequest);
         return userRating is not null ? Ok(userRating) : NotFound();
     }
 
     [HttpGet]
     [Route("average")]
-    public async Task<IActionResult> GetAverageRating([FromBody] AverageRatingRequest request)
+    public async Task<ActionResult<AverageRatingDto>> GetAverageRating(
+        [FromQuery] Guid? filmId, [FromQuery] Guid? showId, [FromQuery] Guid? episodeId)
     {
-        var averageRating = await _ratingService.GetAverageRatingAsync(request.FilmId, request.ShowId, request.EpisodeId);
+        var averageRating = await _ratingService.GetAverageRatingAsync(filmId, showId, episodeId);
         return Ok(averageRating);
     }
 }

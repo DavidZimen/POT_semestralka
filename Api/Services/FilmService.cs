@@ -130,7 +130,7 @@ public class FilmService : IFilmService
     public async Task<ICollection<CharacterMediaDto>> GetFilmCharactersAsync(Guid filmId)
     {
         var filmEntity = await GetFilmEntityOrThrow(filmId);
-        return await _characterService.GetCharactersForFilmAsync(filmEntity.Id);
+        return await _characterService.GetCharactersForFilmOrShowAsync(filmId: filmEntity.Id);
     }
 
     public async Task<bool> AddGenreAsync(Guid filmId, Guid genreId)

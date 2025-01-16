@@ -34,28 +34,25 @@ public interface ICharacterService : IService
     Task<bool> DeleteCharacterAsync(Guid characterId);
     
     /// <summary>
-    /// Retrieves characters, that belong to the film with provided ID.
+    /// Retrieves characters, that belong to the film or show with provided ID.
     /// </summary>
-    Task<ICollection<CharacterMediaDto>> GetCharactersForFilmAsync(Guid filmId);
-    
-    /// <summary>
-    /// Retrieves characters, that belong to the show with provided ID.
-    /// </summary>
-    Task<ICollection<CharacterMediaDto>> GetCharactersForShowAsync(Guid showId);
+    Task<ICollection<CharacterMediaDto>> GetCharactersForFilmOrShowAsync(Guid? filmId = default, Guid? showId = default);
 }
 
 public class CharacterService : ICharacterService
 {
     private readonly ICharacterRepository _characterRepository;
-    private readonly IFilmRepository _filmRepository;
     private readonly IActorService _actorService;
+    private readonly IFilmRepository _filmRepository;
+    private readonly IShowRepository _showRepository;
     private readonly IMapper _mapper;
 
-    public CharacterService(ICharacterRepository characterRepository, IMapper mapper, IActorService actorService, IFilmRepository filmRepository)
+    public CharacterService(ICharacterRepository characterRepository, IMapper mapper, IActorService actorService, IFilmRepository filmRepository, IShowRepository showRepository)
     {
         _characterRepository = characterRepository;
         _actorService = actorService;
         _filmRepository = filmRepository;
+        _showRepository = showRepository;
         _mapper = mapper;
     }
 
@@ -83,8 +80,14 @@ public class CharacterService : ICharacterService
         }
         else
         {
-            //TODO do it also for the show, when show repository is finished
+            var showEntity = await _showRepository.FindByIdAsync(characterCreate.ShowId!.Value);
+            if (showEntity is null)
+            {
+                throw new BadRequestException("Show could not be found.");
+            }
+            characterEntity.Show = showEntity;
         }
+        
         characterEntity = await _characterRepository.CreateAsync(characterEntity);
         return _mapper.Map<CharacterDto>(characterEntity);
     }
@@ -99,16 +102,9 @@ public class CharacterService : ICharacterService
         return await _characterRepository.DeleteAsync(characterEntity);
     }
 
-    public async Task<ICollection<CharacterMediaDto>> GetCharactersForFilmAsync(Guid filmId)
+    public async Task<ICollection<CharacterMediaDto>> GetCharactersForFilmOrShowAsync(Guid? filmId = default, Guid? showId = default)
     {
-        return (await _characterRepository.GetCharactersAsync(filmId: filmId))
-            .Select(_mapper.Map<CharacterMediaDto>)
-            .ToList();
-    }
-
-    public async Task<ICollection<CharacterMediaDto>> GetCharactersForShowAsync(Guid showId)
-    {
-        return (await _characterRepository.GetCharactersAsync(showId: showId))
+        return (await _characterRepository.GetCharactersAsync(filmId: filmId, showId: showId))
             .Select(_mapper.Map<CharacterMediaDto>)
             .ToList();
     }
