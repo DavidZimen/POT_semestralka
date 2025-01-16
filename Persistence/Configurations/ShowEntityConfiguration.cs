@@ -35,6 +35,7 @@ public class ShowEntityConfiguration : IEntityTypeConfiguration<ShowEntity>
         builder.HasOne(e => e.Image)
             .WithOne(e => e.Show)
             .HasForeignKey<ShowEntity>(e => e.ImageId)
+            .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
         
         builder.HasMany(e => e.Genres)

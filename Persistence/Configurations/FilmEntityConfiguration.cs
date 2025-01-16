@@ -30,6 +30,7 @@ public class FilmEntityConfiguration : IEntityTypeConfiguration<FilmEntity>
         builder.HasOne(e => e.Image)
             .WithOne(e => e.Film)
             .HasForeignKey<FilmEntity>(e => e.ImageId)
+            .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
         
         builder.HasMany(e => e.Actors)

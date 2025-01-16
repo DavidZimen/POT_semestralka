@@ -16,7 +16,7 @@ public class ImageEntity : BaseEntity<Guid>
     
     [Column(name: "data", TypeName = "bytea")]
     [Required]
-    public byte[] data { get; set; }
+    public byte[] Data { get; set; }
     
     public virtual PersonEntity? Person { get; set; }
     

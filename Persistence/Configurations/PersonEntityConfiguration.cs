@@ -27,6 +27,7 @@ public class PersonEntityConfiguration : IEntityTypeConfiguration<PersonEntity>
         builder.HasOne(e => e.Image)
             .WithOne(e => e.Person)
             .HasForeignKey<PersonEntity>(e => e.ImageId)
+            .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
     }
 }
