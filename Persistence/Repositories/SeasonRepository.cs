@@ -14,6 +14,12 @@ public interface ISeasonRepository : IBaseRepository<SeasonEntity, Guid>
     /// </summary>
     /// <param name="showId">ShowId for filtering.</param>
     Task<List<SeasonEntity>> GetSeasonsAsync(Guid? showId);
+    
+    /// <summary>
+    /// Number of seasons, that belongs to the show.
+    /// </summary>
+    /// <param name="showId">ID of the show.</param>
+    Task<int> GetSeasonCountByShowIdAsync(Guid showId);
 }
 
 public class SeasonRepository : BaseRepository<SeasonEntity, Guid>, ISeasonRepository
@@ -33,5 +39,10 @@ public class SeasonRepository : BaseRepository<SeasonEntity, Guid>, ISeasonRepos
         }
         
         return query.ToListAsync();
+    }
+
+    public Task<int> GetSeasonCountByShowIdAsync(Guid showId)
+    {
+        return DbSet.CountAsync(seasonEntity => seasonEntity.ShowId == showId);
     }
 }

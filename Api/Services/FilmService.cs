@@ -105,7 +105,7 @@ public class FilmService : IFilmService
 
     public async Task<FilmDto?> UpdateFilmAsync(FilmUpdate filmUpdate)
     {
-        var filmEntity = await GetFilmEntityOrThrow(filmUpdate.FilmId);
+        var filmEntity = await GetFilmEntityOrThrowAsync(filmUpdate.FilmId);
 
         // update director
         if (filmEntity.Director.PersonId != filmUpdate.DirectorPersonId)
@@ -123,19 +123,19 @@ public class FilmService : IFilmService
 
     public async Task<bool> DeleteFilmAsync(Guid filmId)
     {
-        var filmEntity = await GetFilmEntityOrThrow(filmId);
+        var filmEntity = await GetFilmEntityOrThrowAsync(filmId);
         return await _filmRepository.DeleteAsync(filmEntity);
     }
 
     public async Task<ICollection<CharacterMediaDto>> GetFilmCharactersAsync(Guid filmId)
     {
-        var filmEntity = await GetFilmEntityOrThrow(filmId);
+        var filmEntity = await GetFilmEntityOrThrowAsync(filmId);
         return await _characterService.GetCharactersForFilmOrShowAsync(filmId: filmEntity.Id);
     }
 
     public async Task<bool> AddGenreAsync(Guid filmId, Guid genreId)
     {
-        var filmEntity = await GetFilmEntityOrThrow(filmId);
+        var filmEntity = await GetFilmEntityOrThrowAsync(filmId);
         var genreEntity = await _genreRepository.FindByIdAsync(genreId);
         if (genreEntity is null)
         {
@@ -148,7 +148,7 @@ public class FilmService : IFilmService
 
     public async Task<bool> RemoveGenreAsync(Guid filmId, Guid genreId)
     {
-        var filmEntity = await GetFilmEntityOrThrow(filmId);
+        var filmEntity = await GetFilmEntityOrThrowAsync(filmId);
         var removed = filmEntity.Genres.RemoveAll(genre => genre.Id == genreId);
         if (removed == 0)
         {
@@ -159,7 +159,7 @@ public class FilmService : IFilmService
         return filmEntity is not null;
     }
     
-    private async Task<FilmEntity> GetFilmEntityOrThrow(Guid filmId) {
+    private async Task<FilmEntity> GetFilmEntityOrThrowAsync(Guid filmId) {
         var filmEntity = await _filmRepository.FindByIdAsync(filmId);
         if (filmEntity is null)
         {

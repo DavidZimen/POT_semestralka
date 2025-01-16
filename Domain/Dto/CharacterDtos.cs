@@ -21,12 +21,12 @@ public class CharacterActorDto
     /// <summary>
     /// Name of the show, or film.
     /// </summary>
-    public string MediaName { get; set; }
+    public string MediaName { get; set; } = string.Empty;
     
     /// <summary>
     /// Name of the character actor played.
     /// </summary>
-    public string CharacterName { get; set; }
+    public string CharacterName { get; set; } = string.Empty;
     
     /// <summary>
     /// Date when the film or show premiered.
@@ -45,9 +45,9 @@ public class CharacterActorDto
 /// </summary>
 public class CharacterMediaDto
 {
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     
-    public string CharacterName { get; set; }
+    public string CharacterName { get; set; } = string.Empty;
     
     public PersonMinimalDto Actor { get; set; }
 }

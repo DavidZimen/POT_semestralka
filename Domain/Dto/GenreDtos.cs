@@ -21,5 +21,5 @@ public record GenreUpdate(Guid GenreId, string Name);
 public class GenreDto 
 {
     public Guid GenreId { get; set; }
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 };

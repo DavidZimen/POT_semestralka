@@ -4,9 +4,11 @@ public class SeasonDto
 {
     public Guid SeasonId { get; set; }
     
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
+    
+    public int EpisodeCount { get; set; }
     
     public Guid ShowId { get; set; }
 }

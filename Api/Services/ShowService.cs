@@ -61,19 +61,22 @@ public interface IShowService : IService
     Task<bool> RemoveGenreAsync(Guid showId, Guid genreId);
 }
 
-// TODO episode count to the show
 public class ShowService : IShowService
 {
     private readonly IShowRepository _showRepository;
     private readonly ICharacterService _characterService;
     private readonly IGenreRepository _genreRepository;
+    private readonly IEpisodeRepository _episodeRepository;
+    private readonly ISeasonRepository _seasonRepository;
     private readonly IMapper _mapper;
 
-    public ShowService(IShowRepository showRepository, IMapper mapper, IGenreRepository genreRepository, ICharacterService characterService)
+    public ShowService(IShowRepository showRepository, IMapper mapper, IGenreRepository genreRepository, ICharacterService characterService, IEpisodeRepository episodeRepository, ISeasonRepository seasonRepository)
     {
         _showRepository = showRepository;
         _genreRepository = genreRepository;
         _characterService = characterService;
+        _episodeRepository = episodeRepository;
+        _seasonRepository = seasonRepository;
         _mapper = mapper;
     }
 
@@ -86,14 +89,13 @@ public class ShowService : IShowService
 
     public async Task<ShowDto?> GetShowByIdAsync(Guid showId)
     {
-        var show = await _showRepository.FindByIdAsync(showId);
-        return show is not null ? _mapper.Map<ShowDto>(show) : null;
+        var showEntity = await _showRepository.FindByIdAsync(showId);
+        return await MapAndAddCountsAsync(showEntity);
     }
 
     public async Task<ShowDto?> CreateShowAsync(ShowCreate showCreate)
     {
         var showEntity = _mapper.Map<ShowEntity>(showCreate);
-        
         showEntity = await _showRepository.CreateAsync(showEntity);
         return _mapper.Map<ShowDto>(showEntity);
     }
@@ -106,7 +108,7 @@ public class ShowService : IShowService
         _mapper.Map(showUpdate, showEntity);
 
         showEntity = await _showRepository.UpdateAsync(showEntity);
-        return _mapper.Map<ShowDto>(showEntity);
+        return await MapAndAddCountsAsync(showEntity);
     }
 
     public async Task<bool> DeleteShowAsync(Guid showId)
@@ -146,6 +148,19 @@ public class ShowService : IShowService
         showEntity = await _showRepository.UpdateAsync(showEntity);
         return showEntity is not null;
     }
+
+    private async Task<ShowDto?> MapAndAddCountsAsync(ShowEntity? showEntity)
+    {
+        if (showEntity is null)
+        {
+            return null;
+        }
+        
+        var showDto = _mapper.Map<ShowDto>(showEntity);
+        showDto.EpisodeCount = await _episodeRepository.GetEpisodeCountByShowIdAsync(showEntity.Id);
+        showDto.SeasonCount = await _seasonRepository.GetSeasonCountByShowIdAsync(showEntity.Id);
+        return showDto;
+    }
     
     private async Task<ShowEntity> GetShowEntityOrThrow(Guid showId) {
         var showEntity = await _showRepository.FindByIdAsync(showId);
@@ -153,7 +168,6 @@ public class ShowService : IShowService
         {
             throw new NotFoundException($"Show with id {showId} not found.");
         }
-
         return showEntity;
     }
 }

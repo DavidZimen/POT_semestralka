@@ -5,13 +5,17 @@ using Domain.Dto;
 using Domain.Entity;
 using Persistence.Repositories;
 
-namespace Api.Controllers;
+namespace Api.Services;
 
 /// <summary>
 /// Service for communicating with repository related to seasons.
 /// </summary>
 public interface ISeasonService : IService
 {
+    /// <param name="showId">ShowID for filtering seasons.</param>
+    /// <returns>List of seasons belonging to the show.</returns>
+    Task<ICollection<SeasonDto>> GetSeasonsAsync(Guid? showId);
+    
     /// <summary>
     /// Retrieves season by its ID from database.
     /// </summary>
@@ -39,34 +43,32 @@ public interface ISeasonService : IService
     /// <param name="seasonId">ID of the season to be deleted.</param>
     /// <returns>True, if season was deleted.</returns>
     Task<bool> DeleteSeasonAsync(Guid seasonId);
-    
-    /// <param name="showId">ShowID for filtering seasons.</param>
-    /// <returns>List of seasons belonging to the show.</returns>
-    Task<ICollection<SeasonDto>> GetSeasonsAsync(Guid? showId);
 }
 
 public class SeasonService : ISeasonService
 {
     private readonly ISeasonRepository _seasonRepository;
+    private readonly IEpisodeRepository _episodeRepository;
     private readonly IMapper _mapper;
 
-    public SeasonService(ISeasonRepository seasonRepository, IMapper mapper)
+    public SeasonService(ISeasonRepository seasonRepository, IMapper mapper, IEpisodeRepository episodeRepository)
     {
         _seasonRepository = seasonRepository;
         _mapper = mapper;
+        _episodeRepository = episodeRepository;
     }
 
     public async Task<SeasonDto?> GetSeasonByIdAsync(Guid seasonId)
     {
         var seasonEntity = await _seasonRepository.FindByIdAsync(seasonId);
-        return seasonEntity is not null ? _mapper.Map<SeasonDto>(seasonEntity) : null;
+        return await MapAndAddEpisodeCountAsync(seasonEntity);
     }
 
     public async Task<SeasonDto?> CreateSeasonAsync(SeasonCreate seasonCreate)
     {
         var seasonEntity = _mapper.Map<SeasonEntity>(seasonCreate);
         seasonEntity = await _seasonRepository.CreateAsync(seasonEntity);
-        return _mapper.Map<SeasonDto>(seasonEntity);
+        return await MapAndAddEpisodeCountAsync(seasonEntity);
     }
 
     public async Task<SeasonDto?> UpdateSeasonAsync(SeasonUpdate seasonUpdate)
@@ -77,7 +79,7 @@ public class SeasonService : ISeasonService
         _mapper.Map(seasonUpdate, seasonEntity);
 
         seasonEntity = await _seasonRepository.UpdateAsync(seasonEntity);
-        return _mapper.Map<SeasonDto>(seasonEntity);
+        return await MapAndAddEpisodeCountAsync(seasonEntity);
     }
 
     public async Task<bool> DeleteSeasonAsync(Guid seasonId)
@@ -91,6 +93,18 @@ public class SeasonService : ISeasonService
         return (await _seasonRepository.GetSeasonsAsync(showId))
             .Select(_mapper.Map<SeasonDto>)
             .ToList();
+    }
+    
+    private async Task<SeasonDto?> MapAndAddEpisodeCountAsync(SeasonEntity? seasonEntity)
+    {
+        if (seasonEntity is null)
+        {
+            return null;
+        }
+        
+        var seasonDto = _mapper.Map<SeasonDto>(seasonEntity);
+        seasonDto.EpisodeCount = await _episodeRepository.GetEpisodeCountBySeasonIdAsync(seasonEntity.Id);
+        return seasonDto;
     }
     
     private async Task<SeasonEntity> GetSeasonEntityOrThrow(Guid seasonId) {

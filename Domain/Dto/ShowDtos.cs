@@ -4,17 +4,19 @@ public class ShowDto
 {
     public Guid ShowId { get; set; }
     
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     public DateOnly ReleaseDate { get; set; }
     
     public DateOnly? EndDate { get; set; }
-    
+
     public int EpisodeCount { get; set; }
     
-    public List<GenreDto> Genres { get; set; }
+    public int SeasonCount { get; set; }
+
+    public List<GenreDto> Genres { get; set; } = [];
 }
 
 /// <summary>

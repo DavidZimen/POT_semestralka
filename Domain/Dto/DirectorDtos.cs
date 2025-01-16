@@ -6,8 +6,8 @@ namespace Domain.Dto;
 public class DirectorFilmDto
 {
     public Guid FilmId { get; set; }
-    
-    public string Title { get; set; }
+
+    public string Title { get; set; } = string.Empty;
 }
 
 /// <summary>
@@ -16,8 +16,8 @@ public class DirectorFilmDto
 public class DirectorShowDto
 {
     public Guid ShowId { get; set; }
-    
-    public string Title { get; set; }
+
+    public string Title { get; set; } = string.Empty;
     
     /// <summary>
     /// Total number of episodes, the director directed for the show.
