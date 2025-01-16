@@ -23,5 +23,10 @@ public class PersonEntityConfiguration : IEntityTypeConfiguration<PersonEntity>
             .WithOne(e => e.Person)
             .HasForeignKey<DirectorEntity>(e => e.PersonId)
             .IsRequired();
+        
+        builder.HasOne(e => e.Image)
+            .WithOne(e => e.Person)
+            .HasForeignKey<PersonEntity>(e => e.ImageId)
+            .IsRequired(false);
     }
 }
