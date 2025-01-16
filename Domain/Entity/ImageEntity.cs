@@ -18,19 +18,11 @@ public class ImageEntity : BaseEntity<Guid>
     [Required]
     public byte[] data { get; set; }
     
-    public Guid? PersonId { get; set; }
-    
     public virtual PersonEntity? Person { get; set; }
-    
-    public Guid? FileId { get; set; }
     
     public virtual FilmEntity? Film { get; set; }
     
-    public Guid? ShowId { get; set; }
-    
     public virtual ShowEntity? Show { get; set; }
-    
-    public Guid? EpisodeId { get; set; }
     
     public virtual EpisodeEntity? Episode { get; set; }
 }

@@ -3,7 +3,7 @@ namespace Domain.Dto;
 /// <summary>
 /// Dto for transferring data about episode to UI.
 /// </summary>
-public class EpisodeDto
+public class EpisodeDto : ImageIdDto
 {
     public Guid EpisodeId { get; set; }
     

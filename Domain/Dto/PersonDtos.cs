@@ -3,7 +3,7 @@ namespace Domain.Dto;
 /// <summary>
 /// Dto to transfer data about Person to the UI.
 /// </summary>
-public class PersonDto
+public class PersonDto : ImageIdDto
 {
     public Guid PersonId { get; set; }
     
@@ -27,7 +27,7 @@ public class PersonDto
 /// <summary>
 /// Minimal representation about person.
 /// </summary>
-public class PersonMinimalDto
+public class PersonMinimalDto : ImageIdDto
 {
     public Guid PersonId { get; set; }
     

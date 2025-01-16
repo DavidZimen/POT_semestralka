@@ -1,6 +1,6 @@
 namespace Domain.Dto;
 
-public class ShowDto
+public class ShowDto : ImageIdDto
 {
     public Guid ShowId { get; set; }
     
