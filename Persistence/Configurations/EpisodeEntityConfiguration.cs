@@ -27,5 +27,11 @@ public class EpisodeEntityConfiguration : IEntityTypeConfiguration<EpisodeEntity
             .WithOne(e => e.Episode)
             .HasForeignKey(e => e.EpisodeId)
             .IsRequired(false);
+        
+        builder.HasOne(e => e.Image)
+            .WithOne(e => e.Episode)
+            .HasForeignKey<EpisodeEntity>(e => e.ImageId)
+            .OnDelete(DeleteBehavior.SetNull)
+            .IsRequired(false);
     }
 }

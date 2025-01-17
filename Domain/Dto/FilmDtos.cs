@@ -1,20 +1,20 @@
 namespace Domain.Dto;
 
-public class FilmDto
+public class FilmDto : ImageIdDto
 {
-    public string FilmId { get; set; }
+    public Guid FilmId { get; set; }
     
-    public string Title { get; set; }
+    public string Title { get; set; } = string.Empty;
     
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
     
     public DateOnly ReleaseDate { get; set; }
     
     public int Duration { get; set; }
     
     public Guid DirectorId { get; set; }
-    
-    public List<GenreDto> Genres { get; set; }
+
+    public List<GenreDto> Genres { get; set; } = [];
 }
 
 /// <summary>

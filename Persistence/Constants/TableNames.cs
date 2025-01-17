@@ -14,6 +14,7 @@ public static class TableNames
     public const string Rating = "rating";
     public const string Genre = "genre";
     public const string Character = "character";
+    public const string Image = "image";
     
     // M:N table names
     public const string ShowActor = $"{Show}_{Actor}";

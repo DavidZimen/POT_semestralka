@@ -31,4 +31,13 @@ public class CharacterController : ControllerBase
         var character = await _characterService.CreateCharacterAsync(characterCreate);
         return Created($"character/{character.CharacterId}", character);
     }
+
+    [HttpDelete]
+    [Route("{characterId:guid}")]
+    [Authorize(Policy = nameof(AdminPolicy))]
+    public async Task<IActionResult> DeleteCharacter(Guid characterId)
+    {
+        var result = await _characterService.DeleteCharacterAsync(characterId);
+        return result ? NoContent() : Problem();
+    }
 }

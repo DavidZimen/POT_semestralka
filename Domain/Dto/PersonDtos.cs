@@ -3,25 +3,37 @@ namespace Domain.Dto;
 /// <summary>
 /// Dto to transfer data about Person to the UI.
 /// </summary>
-public class PersonDto
+public class PersonDto : ImageIdDto
 {
     public Guid PersonId { get; set; }
     
-    public string FirstName { get; set; }
+    public string FirstName { get; set; } = string.Empty;
     
     public string? MiddleName { get; set; }
     
-    public string LastName { get; set; }
+    public string LastName { get; set; } = string.Empty;
     
     public string? Bio { get; set; }
     
     public DateOnly BirthDate { get; set; }
     
-    public string Country { get; set; }
+    public string Country { get; set; } = string.Empty;
     
     public Guid? ActorId { get; set; }
     
     public Guid? DirectorId { get; set; }
+}
+
+/// <summary>
+/// Minimal representation about person.
+/// </summary>
+public class PersonMinimalDto : ImageIdDto
+{
+    public Guid PersonId { get; set; }
+    
+    public string FirstName { get; set; } = string.Empty;
+    
+    public string LastName { get; set; } = string.Empty;
 }
 
 /// <summary>

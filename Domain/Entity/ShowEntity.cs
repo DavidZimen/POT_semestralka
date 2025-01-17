@@ -4,7 +4,7 @@ using Domain.Entity.Abstraction;
 
 namespace Domain.Entity;
 
-public class ShowEntity : AuditableEntity<Guid>
+public class ShowEntity : AuditableImageEntity<Guid>
 {
     [Column(name: "title", TypeName = "varchar(100)")]
     [Required]

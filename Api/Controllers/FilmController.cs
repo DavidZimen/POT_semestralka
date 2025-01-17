@@ -36,7 +36,7 @@ public class FilmController : ControllerBase
     [Authorize(Policy = nameof(AdminPolicy))]
     public async Task<IActionResult> CreateFilm([FromBody] FilmCreate film)
     {
-        var createdFilm = await _filmService.CreateFilm(film);
+        var createdFilm = await _filmService.CreateFilmAsync(film);
         return createdFilm is not null ? Created($"film/{createdFilm.FilmId}", createdFilm) : NotFound();
     }
 
@@ -50,7 +50,7 @@ public class FilmController : ControllerBase
             return BadRequest("FilmIds do not match");
         }
         
-        var updatedFilm = await _filmService.UpdateFilm(filmUpdate);
+        var updatedFilm = await _filmService.UpdateFilmAsync(filmUpdate);
         return updatedFilm is not null ? Ok(updatedFilm) : Problem();
     }
 
@@ -59,8 +59,16 @@ public class FilmController : ControllerBase
     [Authorize(Policy = nameof(AdminPolicy))]
     public async Task<IActionResult> DeleteFilm([FromRoute] Guid filmId)
     {
-        var result = await _filmService.DeleteFilm(filmId);
+        var result = await _filmService.DeleteFilmAsync(filmId);
         return result ? NoContent() : Problem();
+    }
+
+    [HttpGet]
+    [Route("{filmId:guid}/character")]
+    public async Task<ActionResult<ICollection<CharacterMediaDto>>> GetFilmCharacters([FromRoute] Guid filmId)
+    {
+        var characters = await _filmService.GetFilmCharactersAsync(filmId);
+        return characters.Count != 0 ? Ok(characters) : NotFound();
     }
 
     [HttpPost]
@@ -68,7 +76,7 @@ public class FilmController : ControllerBase
     [Authorize(Policy = nameof(AdminPolicy))]
     public async Task<IActionResult> AddGenreToFilm([FromRoute] Guid filmId, [FromRoute] Guid genreId)
     {
-        var result = await _filmService.AddGenre(filmId, genreId);
+        var result = await _filmService.AddGenreAsync(filmId, genreId);
         return result ? NoContent() : Problem();
     }
     
@@ -77,7 +85,7 @@ public class FilmController : ControllerBase
     [Authorize(Policy = nameof(AdminPolicy))]
     public async Task<IActionResult> RemoveGenreFromFilm([FromRoute] Guid filmId, [FromRoute] Guid genreId)
     {
-        var result = await _filmService.RemoveGenre(filmId, genreId);
+        var result = await _filmService.RemoveGenreAsync(filmId, genreId);
         return result ? NoContent() : Problem();
     }
 }

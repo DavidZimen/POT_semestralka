@@ -1,5 +1,5 @@
 using Api.Exceptions;
-using Api.Services.Abstraction;
+using Api.Services;
 using Domain.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +18,11 @@ public class RatingController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:guid}")]
+    [Route("{ratingId:guid}")]
     [Authorize]
-    public async Task<IActionResult> GetRating(Guid id)
+    public async Task<IActionResult> GetRating(Guid ratingId)
     {
-        var rating = await _ratingService.GetRatingAsync(id);
+        var rating = await _ratingService.GetRatingAsync(ratingId);
         return rating is not null ? Ok(rating) : NotFound();
     }
 
@@ -35,11 +35,11 @@ public class RatingController : ControllerBase
     }
 
     [HttpPut]
-    [Route("{id:guid}")]
+    [Route("{ratingId:guid}")]
     [Authorize]
-    public async Task<IActionResult> UpdateRating(Guid id, [FromBody] RatingUpdate request)
+    public async Task<IActionResult> UpdateRating(Guid ratingId, [FromBody] RatingUpdate request)
     {
-        if (!id.Equals(request.Id))
+        if (!ratingId.Equals(request.Id))
         {
             throw new ConflictException("Rating IDs in path and body do not match. Cannot perform update.");
         }
@@ -49,11 +49,11 @@ public class RatingController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("{id:guid}")]
+    [Route("{ratingId:guid}")]
     [Authorize]
-    public async Task<IActionResult> DeleteRating(Guid id, [FromBody] RatingDelete request)
+    public async Task<IActionResult> DeleteRating(Guid ratingId, [FromBody] RatingDelete request)
     {
-        if (!id.Equals(request.Id))
+        if (!ratingId.Equals(request.Id))
         {
             throw new ConflictException("Rating IDs in path and body do not match. Cannot perform delete.");
         }
@@ -63,19 +63,22 @@ public class RatingController : ControllerBase
     }
 
     [HttpGet]
-    [Route("user")]
+    [Route("user/{userId}")]
     [Authorize]
-    public async Task<IActionResult> GetUserRating([FromBody] UserRatingRequest request)
+    public async Task<IActionResult> GetUserRating(
+        [FromRoute] string userId, [FromQuery] Guid? filmId, [FromQuery] Guid? showId, [FromQuery] Guid? episodeId)
     {
-        var userRating = await _ratingService.GetUserRatingAsync(request);
+        var userRatingRequest = new UserRatingRequest(userId, filmId, showId, episodeId);
+        var userRating = await _ratingService.GetUserRatingAsync(userRatingRequest);
         return userRating is not null ? Ok(userRating) : NotFound();
     }
 
     [HttpGet]
     [Route("average")]
-    public async Task<IActionResult> GetAverageRating([FromBody] AverageRatingRequest request)
+    public async Task<ActionResult<AverageRatingDto>> GetAverageRating(
+        [FromQuery] Guid? filmId, [FromQuery] Guid? showId, [FromQuery] Guid? episodeId)
     {
-        var averageRating = await _ratingService.GetAverageRatingAsync(request.FilmId, request.ShowId, request.EpisodeId);
+        var averageRating = await _ratingService.GetAverageRatingAsync(filmId, showId, episodeId);
         return Ok(averageRating);
     }
 }

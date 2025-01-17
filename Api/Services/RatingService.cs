@@ -9,6 +9,23 @@ using Security.Service;
 
 namespace Api.Services;
 
+public interface IRatingService : IService
+{
+    Task<ICollection<RatingDto>> GetRatingsAsync(Guid? filmId = null, Guid? showId = null, Guid? episodeId = null);
+    
+    Task<AverageRatingDto> GetAverageRatingAsync(Guid? filmId = null, Guid? showId = null, Guid? episodeId = null);
+
+    Task<RatingDto?> GetRatingAsync(Guid ratingId);
+    
+    Task<Guid> CreateRatingAsync(RatingCreate ratingCreate);
+    
+    Task<RatingDto?> UpdateRatingAsync(RatingUpdate ratingUpdate);
+    
+    Task<bool> DeleteRatingAsync(Guid ratingId);
+
+    Task<RatingDto?> GetUserRatingAsync(UserRatingRequest userRatingRequest);
+}
+
 public class RatingService : IRatingService
 {
     private readonly IRatingRepository _ratingRepository;

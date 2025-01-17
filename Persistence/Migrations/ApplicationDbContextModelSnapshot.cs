@@ -181,6 +181,10 @@ namespace Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("duration");
 
+                    b.Property<Guid?>("ImageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("image_id");
+
                     b.Property<string>("LastModifiedBy")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
@@ -206,6 +210,9 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DirectorId");
+
+                    b.HasIndex("ImageId")
+                        .IsUnique();
 
                     b.HasIndex("SeasonId");
 
@@ -240,6 +247,10 @@ namespace Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("duration");
 
+                    b.Property<Guid?>("ImageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("image_id");
+
                     b.Property<string>("LastModifiedBy")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
@@ -261,6 +272,9 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DirectorId");
+
+                    b.HasIndex("ImageId")
+                        .IsUnique();
 
                     b.ToTable("film", "application_schema");
                 });
@@ -284,6 +298,33 @@ namespace Persistence.Migrations
                         .HasDatabaseName("UQ_Genre_Name");
 
                     b.ToTable("genre", "application_schema");
+                });
+
+            modelBuilder.Entity("Domain.Entity.ImageEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<byte[]>("Data")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("data");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("image", "application_schema");
                 });
 
             modelBuilder.Entity("Domain.Entity.PersonEntity", b =>
@@ -319,6 +360,10 @@ namespace Persistence.Migrations
                         .HasColumnType("varchar(100)")
                         .HasColumnName("first_name");
 
+                    b.Property<Guid?>("ImageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("image_id");
+
                     b.Property<string>("LastModifiedBy")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
@@ -338,6 +383,9 @@ namespace Persistence.Migrations
                         .HasColumnName("modified_at");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ImageId")
+                        .IsUnique();
 
                     b.ToTable("person", "application_schema");
                 });
@@ -461,6 +509,10 @@ namespace Persistence.Migrations
                         .HasColumnType("date")
                         .HasColumnName("end_date");
 
+                    b.Property<Guid?>("ImageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("image_id");
+
                     b.Property<string>("LastModifiedBy")
                         .IsRequired()
                         .HasColumnType("varchar(255)")
@@ -480,6 +532,9 @@ namespace Persistence.Migrations
                         .HasColumnName("title");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ImageId")
+                        .IsUnique();
 
                     b.ToTable("show", "application_schema");
                 });
@@ -612,6 +667,11 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entity.ImageEntity", "Image")
+                        .WithOne("Episode")
+                        .HasForeignKey("Domain.Entity.EpisodeEntity", "ImageId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Domain.Entity.SeasonEntity", "Season")
                         .WithMany("Episodes")
                         .HasForeignKey("SeasonId")
@@ -619,6 +679,8 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Director");
+
+                    b.Navigation("Image");
 
                     b.Navigation("Season");
                 });
@@ -631,7 +693,24 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entity.ImageEntity", "Image")
+                        .WithOne("Film")
+                        .HasForeignKey("Domain.Entity.FilmEntity", "ImageId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Director");
+
+                    b.Navigation("Image");
+                });
+
+            modelBuilder.Entity("Domain.Entity.PersonEntity", b =>
+                {
+                    b.HasOne("Domain.Entity.ImageEntity", "Image")
+                        .WithOne("Person")
+                        .HasForeignKey("Domain.Entity.PersonEntity", "ImageId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("Domain.Entity.RatingEntity", b =>
@@ -672,6 +751,16 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Show");
+                });
+
+            modelBuilder.Entity("Domain.Entity.ShowEntity", b =>
+                {
+                    b.HasOne("Domain.Entity.ImageEntity", "Image")
+                        .WithOne("Show")
+                        .HasForeignKey("Domain.Entity.ShowEntity", "ImageId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Image");
                 });
 
             modelBuilder.Entity("film_actor", b =>
@@ -756,6 +845,17 @@ namespace Persistence.Migrations
                     b.Navigation("Characters");
 
                     b.Navigation("Ratings");
+                });
+
+            modelBuilder.Entity("Domain.Entity.ImageEntity", b =>
+                {
+                    b.Navigation("Episode");
+
+                    b.Navigation("Film");
+
+                    b.Navigation("Person");
+
+                    b.Navigation("Show");
                 });
 
             modelBuilder.Entity("Domain.Entity.PersonEntity", b =>

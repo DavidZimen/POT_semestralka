@@ -24,7 +24,7 @@ public interface IActorService : IService
     
     /// <param name="actorId">ID of the actor, that should be queried.</param>
     /// <returns>List of shows and films with characters the actor played.</returns>
-    Task<ICollection<CharacterMediaDto>> GetActorCharacters(Guid actorId);
+    Task<ICollection<CharacterActorDto>> GetActorCharacters(Guid actorId);
 }
     
 public class ActorService : IActorService
@@ -54,7 +54,7 @@ public class ActorService : IActorService
             .ToList();
     }
 
-    public async Task<ICollection<CharacterMediaDto>> GetActorCharacters(Guid actorId)
+    public async Task<ICollection<CharacterActorDto>> GetActorCharacters(Guid actorId)
     {
         var actor = await _actorRepository.FindByIdAsync(actorId);
         if (actor is null)
@@ -64,7 +64,7 @@ public class ActorService : IActorService
         
         return actor.Characters
             .Where(characterEntity => characterEntity.Film is not null || characterEntity.Show is not null)
-            .Select(_mapper.Map<CharacterMediaDto>)
+            .Select(_mapper.Map<CharacterActorDto>)
             .ToList();
     }
 }

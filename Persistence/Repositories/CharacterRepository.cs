@@ -13,7 +13,7 @@ public interface ICharacterRepository : IBaseRepository<CharacterEntity, Guid>
     /// </summary>
     /// <param name="filmId">ID of the film for filtering.</param>
     /// <param name="showId">ID of the show for filtering.</param>
-    Task<ICollection<CharacterEntity>> GetCharactersAsync(Guid? filmId, Guid? showId);
+    Task<ICollection<CharacterEntity>> GetCharactersAsync(Guid? filmId = default, Guid? showId = default);
 }
 
 public class CharacterRepository : BaseRepository<CharacterEntity, Guid>, ICharacterRepository
@@ -22,7 +22,7 @@ public class CharacterRepository : BaseRepository<CharacterEntity, Guid>, IChara
     {
     }
 
-    public async Task<ICollection<CharacterEntity>> GetCharactersAsync(Guid? filmId, Guid? showId)
+    public async Task<ICollection<CharacterEntity>> GetCharactersAsync(Guid? filmId = default, Guid? showId = default)
     {
         var query = DbSet.AsQueryable();
 

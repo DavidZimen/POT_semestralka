@@ -1,5 +1,5 @@
 using Api.Exceptions;
-using Api.Services.Abstraction;
+using Api.Services;
 using Domain.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +26,10 @@ public class PersonController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id:guid}")]
-    public async Task<ActionResult<PersonDto>> GetPerson(Guid id)
+    [Route("{personId:guid}")]
+    public async Task<ActionResult<PersonDto>> GetPerson(Guid personId)
     {
-        var person = await _personService.GetPersonByIdAsync(id);
+        var person = await _personService.GetPersonByIdAsync(personId);
         return person is not null ? Ok(person) : NotFound();
     }
 
@@ -42,11 +42,11 @@ public class PersonController : ControllerBase
     }
 
     [HttpPut]
-    [Route("{id:guid}")]
+    [Route("{personId:guid}")]
     [Authorize(Policy = nameof(AdminPolicy))]
-    public async Task<ActionResult<PersonDto>> UpdatePerson(Guid id, [FromBody] UpdatePerson updatePerson)
+    public async Task<ActionResult<PersonDto>> UpdatePerson(Guid personId, [FromBody] UpdatePerson updatePerson)
     {
-        if (!id.Equals(updatePerson.PersonId))
+        if (!personId.Equals(updatePerson.PersonId))
         {
             throw new ConflictException("Person IDs in path and body do not match. Cannot perform update.");
         }
@@ -56,11 +56,11 @@ public class PersonController : ControllerBase
     }
 
     [HttpDelete]
-    [Route("{id:guid}")]
+    [Route("{personId:guid}")]
     [Authorize(Policy = nameof(AdminPolicy))]
-    public async Task<IActionResult> DeletePerson(Guid id)
+    public async Task<IActionResult> DeletePerson(Guid personId)
     {
-        var success = await _personService.DeletePersonAsync(id);
+        var success = await _personService.DeletePersonAsync(personId);
         return success ? NoContent() : Problem();
     }
 }
