@@ -31,7 +31,7 @@ public class ImageController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> UploadImage([FromForm] IFormFile? file, [FromQuery] Guid? personId,
+    public async Task<IActionResult> UploadImage(IFormFile? file, [FromQuery] Guid? personId,
         [FromQuery] Guid? filmId, [FromQuery] Guid? showId, [FromQuery] Guid? episodeId)
     {
         // Count how many query parameters are not null

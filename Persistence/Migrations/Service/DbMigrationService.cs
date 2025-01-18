@@ -24,6 +24,7 @@ internal sealed class DbMigrationService : IHostedService
     
     private void RunMigrations()
     {
+        _logger.LogInformation(Directory.GetCurrentDirectory());
         using var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
         
