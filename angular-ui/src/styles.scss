@@ -1,1 +1,9 @@
 @import "primeicons/primeicons.css";
+
+/* Code from  https://stackoverflow.com/questions/68144328/is-it-possible-to-define-a-responsive-container-with-primeng */
+.container { margin-left: auto; margin-right: auto; }
+@media only screen and (max-width: 767px) { .container { max-width: 100%; } }
+@media only screen and (min-width: 768px) { .container { max-width: 740px; } }
+@media only screen and (min-width: 992px) { .container { max-width: 980px; } }
+@media only screen and (min-width: 1200px) { .container { max-width: 1140px; } }
+@media only screen and (min-width: 1400px) { .container { max-width: 1320px; } }
