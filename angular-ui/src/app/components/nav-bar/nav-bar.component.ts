@@ -4,10 +4,10 @@ import {MenuItem} from 'primeng/api';
 import {Ripple} from 'primeng/ripple';
 import {BadgeModule} from 'primeng/badge';
 import {NgClass, NgIf} from '@angular/common';
-import {ChipsModule} from 'primeng/chips';
 import {AvatarModule} from 'primeng/avatar';
 import {UiRoutes} from '../../constants/UiRoutes';
 import {KeycloakService} from 'keycloak-angular';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-nav-bar',
@@ -17,8 +17,8 @@ import {KeycloakService} from 'keycloak-angular';
     BadgeModule,
     NgClass,
     NgIf,
-    ChipsModule,
-    AvatarModule
+    AvatarModule,
+    RouterLink
   ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.scss',
@@ -32,7 +32,7 @@ export class NavBarComponent {
       routerLink: UiRoutes.Home
     },
     {
-      label: 'Products',
+      label: 'Films',
       icon: 'pi pi-star',
       routerLink: UiRoutes.Products
     }
