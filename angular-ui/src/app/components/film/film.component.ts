@@ -1,14 +1,39 @@
-import {Component, inject, Input, OnDestroy, OnInit} from '@angular/core';
+import {Component, inject, Input, OnChanges} from '@angular/core';
 import {FilmService} from '../../services/film.service';
 import {FilmDto} from '../../dto/film-dto';
+import {forkJoin} from 'rxjs';
+import {CharacterMediaDto} from '../../dto/character-dto';
+import {KeycloakService} from 'keycloak-angular';
+import {PersonDto} from '../../dto/person-dto';
+import {PersonService} from '../../services/person.service';
+import {HttpErrorResponse} from '@angular/common/http';
+import {ErrorService} from '../../services/error.service';
+import {LoadingComponent} from '../loading/loading.component';
+import {LoadingAbstractComponent} from '../abstract/loading.abstract.component';
+import {AsyncPipe, DatePipe} from '@angular/common';
+import {MediaGenresComponent} from '../media-genres/media-genres.component';
+import {MediaType} from '../../enum/media-type.enum';
+import {MediaCharactersComponent} from '../media-characters/media-characters.component';
+import {DurationPipe} from '../../pipes/duration.pipe';
+import {Router} from '@angular/router';
+import {UiRoutes} from '../../constants/UiRoutes';
+import {ImageComponent} from '../image/image.component';
 
 @Component({
   selector: 'app-film',
-  imports: [],
+  imports: [
+    LoadingComponent,
+    AsyncPipe,
+    MediaGenresComponent,
+    MediaCharactersComponent,
+    DatePipe,
+    DurationPipe,
+    ImageComponent
+  ],
   templateUrl: './film.component.html',
   styleUrl: './film.component.scss'
 })
-export class FilmComponent implements OnInit, OnDestroy {
+export class FilmComponent extends LoadingAbstractComponent implements OnChanges {
 
   /**
    * FilmID to be found in the API.
@@ -22,23 +47,52 @@ export class FilmComponent implements OnInit, OnDestroy {
   film: FilmDto
 
   /**
-   * If the fetching of the film context is still running.
+   * Director of the film.
    */
-  loading = true
+  director: PersonDto
+
+  /**
+   * Characters in the film.
+   */
+  characters: CharacterMediaDto[] = []
 
   // services
-  private filmService = inject(FilmService)
+  filmService = inject(FilmService)
+  personService = inject(PersonService)
+  keycloakService = inject(KeycloakService)
+  private errorService = inject(ErrorService)
+  private router = inject(Router)
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    this.init()
   }
 
-  loadFilm(): void {
-    this.filmService.getFilm(this.filmId).subscribe({
-      next: film => this.film = film,
-      error: err => console.error(err)
+  private init(): void {
+    this.startLoading()
+    const film$ = this.filmService.getFilm(this.filmId)
+    const characters$ =  this.filmService.getFilmCharacters(this.filmId)
+
+    forkJoin([film$, characters$]).subscribe({
+        next: ([film, actors]) => {
+          this.film = film
+          this.characters = actors
+
+          // load director
+          this.personService.getPerson(this.film.directorPersonId).subscribe({
+            next: director => {
+              this.director = director
+              this.completeLoading()
+            },
+            error: err => this.errorService.emitError(err.error.message, err.status),
+          })
+        }, error: (err: HttpErrorResponse) => this.errorService.emitError(err.error.message, err.status)
     })
   }
 
-  ngOnDestroy(): void {
+  showDirector(personId: string): void {
+    this.router.navigate([UiRoutes.Person, personId])
   }
+
+  protected readonly MediaType = MediaType;
+  protected readonly UiRoutes = UiRoutes;
 }

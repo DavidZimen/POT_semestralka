@@ -71,7 +71,7 @@ namespace Persistence.Migrations
 
                     b.Property<Guid>("ActorId")
                         .HasColumnType("uuid")
-                        .HasColumnName("person_id");
+                        .HasColumnName("actor_id");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone")
@@ -554,21 +554,6 @@ namespace Persistence.Migrations
                     b.ToTable("user", "application_schema");
                 });
 
-            modelBuilder.Entity("film_actor", b =>
-                {
-                    b.Property<Guid>("film_id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("actor_id")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("film_id", "actor_id");
-
-                    b.HasIndex("actor_id");
-
-                    b.ToTable("film_actor", "application_schema");
-                });
-
             modelBuilder.Entity("film_genre", b =>
                 {
                     b.Property<Guid>("genre_id")
@@ -582,21 +567,6 @@ namespace Persistence.Migrations
                     b.HasIndex("film_id");
 
                     b.ToTable("film_genre", "application_schema");
-                });
-
-            modelBuilder.Entity("show_actor", b =>
-                {
-                    b.Property<Guid>("show_id")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("actor_id")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("show_id", "actor_id");
-
-                    b.HasIndex("actor_id");
-
-                    b.ToTable("show_actor", "application_schema");
                 });
 
             modelBuilder.Entity("show_genre", b =>
@@ -763,21 +733,6 @@ namespace Persistence.Migrations
                     b.Navigation("Image");
                 });
 
-            modelBuilder.Entity("film_actor", b =>
-                {
-                    b.HasOne("Domain.Entity.ActorEntity", null)
-                        .WithMany()
-                        .HasForeignKey("actor_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entity.FilmEntity", null)
-                        .WithMany()
-                        .HasForeignKey("film_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("film_genre", b =>
                 {
                     b.HasOne("Domain.Entity.FilmEntity", null)
@@ -789,21 +744,6 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.Entity.GenreEntity", null)
                         .WithMany()
                         .HasForeignKey("genre_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("show_actor", b =>
-                {
-                    b.HasOne("Domain.Entity.ActorEntity", null)
-                        .WithMany()
-                        .HasForeignKey("actor_id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entity.ShowEntity", null)
-                        .WithMany()
-                        .HasForeignKey("show_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

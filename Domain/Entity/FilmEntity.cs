@@ -27,8 +27,6 @@ public class FilmEntity : AuditableImageEntity<Guid>
     
     public virtual DirectorEntity Director { get; set; }
     
-    public virtual List<ActorEntity> Actors { get; set; } = [];
-    
     public virtual List<RatingEntity> Ratings { get; set; } = [];
     
     public virtual List<GenreEntity> Genres { get; set; } = [];

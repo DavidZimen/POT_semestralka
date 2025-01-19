@@ -4,5 +4,6 @@ export const environment = {
     clientId: "api-auth-client",
     url: "http://localhost:18080",
   },
-  apiUrl: "http://localhost:5177"
+  apiUrl: "http://localhost:5177",
+  stockFilm: "assets/stock-film.jpg"
 };

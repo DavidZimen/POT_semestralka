@@ -1,12 +1,13 @@
-import { GenreDto } from "./genre-dto";
+import {GenreDto} from "./genre-dto";
+import {ImageIdDto} from './image-dto';
 
-export interface FilmDto {
+export interface FilmDto extends ImageIdDto {
   filmId: string;
   title: string;
   description: string;
   releaseDate: string; // Date
   duration: number;
-  directorId: string; // Guid
+  directorPersonId: string; // Guid
   genres: GenreDto[]; // GenreDto from GenreDtos
 }
 

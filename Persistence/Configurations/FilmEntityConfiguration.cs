@@ -32,15 +32,6 @@ public class FilmEntityConfiguration : IEntityTypeConfiguration<FilmEntity>
             .HasForeignKey<FilmEntity>(e => e.ImageId)
             .OnDelete(DeleteBehavior.SetNull)
             .IsRequired(false);
-        
-        builder.HasMany(e => e.Actors)
-            .WithMany(e => e.Films)
-            .UsingEntity(
-                TableNames.FilmActor,
-                e => e.HasOne(typeof(FilmEntity)).WithMany().HasForeignKey(FilmId).HasPrincipalKey(nameof(FilmEntity.Id)),
-                e => e.HasOne(typeof(ActorEntity)).WithMany().HasForeignKey(ActorId).HasPrincipalKey(nameof(ActorEntity.Id)),
-                j => j.HasKey(FilmId, ActorId)
-                );
 
         builder.HasMany(e => e.Genres)
             .WithMany(e => e.Films)

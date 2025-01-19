@@ -1,4 +1,6 @@
-export interface PersonDto {
+import {ImageIdDto} from './image-dto';
+
+export interface PersonDto extends ImageIdDto{
   personId: string; // Guid
   firstName: string;
   middleName?: string;
@@ -10,7 +12,7 @@ export interface PersonDto {
   directorId?: string; // Guid
 }
 
-export interface PersonMinimalDto {
+export interface PersonMinimalDto extends ImageIdDto {
   personId: string; // Guid
   firstName: string;
   lastName: string;

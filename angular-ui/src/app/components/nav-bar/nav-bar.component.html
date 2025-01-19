@@ -17,7 +17,15 @@
   <ng-template pTemplate="end">
     <div class="flex align-items-center gap-2">
       <input type="text" pInputText placeholder="Search" class="w-8rem sm:w-auto" />
-      <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" shape="circle" (click)="keycloakService.logout()" />
+      @if (keycloakService.isLoggedIn()) {
+        <p-avatar  shape="circle" (click)="keycloakService.logout()" />
+      } @else {
+        <p-button label="Login"
+                  icon="pi pi-user"
+                  iconPos="left"
+                  (onClick)="keycloakService.login()">
+        </p-button>
+      }
     </div>
   </ng-template>
 </p-menubar>

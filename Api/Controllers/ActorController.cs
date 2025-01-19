@@ -20,7 +20,7 @@ public class ActorController : ControllerBase
     public async Task<ActionResult<ICollection>> GetActors()
     {
         var actors = await _actorService.GetActorsAsync();
-        return actors.Count > 0 ? Ok(actors) : NotFound();
+        return Ok(actors);
     }
 
     [HttpGet]
@@ -28,6 +28,6 @@ public class ActorController : ControllerBase
     public async Task<ActionResult<ICollection<CharacterActorDto>>> GetActorMedias(Guid actorId)
     {
         var media = await _actorService.GetActorCharacters(actorId);
-        return media.Count > 0 ? Ok(media) : NoContent();
+        return Ok(media) ;
     }
 }

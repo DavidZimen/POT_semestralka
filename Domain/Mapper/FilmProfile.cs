@@ -10,7 +10,8 @@ public class FilmProfile : Profile
     {
         CreateMap<FilmEntity, FilmDto>()
             .ForMember(dest => dest.FilmId, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres));
+            .ForMember(dest => dest.Genres, opt => opt.MapFrom(src => src.Genres))
+            .ForMember(dest => dest.DirectorPersonId, opt => opt.MapFrom(src => src.Director.PersonId));
 
         CreateMap<FilmCreate, FilmEntity>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())

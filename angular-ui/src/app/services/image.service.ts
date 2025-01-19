@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { ImageIdDto, ImageCreate } from '../dto/image-dto';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {ImageIdDto} from '../dto/image-dto';
 
 @Injectable({ providedIn: 'root' })
 export class ImageService {
@@ -12,7 +12,7 @@ export class ImageService {
     return this.http.get(`/image/${imageId}`, { responseType: 'blob' });
   }
 
-  uploadImage(file: File, queryParams: { [key: string]: string | undefined }): Observable<ImageIdDto> {
+  uploadImage(file: Blob, queryParams: { [key: string]: string | undefined }): Observable<ImageIdDto> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -22,5 +22,9 @@ export class ImageService {
     });
 
     return this.http.post<ImageIdDto>('/image', formData, { params });
+  }
+
+  deleteImage(imageId: string): Observable<void> {
+    return this.http.delete<void>(`/image/${imageId}`);
   }
 }

@@ -26,23 +26,5 @@ public class ActorEntityConfiguration : IEntityTypeConfiguration<ActorEntity>
             .WithOne(e => e.Actor)
             .HasForeignKey(e => e.ActorId)
             .IsRequired();
-        
-        builder.HasMany(e => e.Films)
-            .WithMany(e => e.Actors)
-            .UsingEntity(
-                TableNames.FilmActor,
-                e => e.HasOne(typeof(FilmEntity)).WithMany().HasForeignKey(FilmId).HasPrincipalKey(nameof(FilmEntity.Id)),
-                e => e.HasOne(typeof(ActorEntity)).WithMany().HasForeignKey(ActorId).HasPrincipalKey(nameof(ActorEntity.Id)),
-                j => j.HasKey(FilmId, ActorId)
-                );
-
-        builder.HasMany(e => e.Shows)
-            .WithMany(e => e.Actors)
-            .UsingEntity(
-                TableNames.ShowActor,
-                e => e.HasOne(typeof(ShowEntity)).WithMany().HasForeignKey(ShowId).HasPrincipalKey(nameof(ShowEntity.Id)),
-                e => e.HasOne(typeof(ActorEntity)).WithMany().HasForeignKey(ActorId).HasPrincipalKey(nameof(ActorEntity.Id)),
-                j => j.HasKey(ShowId, ActorId)
-            );
     }
 }

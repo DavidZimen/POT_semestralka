@@ -8,6 +8,8 @@ import {AvatarModule} from 'primeng/avatar';
 import {UiRoutes} from '../../constants/UiRoutes';
 import {KeycloakService} from 'keycloak-angular';
 import {RouterLink} from '@angular/router';
+import {InputText} from 'primeng/inputtext';
+import {Button} from 'primeng/button';
 
 @Component({
   selector: 'app-nav-bar',
@@ -18,7 +20,9 @@ import {RouterLink} from '@angular/router';
     NgClass,
     NgIf,
     AvatarModule,
-    RouterLink
+    RouterLink,
+    InputText,
+    Button
   ],
   templateUrl: './nav-bar.component.html',
   styleUrl: './nav-bar.component.scss',
@@ -32,9 +36,9 @@ export class NavBarComponent {
       routerLink: UiRoutes.Home
     },
     {
-      label: 'Films',
+      label: 'Film',
       icon: 'pi pi-star',
-      routerLink: UiRoutes.Products
+      routerLink: `${UiRoutes.Film}/d90261fb-0649-486e-8476-cbbcc3ff0ee3`
     }
   ]
 

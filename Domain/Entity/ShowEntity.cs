@@ -27,7 +27,5 @@ public class ShowEntity : AuditableImageEntity<Guid>
 
     public virtual List<GenreEntity> Genres { get; set; } = [];
     
-    public virtual List<ActorEntity> Actors { get; set; } = [];
-    
     public virtual List<CharacterEntity> Characters { get; set; } = [];
 }

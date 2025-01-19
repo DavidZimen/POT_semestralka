@@ -21,7 +21,7 @@ public class FilmController : ControllerBase
     public async Task<ActionResult<ICollection<FilmDto>>> GetFilms()
     {
         var films = await _filmService.GetAllFilmsAsync();
-        return films.Count > 0 ? Ok(films) : NotFound();
+        return Ok(films);
     }
 
     [HttpGet]
@@ -68,7 +68,7 @@ public class FilmController : ControllerBase
     public async Task<ActionResult<ICollection<CharacterMediaDto>>> GetFilmCharacters([FromRoute] Guid filmId)
     {
         var characters = await _filmService.GetFilmCharactersAsync(filmId);
-        return characters.Count != 0 ? Ok(characters) : NotFound();
+        return Ok(characters);
     }
 
     [HttpPost]

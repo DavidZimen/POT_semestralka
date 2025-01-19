@@ -9,6 +9,8 @@ public class CharacterProfile : Profile
     public CharacterProfile()
     {
         CreateMap<CharacterEntity, CharacterActorDto>()
+            .ForMember(dest => dest.ShowId, opt => opt.MapFrom(src => src.ShowId))
+            .ForMember(dest => dest.FilmId, opt => opt.MapFrom(src => src.FilmId))
             .ForMember(dest => dest.CharacterName, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.MediaName, opt => opt.MapFrom(src => 
                 src.Film != null ? src.Film.Title : src.Show!.Title))
@@ -18,6 +20,7 @@ public class CharacterProfile : Profile
                 src.Show != null ? src.Show.EndDate : null));
         
         CreateMap<CharacterEntity, CharacterMediaDto>()
+            .ForMember(dest => dest.CharacterId, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.CharacterName, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => 
                 src.Film != null ? src.Film.Title : src.Show!.Title))

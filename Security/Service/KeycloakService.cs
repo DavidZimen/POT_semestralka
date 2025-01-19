@@ -1,6 +1,7 @@
 ﻿using Flurl.Http;
 using Keycloak.Net;
 using Keycloak.Net.Models.Clients;
+using Keycloak.Net.Models.ProtocolMappers;
 using Keycloak.Net.Models.RealmsAdmin;
 using Keycloak.Net.Models.Users;
 using Microsoft.Extensions.Logging;
@@ -39,7 +40,7 @@ public interface IKeycloakService
 public class KeycloakService : IKeycloakService
 {
     private const string RolesClientScope = "roles";
-    private const string RolesMapper = "realm roles";
+    private const string RolesMapper = "realm roles asp.net";
     private const string RolesClaimConfigProperty = "claim.name";
     private const string NewRoleClaimName = "roles";
     
@@ -158,8 +159,8 @@ public class KeycloakService : IKeycloakService
         var rolesScope = (await _keycloakClient.GetClientScopesAsync(_keycloakOptions.Realm))
             .First(clientScope => clientScope.Name == RolesClientScope);
         
-        var rolesMapper = rolesScope.ProtocolMappers.First(mapper => mapper.Name == RolesMapper);
-        if (rolesMapper.Config[RolesClaimConfigProperty] == NewRoleClaimName)
+        var rolesMapper = rolesScope.ProtocolMappers.FirstOrDefault(mapper => mapper.Name == RolesMapper);
+        if (rolesMapper is not null)
         {
             _logger.LogInformation("Roles token claim mapper in realm {Realm} already configured to {ClaimName}", _keycloakOptions.Realm, NewRoleClaimName);
             return;
@@ -168,8 +169,26 @@ public class KeycloakService : IKeycloakService
         // try to update roles client scope
         try
         {
-            rolesMapper.Config[RolesClaimConfigProperty] = NewRoleClaimName;
-            var result = await _keycloakClient.UpdateProtocolMapperAsync(_keycloakOptions.Realm, rolesScope.Id, rolesMapper.Id, rolesMapper);
+            rolesMapper = new ProtocolMapper
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = RolesMapper,
+                ConsentRequired = false,
+                Protocol = "openid-connect",
+                _ProtocolMapper = "oidc-usermodel-realm-role-mapper",
+                Config = new Dictionary<string, string>
+                {
+                    { "introspection.token.claim", "true" },
+                    { "multivalued", "true" },
+                    { "userinfo.token.claim", "true" },
+                    { "id.token.claim", "false" },
+                    { "lightweight.claim", "false" },
+                    { "access.token.claim", "true"},
+                    { "claim.name", "roles" },
+                    { "jsonType.label", "String" }
+                }
+            };
+            var result = await _keycloakClient.CreateProtocolMapperAsync(_keycloakOptions.Realm, rolesScope.Id, rolesMapper);
             if (result)
             {
                 _logger.LogInformation("Roles token claim mapper in realm {Realm} configured to value {ClaimName}", _keycloakOptions.Realm, NewRoleClaimName);

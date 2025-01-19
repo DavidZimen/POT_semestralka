@@ -50,6 +50,7 @@ internal sealed class DbMigrationService : IHostedService
         var solutionRoot = Directory.GetParent(Directory.GetCurrentDirectory())!.FullName;
         var scriptFilePath = Path.Combine(solutionRoot, "sample-data.sql");
         var executionLogFilePath = Path.Combine(solutionRoot, "sample-data-executed.log");
+        var truncateFilePath = Path.Combine(solutionRoot, "truncate.sql");
 
         if (File.Exists(executionLogFilePath))
         {
@@ -63,8 +64,11 @@ internal sealed class DbMigrationService : IHostedService
             try
             {
                 // Read and execute the script
-                var sqlScript = File.ReadAllText(scriptFilePath);
-                dbContext.Database.ExecuteSqlRaw(sqlScript);
+                var sampleDataScript = File.ReadAllText(scriptFilePath);
+                var truncateScript = File.ReadAllText(truncateFilePath);
+                
+                dbContext.Database.ExecuteSqlRaw(truncateScript);
+                dbContext.Database.ExecuteSqlRaw(sampleDataScript);
 
                 // Create a log file to mark execution
                 File.WriteAllText(executionLogFilePath, $"Script executed on {DateTime.Now}");

@@ -1,6 +1,5 @@
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 import {UiRoutes} from './constants/UiRoutes';
-import {authGuard} from './guards/auth.guard';
 
 
 export const routes: Routes = [
@@ -11,15 +10,18 @@ export const routes: Routes = [
     loadComponent: () => import('./components/home/home.component').then(x => x.HomeComponent)
   },
   {
-    path: UiRoutes.Products,
-    title: 'Products list',
-    canActivate: [authGuard],
-    loadComponent: () => import('./components/products/products.component').then(x => x.ProductsComponent)
+    path: `${UiRoutes.Film}/:filmId`,
+    title: 'Film',
+    loadComponent: () => import('./components/film/film.component').then(x => x.FilmComponent)
   },
   {
-    path: `${UiRoutes.Product}/:id`,
-    title: 'Product Details',
-    canActivate: [authGuard],
-    loadComponent: () => import('./components/product/product.component').then(x => x.ProductComponent)
+    path: `${UiRoutes.Person}/:personId`,
+    title: 'Person',
+    loadComponent: () => import('./components/person/person.component').then(x => x.PersonComponent)
+  },
+  {
+    path: UiRoutes.Error,
+    title: 'Error',
+    loadComponent: () => import('./components/error/error.component').then(x => x.ErrorComponent)
   }
 ]

@@ -45,14 +45,5 @@ public class ShowEntityConfiguration : IEntityTypeConfiguration<ShowEntity>
                 e => e.HasOne(typeof(ShowEntity)).WithMany().HasForeignKey(ShowId).HasPrincipalKey(nameof(ShowEntity.Id)),
                 e => e.HasOne(typeof(GenreEntity)).WithMany().HasForeignKey(GenreId).HasPrincipalKey(nameof(GenreEntity.Id)),
                 j => j.HasKey(GenreId, ShowId));
-        
-        builder.HasMany(e => e.Actors)
-            .WithMany(e => e.Shows)
-            .UsingEntity(
-                TableNames.ShowActor,
-                e => e.HasOne(typeof(ShowEntity)).WithMany().HasForeignKey(ShowId).HasPrincipalKey(nameof(ShowEntity.Id)),
-                e => e.HasOne(typeof(ActorEntity)).WithMany().HasForeignKey(ActorId).HasPrincipalKey(nameof(ActorEntity.Id)),
-                j => j.HasKey(ShowId, ActorId)
-            );
     }
 }

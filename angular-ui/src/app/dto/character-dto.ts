@@ -1,4 +1,4 @@
-import { PersonMinimalDto } from "./person-dto";
+import {PersonMinimalDto} from "./person-dto";
 
 export interface CharacterDto {
   characterId: string; // Guid
@@ -9,6 +9,8 @@ export interface CharacterDto {
 }
 
 export interface CharacterActorDto {
+  showId?: string;
+  filmId?: string;
   mediaName: string;
   characterName: string;
   premiereDate: string; // Date
@@ -16,6 +18,7 @@ export interface CharacterActorDto {
 }
 
 export interface CharacterMediaDto {
+  characterId: string
   title: string;
   characterName: string;
   actor: PersonMinimalDto; // Minimal Person DTO

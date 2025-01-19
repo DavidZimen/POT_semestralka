@@ -12,7 +12,7 @@ public class FilmDto : ImageIdDto
     
     public int Duration { get; set; }
     
-    public Guid DirectorId { get; set; }
+    public Guid DirectorPersonId { get; set; }
 
     public List<GenreDto> Genres { get; set; } = [];
 }

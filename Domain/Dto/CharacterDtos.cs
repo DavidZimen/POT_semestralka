@@ -18,6 +18,10 @@ public class CharacterDto
 /// </summary>
 public class CharacterActorDto
 {
+    public Guid? ShowId { get; set; }
+    
+    public Guid? FilmId { get; set; }
+    
     /// <summary>
     /// Name of the show, or film.
     /// </summary>
@@ -45,6 +49,8 @@ public class CharacterActorDto
 /// </summary>
 public class CharacterMediaDto
 {
+    public Guid CharacterId { get; set; }
+    
     public string Title { get; set; } = string.Empty;
     
     public string CharacterName { get; set; } = string.Empty;

@@ -11,7 +11,7 @@ public class CharacterEntity : AuditableEntity<Guid>
     public string Name { get; set; }
     
     [ForeignKey(name: nameof(Id))]
-    [Column(name: "person_id", TypeName = "uuid")]
+    [Column(name: "actor_id", TypeName = "uuid")]
     public Guid ActorId { get; set; }
     
     public virtual ActorEntity Actor { get; set; }

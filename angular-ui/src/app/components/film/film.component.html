@@ -1,1 +1,33 @@
-<p>film works!</p>
+@if (!($loading | async)) {
+  <h1>{{ film.title }}</h1>
+
+  <div class="flex gap-1">
+    <span>{{ film.releaseDate | date: 'yyyy' }}</span>
+    <span>-</span>
+    <span>{{ film.duration | duration }}</span>
+  </div>
+
+  <div class="flex align-items-center gap-3">
+    <h3>Directed by: </h3>
+    <span style="font-size: 1.15rem; cursor: pointer;"
+       (click)="showDirector(director.personId)">
+      {{ director.firstName }} {{ director.lastName }}
+    </span>
+  </div>
+
+  <app-image [imageId]="film.imageId"
+             [filmId]="film.filmId"
+             [useStock]="false">
+  </app-image>
+
+  <app-media-genres [mediaType]="MediaType.FILM"
+                    [mediaId]="film.filmId"
+                    [genres]="film.genres">
+  </app-media-genres>
+
+  <app-media-characters [mediaType]="MediaType.FILM"
+                        [characters]="characters">
+  </app-media-characters>
+} @else {
+  <app-loading message="Loading film data. Please wait..."></app-loading>
+}

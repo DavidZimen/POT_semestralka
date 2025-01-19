@@ -11,9 +11,5 @@ public class ActorEntity : AuditableEntity<Guid>
     
     public virtual PersonEntity Person { get; set; }
     
-    public virtual List<FilmEntity> Films { get; set; } = [];
-    
-    public virtual List<ShowEntity> Shows { get; set; } = [];
-    
     public virtual List<CharacterEntity> Characters { get; set; } = [];
 }

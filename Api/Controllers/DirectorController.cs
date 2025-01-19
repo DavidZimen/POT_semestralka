@@ -20,7 +20,7 @@ public class DirectorController : ControllerBase
     public async Task<ActionResult<ICollection<DirectorFilmDto>>> GetDirectorFilms(Guid directorId)
     {
         var directorFilms = await _directorService.GetDirectorFilmsAsync(directorId);
-        return directorFilms.Count > 0 ? Ok(directorFilms) : NotFound();
+        return Ok(directorFilms);
     }
     
     [HttpGet]
@@ -28,6 +28,6 @@ public class DirectorController : ControllerBase
     public async Task<ActionResult<ICollection<DirectorFilmDto>>> GetDirectorShows(Guid directorId)
     {
         var directorFilms = await _directorService.GetDirectorShowsAsync(directorId);
-        return directorFilms.Count > 0 ? Ok(directorFilms) : NotFound();
+        return Ok(directorFilms);
     }
 }
