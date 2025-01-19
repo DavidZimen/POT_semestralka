@@ -46,6 +46,9 @@ export class ImageComponent {
   @Input()
   personId: string | undefined
 
+  @Input()
+  allowOperations = true
+
   // services
   keycloakService = inject(KeycloakService)
   private imageService = inject(ImageService)

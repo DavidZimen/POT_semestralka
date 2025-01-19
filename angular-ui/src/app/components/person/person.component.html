@@ -1,7 +1,17 @@
 @if (!($loading | async)) {
-  <h1>{{ getPersonName() }}</h1>
+  <div class="flex align-items-center gap-6">
+    <h1>{{ getPersonName() }}</h1>
+    @if (keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN)) {
+      <app-person-form [person]="person"
+                       (personChanged)="init()"/>
+    }
+  </div>
 
   <div>{{ getPersonRoles() }}</div>
+
+  <app-image [imageId]="person.imageId"
+             [personId]="personId"
+             [useStock]="false"/>
 
   <div class="flex flex-column">
     <div class="flex align-items-center gap-3">
@@ -17,6 +27,17 @@
       {{ countryService.getCountryName(person.country) }}
     </span>
     </div>
+
+    @if (person.bio) {
+      <p-panel [toggleable]="true" styleClass="mt-2">
+        <ng-template #header>
+          <h3>Storyline</h3>
+        </ng-template>
+        <p class="m-0">
+          {{ person.bio }}
+        </p>
+      </p-panel>
+    }
   </div>
 
 } @else {

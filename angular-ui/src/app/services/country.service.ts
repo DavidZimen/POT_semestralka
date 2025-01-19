@@ -9,4 +9,8 @@ export class CountryService {
   getCountryName(countryCode: string): string {
     return countries.getName(countryCode, 'en') || 'Unknown Country';
   }
+
+  loadCountries(): string[] {
+    return Object.values(countries.getAlpha3Codes())
+  }
 }

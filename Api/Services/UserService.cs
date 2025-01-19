@@ -22,38 +22,27 @@ public interface IUserService : IService
 
 public class UserService : IUserService
 {
-    /// <summary>
-    /// Service to communicate with Keycloak identity server..
-    /// </summary>
-    private readonly IKeycloakService _keycloakService;
-
+    private readonly ILogger<UserService> _logger;
     private readonly IUserRepository _userRepository;
 
-    public UserService(IKeycloakService keycloakService, IUserRepository userRepository)
+    public UserService(IUserRepository userRepository, ILogger<UserService> logger)
     {
-        _keycloakService = keycloakService;
         _userRepository = userRepository;
+        _logger = logger;
     }
 
     public async Task<bool> Register(RegisterUser user)
     {
-        var keycloakId = await _keycloakService.CreateUserAsync(new KeycloakUser
-        (
-            user.Email,
-            user.Password,
-            user.FirstName, user.LastName,
-            user.Role
-        ));
-
-        // user was not saved to keycloak
-        if (keycloakId is null)
+        var userEntity = await _userRepository.FindByIdAsync(user.Id);
+        if (userEntity is not null)
         {
-            return false;
+            _logger.LogInformation("User with id {ID} already exists.", user.Id);
+            return true;
         }
-
-        var userEntity = new UserEntity
+        
+        userEntity = new UserEntity
         {
-            Id = keycloakId,
+            Id = user.Id,
             Enabled = true
         };
 

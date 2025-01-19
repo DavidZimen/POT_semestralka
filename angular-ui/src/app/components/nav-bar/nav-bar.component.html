@@ -16,9 +16,11 @@
   </ng-template>
   <ng-template pTemplate="end">
     <div class="flex align-items-center gap-2">
-      <input type="text" pInputText placeholder="Search" class="w-8rem sm:w-auto" />
       @if (keycloakService.isLoggedIn()) {
-        <p-avatar  shape="circle" (click)="keycloakService.logout()" />
+        <p-avatar image="assets/avatar-stock.jpg"
+                  shape="circle"
+                  size="normal"
+                  (click)="keycloakService.logout()" />
       } @else {
         <p-button label="Login"
                   icon="pi pi-user"

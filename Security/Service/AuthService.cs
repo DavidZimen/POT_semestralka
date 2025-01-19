@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
 namespace Security.Service;
@@ -30,7 +31,7 @@ public class AuthService : IAuthService
     
     public string? GetCurrentUserId()
     {
-        return _httpContext.User.Claims.FirstOrDefault(claim => claim.Type == UserIdClaimName)?.Value;
+        return _httpContext.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
     }
 
     public bool IsUserInRole(string role)

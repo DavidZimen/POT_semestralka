@@ -1,5 +1,12 @@
 <div class="my-2">
-  <h2>Cast</h2>
+  <div class="flex justify-content-between align-items-center">
+    <h2>Cast</h2>
+    @if (keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN)) {
+      <p-button label="Add character"
+                icon="pi pi-plus"
+                (onClick)="openDialog = true"/>
+    }
+  </div>
 
   <div class="flex flex-row justify-content-start gap-3 flex-wrap">
     @for (character of characters; track character.characterId) {
@@ -29,4 +36,54 @@
     }
   </div>
 </div>
+
+<p-dialog [(visible)]="openDialog"
+          [modal]="true"
+          [resizable]="false"
+          [draggable]="false"
+          [style]="{ width: '50rem' }"
+          [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+          header="Create character">
+  <form #form="ngForm">
+    <div class="flex align-items-center gap-4 mb-4">
+      <label for="characterName" class="font-semibold w-9rem">Character name</label>
+      <input pInputText
+             required
+             id="characterName"
+             class="flex-auto"
+             autocomplete="off"
+             name="characterName"
+             [(ngModel)]="characterName" />
+    </div>
+
+    <div class="flex align-items-center gap-4 mb-4">
+      <label for="people" class="font-semibold w-9rem">Actor</label>
+      <p-dropdown [options]="dropdownPersons"
+                  [showClear]="true"
+                  [required]="true"
+                  [(ngModel)]="person"
+                  class="flex-auto"
+                  name="person"
+                  id="people"
+                  placeholder="Select a person"
+                  appendTo="body">
+        <ng-template pTemplate="selectedItem">
+          <div *ngIf="person">
+            {{ person.firstName }} {{ person.lastName }}
+          </div>
+        </ng-template>
+        <ng-template let-item pTemplate="item">
+          {{ item.firstName }} {{ item.lastName }}
+        </ng-template>
+      </p-dropdown>
+    </div>
+  </form>
+
+  <ng-template #footer>
+    <p-button label="Save"
+              icon="pi pi-save"
+              [disabled]="form.invalid"
+              (click)="createCharacter()" />
+  </ng-template>
+</p-dialog>
 

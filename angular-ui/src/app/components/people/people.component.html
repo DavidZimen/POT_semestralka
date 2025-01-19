@@ -1,17 +1,17 @@
-@if (films$ | async; as films) {
+@if (people$ | async; as people) {
 
   @if (keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN)) {
-    <app-film-form class="mt-2" (filmChanged)="films$ = filmService.getFilms()"/>
+    <app-person-form class="mt-2" (personChanged)="people$ = personService.getPersons()"/>
   }
 
   <div class="flex flex-wrap justify-content-start gap-5">
-    @for (film of films; track film.filmId) {
+    @for (person of people; track person.personId) {
       <p-card [style]="{ width: '300px', overflow: 'hidden' }"
               class="mt-3"
-              (click)="router.navigate([UiRoutes.Film, film.filmId])">
+              (click)="router.navigate([UiRoutes.Person, person.personId])">
         <ng-template #header>
           <div class="image-container">
-            <app-image [imageId]="film.imageId"
+            <app-image [imageId]="person.imageId"
                        [useStock]="true"
                        [width]="300"
                        [height]="250"
@@ -22,25 +22,25 @@
                         severity="danger"
                         size="small"
                         class="corner-button"
-                        (onClick)="initRemoveFilm(film)">
+                        (onClick)="initRemovePerson(person)">
               </p-button>
             }
           </div>
         </ng-template>
-        <ng-template #title>{{ film.title }}</ng-template>
-        <ng-template #subtitle> {{ film.releaseDate | date: 'yyyy' }} </ng-template>
-        <p>{{ film.description | maxLength: 50 }}</p>
+        <ng-template #title>{{ person.firstName }} {{ person.lastName }}</ng-template>
+        <ng-template #subtitle> {{ person.birthDate | date: 'd.M.yyyy' }} </ng-template>
+        <p>{{ person.bio | maxLength: 50 }}</p>
       </p-card>
     } @empty {
-      <ng-container [ngTemplateOutlet]="noFilms"/>
+      <ng-container [ngTemplateOutlet]="noPeople"/>
     }
   </div>
 } @else {
-  <ng-container [ngTemplateOutlet]="noFilms"/>
+  <ng-container [ngTemplateOutlet]="noPeople"/>
 }
 
-<ng-template #noFilms>
+<ng-template #noPeople>
   <div class="flex justify-content-center align-items-center" style="min-height: 95vh; height: 100%">
-    <h2>No films found</h2>
+    <h2>No people found</h2>
   </div>
 </ng-template>

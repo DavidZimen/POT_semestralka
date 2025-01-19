@@ -8,7 +8,6 @@ import {AvatarModule} from 'primeng/avatar';
 import {UiRoutes} from '../../constants/UiRoutes';
 import {KeycloakService} from 'keycloak-angular';
 import {RouterLink} from '@angular/router';
-import {InputText} from 'primeng/inputtext';
 import {Button} from 'primeng/button';
 
 @Component({
@@ -21,7 +20,6 @@ import {Button} from 'primeng/button';
     NgIf,
     AvatarModule,
     RouterLink,
-    InputText,
     Button
   ],
   templateUrl: './nav-bar.component.html',
@@ -31,15 +29,15 @@ import {Button} from 'primeng/button';
 export class NavBarComponent {
   items: MenuItem[] = [
     {
-      label: 'Home',
-      icon: 'pi pi-home',
-      routerLink: UiRoutes.Home
-    },
-    {
       label: 'Film',
       icon: 'pi pi-star',
-      routerLink: `${UiRoutes.Film}/aa1967ea-5b82-4eb2-9dd9-5864602aef6b`
-    }
+      routerLink: UiRoutes.Film
+    },
+    {
+      label: 'People',
+      icon: 'pi pi-user',
+      routerLink: UiRoutes.Person
+    },
   ]
 
   keycloakService = inject(KeycloakService)

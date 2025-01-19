@@ -1,7 +1,14 @@
 @if (!($loading | async)) {
   <div class="flex justify-content-between align-content-start flex-wrap">
     <div class="flex flex-column">
-      <h1>{{ film.title }}</h1>
+      <div class="flex align-items-center gap-6">
+        <h1>{{ film.title }}</h1>
+        @if (keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN)) {
+          <app-film-form [film]="film"
+                         [director]="director"
+                         (filmChanged)="init()"/>
+        }
+      </div>
 
       <div class="flex gap-1">
         <span>{{ film.releaseDate | date: 'yyyy' }}</span>
@@ -39,7 +46,8 @@
   </p-panel>
 
   <app-media-characters [mediaType]="MediaType.FILM"
-                        [characters]="characters"/>
+                        [mediaId]="filmId"
+                        [characters]="characters" (characterChanged)="loadCharacters()"/>
 } @else {
   <app-loading message="Loading film data. Please wait..."></app-loading>
 }

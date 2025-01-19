@@ -5,7 +5,7 @@
              [height]="height.toString()">
     </p-image>
 
-    @if (keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN) && !imageUrl.includes('stock')) {
+    @if (allowOperations && keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN) && !imageUrl.includes('stock')) {
       <p-button icon="pi pi-trash"
                 severity="danger"
                 size="small"
@@ -14,7 +14,7 @@
       </p-button>
     }
   </div>
-} @else if (keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN)) {
+} @else if (allowOperations && keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN)) {
   <app-image-upload [filmId]="filmId"
                     [showId]="showId"
                     [personId]="personId"

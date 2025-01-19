@@ -3,7 +3,7 @@
   <div class="rating-container p-d-flex p-ai-center p-flex-column">
     <div class="rating-header p-text-center">Your rating</div>
 
-    <div class="rating-action p-d-flex p-ai-center pt-1" (click)="openDialog = true">
+    <div class="rating-action p-d-flex p-ai-center pt-1" (click)="openDetail()">
       <i class="pi pi-star{{ userRating ? '-fill' : '' }} rating-star"></i>
 
       @if (userRating) {

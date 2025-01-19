@@ -3,11 +3,16 @@ import {UiRoutes} from './constants/UiRoutes';
 
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '', redirectTo: UiRoutes.Film, pathMatch: 'full' },
   {
-    path: UiRoutes.Home,
-    title: 'Home Page',
-    loadComponent: () => import('./components/home/home.component').then(x => x.HomeComponent)
+    path: UiRoutes.Person,
+    title: 'People',
+    loadComponent: () => import('./components/people/people.component').then(x => x.PeopleComponent)
+  },
+  {
+    path: `${UiRoutes.Film}`,
+    title: 'Films',
+    loadComponent: () => import('./components/films/films.component').then(x => x.FilmsComponent)
   },
   {
     path: `${UiRoutes.Film}/:filmId`,

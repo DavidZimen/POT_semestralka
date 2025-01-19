@@ -4,7 +4,7 @@ FROM node:22.11.0 AS build
 WORKDIR /app
 
 # Copy package files and install necessary dependencies
-COPY package*.json ./
+COPY package.json ./
 RUN npm install
 RUN npm install -g @angular/cli
 

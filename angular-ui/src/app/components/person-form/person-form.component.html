@@ -1,0 +1,101 @@
+<p-dialog [(visible)]="openDialog"
+          [modal]="true"
+          [resizable]="false"
+          [draggable]="false"
+          [style]="{ width: '50rem' }"
+          [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }"
+          header="Create character">
+  <form #form="ngForm">
+    <div class="flex align-items-center gap-4 mb-4">
+      <label for="first" class="font-semibold w-9rem">First Name</label>
+      <input pInputText
+             required
+             id="first"
+             class="flex-auto"
+             autocomplete="off"
+             name="first"
+             [(ngModel)]="firstName" />
+    </div>
+
+    <div class="flex align-items-center gap-4 mb-4">
+      <label for="middle" class="font-semibold w-9rem">Middle Name</label>
+      <input pInputText
+             id="middle"
+             class="flex-auto"
+             autocomplete="off"
+             name="middle"
+             [(ngModel)]="middleName" />
+    </div>
+
+    <div class="flex align-items-center gap-4 mb-4">
+      <label for="last" class="font-semibold w-9rem">Last Name</label>
+      <input pInputText
+             required
+             id="last"
+             class="flex-auto"
+             autocomplete="off"
+             name="last"
+             [(ngModel)]="lastName" />
+    </div>
+
+    <div class="flex align-items-center gap-4 mb-4">
+      <label for="description" class="font-semibold w-9rem">Bio</label>
+      <textarea pTextarea
+                id="description"
+                class="flex-auto"
+                autocomplete="off"
+                name="description"
+                rows="5"
+                autoResize="false"
+                style="resize: none"
+                [(ngModel)]="bio">
+      </textarea>
+    </div>
+
+    <div class="flex align-items-center gap-4 mb-4">
+      <label for="country" class="font-semibold w-9rem">Country</label>
+      <p-dropdown [options]="countryService.loadCountries()"
+                  [showClear]="true"
+                  [required]="true"
+                  [(ngModel)]="country"
+                  class="flex-auto"
+                  name="country"
+                  id="country"
+                  placeholder="Select a country"
+                  appendTo="body">
+        <ng-template pTemplate="selectedItem">
+          <div *ngIf="country">
+            {{ countryService.getCountryName(country) }}
+          </div>
+        </ng-template>
+        <ng-template let-item pTemplate="item">
+          {{ countryService.getCountryName(item) }}
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <div class="flex align-items-center gap-4 mb-4">
+      <label for="birthDate" class="font-semibold w-9rem">Birth date</label>
+      <p-datePicker [(ngModel)]="birthDate"
+                    [showIcon]="true"
+                    id="birthDate"
+                    name="birthDate"
+                    appendTo="body"
+                    styleClass="flex-auto"
+                    placeholder="Pick birthday"/>
+    </div>
+  </form>
+
+  <ng-template #footer>
+    <p-button label="Save"
+              icon="pi pi-save"
+              [disabled]="form.invalid"
+              (click)="createOrUpdateFilm()" />
+  </ng-template>
+</p-dialog>
+
+<p-button label="{{ id ? 'Edit' : 'Create' }}"
+          icon="pi {{ id ? 'pi-pencil' : 'pi-plus' }}"
+          [disabled]="!(keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN))"
+          (onClick)="openDialog = true">
+</p-button>

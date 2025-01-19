@@ -11,13 +11,21 @@ import {CharacterActorDto} from '../../dto/character-dto';
 import {AsyncPipe, DatePipe} from '@angular/common';
 import {LoadingComponent} from '../loading/loading.component';
 import {CountryService} from '../../services/country.service';
+import {Role} from '../../enum/role.enum';
+import {PersonFormComponent} from '../person-form/person-form.component';
+import {KeycloakService} from 'keycloak-angular';
+import {ImageComponent} from '../image/image.component';
+import {Panel} from 'primeng/panel';
 
 @Component({
   selector: 'app-person',
   imports: [
     AsyncPipe,
     LoadingComponent,
-    DatePipe
+    DatePipe,
+    PersonFormComponent,
+    ImageComponent,
+    Panel
   ],
   templateUrl: './person.component.html',
   styleUrl: './person.component.scss'
@@ -54,13 +62,14 @@ export class PersonComponent extends LoadingAbstractComponent implements OnChang
   actorService = inject(ActorService)
   directorService = inject(DirectorService)
   countryService = inject(CountryService)
+  keycloakService = inject(KeycloakService)
   private errorService = inject(ErrorService)
 
   ngOnChanges(): void {
     this.init()
   }
 
-  private init(): void {
+  init(): void {
     this.startLoading();
     this.loadPerson()
   }
@@ -69,7 +78,6 @@ export class PersonComponent extends LoadingAbstractComponent implements OnChang
     this.personService.getPerson(this.personId).subscribe({
       next: person => {
         this.person = person
-        console.log(person)
         this.loadCareerContent()
       },
       error: err => this.errorService.emitError(err.error.message, err.status)
@@ -108,4 +116,6 @@ export class PersonComponent extends LoadingAbstractComponent implements OnChang
     }
     return roles.join(' - ');
   }
+
+  protected readonly Role = Role;
 }

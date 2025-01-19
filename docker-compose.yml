@@ -68,3 +68,17 @@ services:
     ports:
       - "5177:8080"
       - "5001:8081"
+  
+  pot-ui:
+    build:
+      context: .
+      dockerfile: angular-ui/Dockerfile
+    container_name: ui
+    depends_on:
+      pot_api:
+        condition: service_started
+    networks:
+      - semka
+    ports:
+      - "4200:80"
+      

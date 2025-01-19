@@ -53,7 +53,7 @@ export class UserRatingComponent implements OnChanges {
     this.init()
   }
 
-  private async init(): Promise<void> {
+  async init(): Promise<void> {
     if (this.keycloakService.isLoggedIn()) {
       try {
         const profile = await this.keycloakService.loadUserProfile(true)
@@ -67,11 +67,15 @@ export class UserRatingComponent implements OnChanges {
       } catch (e) {
         return
       }
-    } else {
-      this.keycloakService.login()
     }
+  }
 
-    // this.ratingService.getUserRating()
+  createOrUpdateRating() {
+    if (this.userRating) {
+      this.updateRating()
+    } else {
+      this.createRating()
+    }
   }
 
   removeRating(): void {
@@ -87,11 +91,11 @@ export class UserRatingComponent implements OnChanges {
       })
   }
 
-  createOrUpdateRating() {
-    if (this.userRating) {
-      this.updateRating()
+  openDetail(): void {
+    if (!this.keycloakService.isLoggedIn()) {
+      this.keycloakService.login()
     } else {
-      this.createRating()
+      this.openDialog = true
     }
   }
 

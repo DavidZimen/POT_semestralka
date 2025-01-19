@@ -31,7 +31,7 @@ public class RatingController : ControllerBase
     public async Task<IActionResult> CreateRating([FromBody] RatingCreate request)
     {
         var ratingId = await _ratingService.CreateRatingAsync(request);
-        return CreatedAtRoute($"/rating/{ratingId}", null);
+        return Created($"/rating/{ratingId}", ratingId);
     }
 
     [HttpPut]

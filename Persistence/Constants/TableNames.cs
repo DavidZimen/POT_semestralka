@@ -3,7 +3,7 @@
 public static class TableNames
 {
     // standard table names
-    public const string User = "user";
+    public const string User = "app_user";
     public const string Person = "person";
     public const string Actor = "actor";
     public const string Director = "director";

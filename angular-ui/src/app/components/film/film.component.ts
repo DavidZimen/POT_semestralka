@@ -20,6 +20,10 @@ import {UiRoutes} from '../../constants/UiRoutes';
 import {ImageComponent} from '../image/image.component';
 import {RatingComponent} from '../rating/rating.component';
 import {Panel} from 'primeng/panel';
+import {DropdownModule} from 'primeng/dropdown';
+import {FormsModule} from '@angular/forms';
+import {FilmFormComponent} from './film-form/film-form.component';
+import {Role} from '../../enum/role.enum';
 
 @Component({
   selector: 'app-film',
@@ -32,7 +36,10 @@ import {Panel} from 'primeng/panel';
     DurationPipe,
     ImageComponent,
     RatingComponent,
-    Panel
+    Panel,
+    DropdownModule,
+    FormsModule,
+    FilmFormComponent
   ],
   templateUrl: './film.component.html',
   styleUrl: './film.component.scss'
@@ -71,7 +78,7 @@ export class FilmComponent extends LoadingAbstractComponent implements OnChanges
     this.init()
   }
 
-  private init(): void {
+  init(): void {
     this.startLoading()
     const film$ = this.filmService.getFilm(this.filmId)
     const characters$ =  this.filmService.getFilmCharacters(this.filmId)
@@ -97,6 +104,13 @@ export class FilmComponent extends LoadingAbstractComponent implements OnChanges
     this.router.navigate([UiRoutes.Person, personId])
   }
 
+  loadCharacters(): void {
+    this.filmService.getFilmCharacters(this.filmId).subscribe({
+      next: characters => this.characters = characters
+    })
+  }
+
   protected readonly MediaType = MediaType;
   protected readonly UiRoutes = UiRoutes;
+  protected readonly Role = Role;
 }
