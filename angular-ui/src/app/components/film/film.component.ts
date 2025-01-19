@@ -18,6 +18,8 @@ import {DurationPipe} from '../../pipes/duration.pipe';
 import {Router} from '@angular/router';
 import {UiRoutes} from '../../constants/UiRoutes';
 import {ImageComponent} from '../image/image.component';
+import {RatingComponent} from '../rating/rating.component';
+import {Panel} from 'primeng/panel';
 
 @Component({
   selector: 'app-film',
@@ -28,7 +30,9 @@ import {ImageComponent} from '../image/image.component';
     MediaCharactersComponent,
     DatePipe,
     DurationPipe,
-    ImageComponent
+    ImageComponent,
+    RatingComponent,
+    Panel
   ],
   templateUrl: './film.component.html',
   styleUrl: './film.component.scss'

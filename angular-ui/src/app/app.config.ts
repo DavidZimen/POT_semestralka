@@ -8,7 +8,7 @@ import {apiUrlInterceptor} from './interceptors/api.interceptor';
 import {KeycloakService} from 'keycloak-angular';
 import {provideAnimationsAsync} from '@angular/platform-browser/animations/async';
 import {providePrimeNG} from 'primeng/config';
-import Lara from '@primeng/themes/lara'
+import Material from '@primeng/themes/material'
 import {ConfirmationService, MessageService} from 'primeng/api';
 import * as countries from 'i18n-iso-countries';
 import enLocale from 'i18n-iso-countries/langs/en.json';
@@ -36,7 +36,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
-        preset: Lara,
+        preset: Material,
         options: {
           darkModeSelector: 'none'
         }

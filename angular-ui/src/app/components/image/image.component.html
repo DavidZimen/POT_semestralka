@@ -1,0 +1,24 @@
+@if (getImageUrl(); as imageUrl) {
+  <div class="image-container">
+    <p-image [src]="imageUrl"
+             [width]="width.toString()"
+             [height]="height.toString()">
+    </p-image>
+
+    @if (keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN) && !imageUrl.includes('stock')) {
+      <p-button icon="pi pi-trash"
+                severity="danger"
+                size="small"
+                class="corner-button"
+                (onClick)="initRemoveImage()">
+      </p-button>
+    }
+  </div>
+} @else if (keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN)) {
+  <app-image-upload [filmId]="filmId"
+                    [showId]="showId"
+                    [personId]="personId"
+                    [episodeId]="episodeId"
+                    (imageUploaded)="imageId = $event">
+  </app-image-upload>
+}

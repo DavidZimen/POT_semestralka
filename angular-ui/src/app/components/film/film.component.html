@@ -1,33 +1,45 @@
 @if (!($loading | async)) {
-  <h1>{{ film.title }}</h1>
+  <div class="flex justify-content-between align-content-start flex-wrap">
+    <div class="flex flex-column">
+      <h1>{{ film.title }}</h1>
 
-  <div class="flex gap-1">
-    <span>{{ film.releaseDate | date: 'yyyy' }}</span>
-    <span>-</span>
-    <span>{{ film.duration | duration }}</span>
+      <div class="flex gap-1">
+        <span>{{ film.releaseDate | date: 'yyyy' }}</span>
+        <span>-</span>
+        <span>{{ film.duration | duration }}</span>
+      </div>
+
+      <app-image [imageId]="film.imageId"
+                 [filmId]="film.filmId"
+                 [useStock]="false"/>
+
+      <div class="flex align-items-center gap-3">
+        <h3>Directed by: </h3>
+        <span style="font-size: 1.15rem; cursor: pointer;"
+              (click)="showDirector(director.personId)">
+          {{ director.firstName }} {{ director.lastName }}
+        </span>
+      </div>
+
+      <app-media-genres [mediaType]="MediaType.FILM"
+                        [mediaId]="film.filmId"
+                        [genres]="film.genres"/>
+    </div>
+
+    <app-rating [filmId]="filmId"/>
   </div>
 
-  <div class="flex align-items-center gap-3">
-    <h3>Directed by: </h3>
-    <span style="font-size: 1.15rem; cursor: pointer;"
-       (click)="showDirector(director.personId)">
-      {{ director.firstName }} {{ director.lastName }}
-    </span>
-  </div>
-
-  <app-image [imageId]="film.imageId"
-             [filmId]="film.filmId"
-             [useStock]="false">
-  </app-image>
-
-  <app-media-genres [mediaType]="MediaType.FILM"
-                    [mediaId]="film.filmId"
-                    [genres]="film.genres">
-  </app-media-genres>
+  <p-panel [toggleable]="true" styleClass="mt-2">
+    <ng-template #header>
+      <h3>Storyline</h3>
+    </ng-template>
+    <p class="m-0">
+      {{ film.description }}
+    </p>
+  </p-panel>
 
   <app-media-characters [mediaType]="MediaType.FILM"
-                        [characters]="characters">
-  </app-media-characters>
+                        [characters]="characters"/>
 } @else {
   <app-loading message="Loading film data. Please wait..."></app-loading>
 }

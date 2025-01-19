@@ -1,0 +1,32 @@
+.rating-container {
+  min-width: 120px;
+  max-width: 150px;
+  text-align: center;
+}
+
+.rating-header {
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.rating-value {
+  font-size: 1.5rem;
+}
+
+.rating-star {
+  color: #f5c518;
+  font-size: 1.4rem;
+}
+
+.rating-score {
+  font-size: 1.4rem;
+}
+
+.rating-divider {
+  font-size: 1rem;
+}
+
+.rating-votes {
+  font-size: 0.9rem;
+}

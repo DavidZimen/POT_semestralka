@@ -1,0 +1,12 @@
+<div class="my-2">
+  <div class="flex flex-row justify-content-start gap-1">
+    @for (genre of genres; track genre.genreId) {
+      <p-chip [label]="genre.name"
+              [removable]="canRemoveGenre()"
+              (onRemove)="initiateRemoveGenre(genre)">
+      </p-chip>
+    } @empty {
+      No genres are assigned to {{ mediaType | lowercase }}.
+    }
+  </div>
+</div>

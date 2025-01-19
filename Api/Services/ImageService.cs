@@ -1,3 +1,4 @@
+using Api.Exceptions;
 using Api.Services.Abstraction;
 using Domain.Dto;
 using Domain.Entity;
@@ -13,6 +14,8 @@ public interface IImageService : IService
     Task<Guid?> CreateImageAsync(ImageCreate imageCreate);
 
     Task<ImageEntity?> GetImageByIdAsync(Guid imageId);
+    
+    Task<bool> DeleteImageAsync(Guid imageId);
 }
 
 public class ImageService : IImageService
@@ -64,5 +67,15 @@ public class ImageService : IImageService
     public Task<ImageEntity?> GetImageByIdAsync(Guid imageId)
     {
         return _imageRepository.FindByIdAsync(imageId);
+    }
+
+    public async Task<bool> DeleteImageAsync(Guid imageId)
+    {
+        var imageEntity = await _imageRepository.FindByIdAsync(imageId);
+        if (imageEntity is null)
+        {
+            throw new NotFoundException($"Image with id {imageId} not found");
+        }
+        return await _imageRepository.DeleteAsync(imageEntity);
     }
 }

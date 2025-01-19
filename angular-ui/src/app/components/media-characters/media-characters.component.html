@@ -1,0 +1,32 @@
+<div class="my-2">
+  <h2>Cast</h2>
+
+  <div class="flex flex-row justify-content-start gap-3 flex-wrap">
+    @for (character of characters; track character.characterId) {
+      <div class="flex align-items-center"
+           style="min-width: 250px;">
+        <p-avatar [image]="getImageUrl(character.actor)"
+                  (click)="showPerson(character.actor.personId)"
+                  class="mr-2"
+                  size="xlarge"
+                  shape="circle">
+        </p-avatar>
+
+        <div class="flex flex-column align-items-center" style="width: 80%"
+             (click)="showPerson(character.actor.personId)">
+          <div class="font-bold">{{ character.actor.firstName }} {{ character.actor.lastName }}</div>
+          <div class="text-color-secondary">{{ character.characterName }}</div>
+        </div>
+
+        @if (keycloakService.isLoggedIn() && keycloakService.isUserInRole(Role.ADMIN)) {
+          <i class="pi pi-times-circle"
+             style="cursor: pointer"
+             (click)="initRemoveCharacter(character)"></i>
+        }
+      </div>
+    } @empty {
+      No characters are assigned to {{ mediaType | lowercase }}.
+    }
+  </div>
+</div>
+

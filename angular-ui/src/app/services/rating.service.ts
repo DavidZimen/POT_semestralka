@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import {AverageRatingDto, RatingCreate, RatingDelete, RatingDto, RatingUpdate, UserRatingRequest } from '../dto/rating-dto';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {AverageRatingDto, RatingCreate, RatingDelete, RatingDto, RatingUpdate} from '../dto/rating-dto';
 
 @Injectable({ providedIn: 'root' })
 export class RatingService {
@@ -23,13 +23,13 @@ export class RatingService {
     return this.http.request<void>('delete', `/rating/${ratingId}`, { body: rating });
   }
 
-  getUserRating(userId: string, filmId?: string, showId?: string, episodeId?: string): Observable<UserRatingRequest> {
-    let params = new HttpParams().set('userId', userId);
+  getUserRating(userId: string, filmId?: string, showId?: string, episodeId?: string): Observable<RatingDto> {
+    let params = new HttpParams();
     if (filmId) params = params.set('filmId', filmId);
     if (showId) params = params.set('showId', showId);
     if (episodeId) params = params.set('episodeId', episodeId);
 
-    return this.http.get<UserRatingRequest>('/rating/user', { params });
+    return this.http.get<RatingDto>(`/rating/user/${userId}`, { params });
   }
 
   getAverageRating(filmId?: string, showId?: string, episodeId?: string): Observable<AverageRatingDto> {

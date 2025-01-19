@@ -68,4 +68,12 @@ public class ImageController : ControllerBase
 
         return result is not null ? Created($"image/{result}", result) : Problem("Failed to save image.");
     }
+    
+    [HttpDelete]
+    [Route("{imageId:guid}")]
+    public async Task<IActionResult> RemoveImage(Guid imageId)
+    {
+        var result = await _imageService.DeleteImageAsync(imageId);
+        return result ? NoContent() : Problem();
+    }
 }

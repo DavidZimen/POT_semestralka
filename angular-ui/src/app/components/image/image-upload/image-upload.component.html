@@ -1,0 +1,13 @@
+<p-fileupload name="file"
+              mode="basic"
+              chooseIcon="pi pi-upload"
+              chooseLabel="Upload Image"
+              [fileLimit]="1"
+              (onUpload)="onUpload($event)"
+              (onError)="onError($event)"
+              [url]="getUrl()"
+              [accept]="'image/png, image/jpeg'"
+              [auto]="true">
+</p-fileupload>
+
+

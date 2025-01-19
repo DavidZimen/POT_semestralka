@@ -1,0 +1,12 @@
+<div class="flex mt-3">
+  <app-average-rating #averageRating
+                      [filmId]="filmId"
+                      [showId]="showId"
+                      [episodeId]="episodeId"/>
+
+  <app-user-rating [filmId]="filmId"
+                   [showId]="showId"
+                   [episodeId]="episodeId"
+                   (ratingChanged)="averageRating.ngOnChanges()"/>
+</div>
+

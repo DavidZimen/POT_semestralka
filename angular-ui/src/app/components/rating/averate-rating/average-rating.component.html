@@ -1,0 +1,13 @@
+<div class="rating-container p-d-flex p-ai-center p-flex-column">
+  <div class="rating-header p-text-center">Average rating</div>
+
+  <div class="rating-value p-d-flex p-ai-center pt-1">
+    <i class="pi pi-star-fill rating-star"></i>
+
+    <div class="p-text-bold">
+      <span class="rating-score">{{ (rating?.average || 0) | number:'1.1-1' }}</span><span class="rating-divider">/10</span>
+    </div>
+  </div>
+
+  <div class="rating-votes">{{ rating?.count || 0 }} votes</div>
+</div>

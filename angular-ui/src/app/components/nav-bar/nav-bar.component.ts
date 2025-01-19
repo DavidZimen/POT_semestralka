@@ -38,7 +38,7 @@ export class NavBarComponent {
     {
       label: 'Film',
       icon: 'pi pi-star',
-      routerLink: `${UiRoutes.Film}/d90261fb-0649-486e-8476-cbbcc3ff0ee3`
+      routerLink: `${UiRoutes.Film}/aa1967ea-5b82-4eb2-9dd9-5864602aef6b`
     }
   ]
 

@@ -1,6 +1,8 @@
 -- PostgreSQL script to populate the database with real-world inspired data for Films, Shows, and related entities
 
 -- Users Table
+INSERT INTO "user" VALUES ('c4829046-a1a8-40f3-b677-44e404d1ab0d', true);
+
 INSERT INTO "user" (id, enabled)
 SELECT
     md5(random()::varchar(36)) AS random_string,

@@ -1,0 +1,24 @@
+@if (!($loading | async)) {
+  <h1>{{ getPersonName() }}</h1>
+
+  <div>{{ getPersonRoles() }}</div>
+
+  <div class="flex flex-column">
+    <div class="flex align-items-center gap-3">
+      <h3>Born: </h3>
+      <span style="font-size: 1.15rem;">
+      {{ person.birthDate | date: 'dd.MM.yyyy' }}
+    </span>
+    </div>
+
+    <div class="flex align-items-center gap-3">
+      <h3>Country: </h3>
+      <span style="font-size: 1.15rem;">
+      {{ countryService.getCountryName(person.country) }}
+    </span>
+    </div>
+  </div>
+
+} @else {
+  <app-loading message="Loading person data. Please wait..."></app-loading>
+}
