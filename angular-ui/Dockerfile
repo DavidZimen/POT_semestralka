@@ -4,12 +4,12 @@ FROM node:22.11.0 AS build
 WORKDIR /app
 
 # Copy package files and install necessary dependencies
-COPY package.json ./
+COPY ./angular-ui/package*.json ./
 RUN npm install
 RUN npm install -g @angular/cli
 
 # Copy rest of the files and build the project
-COPY . .
+COPY ./angular-ui .
 RUN ng build --configuration=production
 
 # Stage 2 - run with Nginx server

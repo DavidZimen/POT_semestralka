@@ -3,7 +3,7 @@ import {RouterOutlet} from '@angular/router';
 import {NavBarComponent} from './components/nav-bar/nav-bar.component';
 import {Toast} from 'primeng/toast';
 import {ConfirmDialog} from 'primeng/confirmdialog';
-import {KeycloakEventType, KeycloakService} from 'keycloak-angular';
+import {KeycloakEventTypeLegacy, KeycloakService} from 'keycloak-angular';
 import {UserService} from './services/user.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.keycloakService.keycloakEvents$.subscribe({
       next: async event => {
-        if (event.type == KeycloakEventType.OnAuthSuccess) {
+        if (event.type == KeycloakEventTypeLegacy.OnAuthSuccess) {
           const profile = await this.keycloakService.loadUserProfile()
           console.log(profile)
           this.userService.registerUser({ id: profile.id! }).subscribe({next: value => console.log('Registered')})
