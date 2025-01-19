@@ -2,25 +2,23 @@
 
 public class KeycloakOwnOptions
 {
-    public string Realm { get; init; }
+    public required string Realm { get; init; }
     
-    public string AuthorizationUrl { get; init; }
+    public required string AuthorizationUrl { get; init; }
     
-    public string MetadataAddress { get; init; }
+    public required string MetadataAddress { get; init; }
     
-    public string ValidIssuer { get; init; }
+    public required string ValidIssuer { get; init; }
     
-    public string Audience { get; init; }
+    public required string Audience { get; init; }
     
-    public string Username { get; init; }
+    public required string Username { get; init; }
     
-    public string Password { get; init; }
+    public required string Password { get; init; }
     
-    public string Url { get; init; }
+    public required string Url { get; init; }
     
-    public string ClientName { get; init; }
+    public required string ClientName { get; init; }
     
-    public string ClientSercet { get; set; }
-    
-    public int AccessTokenLifeSpan { get; init; }
+    public required int AccessTokenLifeSpan { get; init; }
 }

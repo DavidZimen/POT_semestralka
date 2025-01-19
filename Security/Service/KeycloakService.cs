@@ -251,9 +251,9 @@ public class KeycloakService : IKeycloakService
 
             return userId;
         }
-        catch (FlurlHttpException _)
+        catch (FlurlHttpException err)
         {
-            _logger.LogError("Failed to create user with email {Email}", user.Email);
+            _logger.LogError("Failed to create user with email {Email} : {Error}", user.Email, err.Message);
             return null;
         }
     }

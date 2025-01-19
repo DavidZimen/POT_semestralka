@@ -14,9 +14,9 @@ public class RatingEntity : BaseEntity<Guid>, IOwnerableEntity
     public string? Description { get; set; }
     
     [Column(name: "user_id", TypeName = "varchar(36)")]
-    public string UserId { get; set; }
+    public required string UserId { get; set; }
     
-    public virtual UserEntity User { get; set; }
+    public virtual required UserEntity User { get; set; }
     
     [Column(name: "film_id", TypeName = "uuid")]
     public Guid? FilmId { get; set; }

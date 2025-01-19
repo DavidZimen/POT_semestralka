@@ -30,12 +30,14 @@ public interface IActorService : IService
 public class ActorService : IActorService
 {
     private readonly IActorRepository _actorRepository;
+    private readonly IPersonRepository _personRepository;
     private readonly IMapper _mapper;
 
-    public ActorService(IActorRepository actorRepository, IMapper mapper)
+    public ActorService(IActorRepository actorRepository, IMapper mapper, IPersonRepository personRepository)
     {
         _actorRepository = actorRepository;
         _mapper = mapper;
+        _personRepository = personRepository;
     }
 
     public async Task<ActorEntity> GetOrCreateActorAsync(Guid personId)
@@ -43,7 +45,11 @@ public class ActorService : IActorService
         var actorEntity = await _actorRepository.GetActorByPersonIdAsync(personId);
         if (actorEntity is not null) return actorEntity;
         
-        actorEntity = await _actorRepository.CreateAsync(new ActorEntity { PersonId = personId });
+        actorEntity = await _actorRepository.CreateAsync(new ActorEntity
+        {
+            PersonId = personId,
+            Person = await _personRepository.FindByIdAsync(personId) ?? throw new BadRequestException($"Person with id {personId} was not found.")
+        });
         return actorEntity;
     }
 

@@ -8,15 +8,15 @@ public class ImageEntity : BaseEntity<Guid>
 {
     [Column(name: "name", TypeName = "varchar(255)")]
     [Required]
-    public string Name { get; set; }
+    public required string Name { get; set; }
     
     [Column(name: "type", TypeName = "varchar(20)")]
     [Required]
-    public string Type { get; set; }
+    public required string Type { get; set; }
     
     [Column(name: "data", TypeName = "bytea")]
     [Required]
-    public byte[] Data { get; set; }
+    public required byte[] Data { get; set; }
     
     public virtual PersonEntity? Person { get; set; }
     

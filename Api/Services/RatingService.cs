@@ -31,12 +31,14 @@ public class RatingService : IRatingService
     private readonly IRatingRepository _ratingRepository;
     private readonly IMapper _mapper;
     private readonly IAuthService _authService;
+    private readonly IUserRepository _userRepository;
 
-    public RatingService(IRatingRepository ratingRepository, IMapper mapper, IAuthService authService)
+    public RatingService(IRatingRepository ratingRepository, IMapper mapper, IAuthService authService, IUserRepository userRepository)
     {
         _ratingRepository = ratingRepository;
         _mapper = mapper;
         _authService = authService;
+        _userRepository = userRepository;
     }
 
     public async Task<ICollection<RatingDto>> GetRatingsAsync(Guid? filmId = null, Guid? showId = null, Guid? episodeId = null)
@@ -62,6 +64,7 @@ public class RatingService : IRatingService
     {
         var ratingEntity = _mapper.Map<RatingEntity>(ratingCreate);
         ratingEntity.UserId = _authService.GetCurrentUserId() ?? throw new UnauthorizedAccessException();
+        ratingEntity.User = (await _userRepository.FindByIdAsync(ratingEntity.UserId))!;
         return (await _ratingRepository.CreateAsync(ratingEntity)).Id;
     }
 

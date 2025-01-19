@@ -13,7 +13,7 @@ public class ActorDto
     /// <summary>
     /// Information about actor as person.
     /// </summary>
-    public PersonDto Person { get; set; }
+    public required PersonDto Person { get; set; }
 
     /// <summary>
     /// Number of shows, the actor played in.

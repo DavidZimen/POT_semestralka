@@ -8,11 +8,11 @@ public class FilmEntity : AuditableImageEntity<Guid>
 {
     [Column(name: "title", TypeName = "varchar(100)")]
     [Required]
-    public string Title { get; set; }
+    public required string Title { get; set; }
     
     [Column(name: "description", TypeName = "text")]
     [Required]
-    public string Description { get; set; }
+    public required string Description { get; set; }
     
     [Column(name: "release_date", TypeName = "date")]
     [Required]
@@ -25,7 +25,7 @@ public class FilmEntity : AuditableImageEntity<Guid>
     [Required]
     public Guid DirectorId { get; set; }
     
-    public virtual DirectorEntity Director { get; set; }
+    public virtual required DirectorEntity Director { get; set; }
     
     public virtual List<RatingEntity> Ratings { get; set; } = [];
     

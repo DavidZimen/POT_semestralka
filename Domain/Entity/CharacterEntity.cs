@@ -8,13 +8,13 @@ public class CharacterEntity : AuditableEntity<Guid>
 {
     [Column(name: "name", TypeName = "varchar(50)")]
     [Required]
-    public string Name { get; set; }
+    public required string Name { get; set; }
     
     [ForeignKey(name: nameof(Id))]
     [Column(name: "actor_id", TypeName = "uuid")]
     public Guid ActorId { get; set; }
     
-    public virtual ActorEntity Actor { get; set; }
+    public virtual required ActorEntity Actor { get; set; }
     
     [ForeignKey(name: nameof(Id))]
     [Column(name: "film_id", TypeName = "uuid")]

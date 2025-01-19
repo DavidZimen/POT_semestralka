@@ -29,12 +29,14 @@ public interface IDirectorService : IService
 public class DirectorService : IDirectorService
 {
     private readonly IDirectorRepository _directorRepository;
+    private readonly IPersonRepository _personRepository;
     private readonly IMapper _mapper;
 
-    public DirectorService(IDirectorRepository directorRepository, IMapper mapper)
+    public DirectorService(IDirectorRepository directorRepository, IMapper mapper, IPersonRepository personRepository)
     {
         _directorRepository = directorRepository;
         _mapper = mapper;
+        _personRepository = personRepository;
     }
 
     public async Task<DirectorEntity> GetOrCreateDirectorAsync(Guid personId)
@@ -42,7 +44,11 @@ public class DirectorService : IDirectorService
         var directorEntity = await _directorRepository.GetDirectorByPersonIdAsync(personId);
         if (directorEntity is not null) return directorEntity;
         
-        directorEntity = await _directorRepository.CreateAsync(new DirectorEntity { PersonId = personId });
+        directorEntity = await _directorRepository.CreateAsync(new DirectorEntity
+        {
+            PersonId = personId,
+            Person = await _personRepository.FindByIdAsync(personId) ?? throw new BadRequestException($"Person with id {personId} was not found.")
+        });
         return directorEntity;
     }
 

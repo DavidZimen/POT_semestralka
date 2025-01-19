@@ -8,11 +8,11 @@ public class ShowEntity : AuditableImageEntity<Guid>
 {
     [Column(name: "title", TypeName = "varchar(100)")]
     [Required]
-    public string Title { get; set; }
+    public required string Title { get; set; }
     
     [Column(name: "description", TypeName = "text")]
     [Required]
-    public string Description { get; set; }
+    public required string Description { get; set; }
     
     [Column(name: "release_date", TypeName = "date")]
     [Required]

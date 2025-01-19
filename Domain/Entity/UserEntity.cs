@@ -6,7 +6,7 @@ public class UserEntity
 {
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
     [Column(name: "id", TypeName = "varchar(36)")]
-    public string Id { get; set; }
+    public required string Id { get; set; }
     
     [Column(name: "enabled", TypeName = "boolean")]
     public bool Enabled { get; set; }

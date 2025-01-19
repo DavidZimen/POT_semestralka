@@ -7,10 +7,10 @@ public abstract class BaseEntity<TKey>
 {
     [Key]
     [Column(name: "id", TypeName = "uuid")]
-    public TKey Id { get; }
+    public TKey? Id { get; set; }
     
     // Concurrency token for optimistic concurrency control
     [Column(name: "version")]
     [ConcurrencyCheck]
-    public int Version { get; } 
+    public int Version { get; } = 0;
 }

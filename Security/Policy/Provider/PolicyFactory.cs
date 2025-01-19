@@ -37,7 +37,7 @@ public class PolicyFactory
 
 public class PolicyTuple
 {
-    public string Name { get; init; }
+    public required string Name { get; init; }
     
-    public AuthorizationPolicy Policy { get; init; }
+    public required AuthorizationPolicy Policy { get; init; }
 }

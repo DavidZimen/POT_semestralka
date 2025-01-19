@@ -9,7 +9,8 @@ public class ActorEntity : AuditableEntity<Guid>
     [Column(name: "person_id", TypeName = "uuid")]
     public Guid PersonId { get; set; }
     
-    public virtual PersonEntity Person { get; set; }
+    public virtual required PersonEntity Person { get; set; }
     
     public virtual List<CharacterEntity> Characters { get; set; } = [];
+    
 }

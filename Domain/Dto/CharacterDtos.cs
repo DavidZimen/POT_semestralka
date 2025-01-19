@@ -10,7 +10,7 @@ public class CharacterDto
     
     public Guid ActorId { get; set; }
     
-    public string CharacterName { get; set; }
+    public required string CharacterName { get; set; }
 }
 
 /// <summary>
@@ -55,7 +55,7 @@ public class CharacterMediaDto
     
     public string CharacterName { get; set; } = string.Empty;
     
-    public PersonMinimalDto Actor { get; set; }
+    public required PersonMinimalDto Actor { get; set; }
 }
 
 /// <summary>

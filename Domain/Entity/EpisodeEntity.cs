@@ -8,11 +8,11 @@ public class EpisodeEntity : AuditableImageEntity<Guid>
 {
     [Column(name: "title", TypeName = "varchar(100)")]
     [Required]
-    public string Title { get; set; }
+    public required string Title { get; set; }
     
     [Column(name: "description", TypeName = "text")]
     [Required]
-    public string Description { get; set; }
+    public required string Description { get; set; }
     
     [Column(name: "release_data", TypeName = "date")]
     [Required]
@@ -25,13 +25,13 @@ public class EpisodeEntity : AuditableImageEntity<Guid>
     [Required]
     public Guid DirectorId { get; set; }
     
-    public virtual DirectorEntity Director { get; set; }
+    public virtual required DirectorEntity Director { get; set; }
     
     [Column(name: "season_id", TypeName = "uuid")]
     [Required]
     public Guid SeasonId { get; set; }
     
-    public virtual SeasonEntity Season { get; set; }
+    public virtual required SeasonEntity Season { get; set; }
     
     public virtual List<RatingEntity> Ratings { get; set; } = [];
 }

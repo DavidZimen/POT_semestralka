@@ -14,7 +14,8 @@ public abstract class AuditableEntity<TKey> : BaseEntity<TKey>, IAuditableEntity
     
     [Column(name: "deleted_at", TypeName = "timestamp with time zone")]
     public DateTime? DeletedDate { get; set; }
-    
+
     [Column(name: "modified_by", TypeName = "varchar(255)")]
-    public string LastModifiedBy { get; set; }
+    [Required]
+    public string LastModifiedBy { get; set; } = string.Empty;
 }
