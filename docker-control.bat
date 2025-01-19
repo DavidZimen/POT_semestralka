@@ -9,6 +9,7 @@ if "%1"=="" (
 )
 
 down
+set IMAGE1=pot_semestralka-pot-ui
 set IMAGE2=pot_semestralka-pot_api
 
 REM Handle -up argument
@@ -25,6 +26,7 @@ if "%1"=="-down" (
 
     REM Remove specified images
     echo Removing images...
+    docker rmi -f %IMAGE1%
     docker rmi -f %IMAGE2%
     if errorlevel 1 (
         echo ERROR: Failed to remove images. >&2
