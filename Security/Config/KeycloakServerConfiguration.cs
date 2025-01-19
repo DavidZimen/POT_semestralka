@@ -3,6 +3,9 @@ using Security.Service;
 
 namespace Security.Config;
 
+/// <summary>
+/// Hosted service for configuring running Keycloak instance to the correct state.
+/// </summary>
 public class KeycloakServerConfiguration : IHostedService
 {
     private readonly IKeycloakService _keycloakService;

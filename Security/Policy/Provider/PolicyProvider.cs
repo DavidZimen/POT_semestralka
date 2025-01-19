@@ -39,6 +39,10 @@ public class PolicyProvider : IAuthorizationPolicyProvider
 
     public Task<AuthorizationPolicy?> GetFallbackPolicyAsync() => Task.FromResult<AuthorizationPolicy?>(null);
 
+    /// <summary>
+    /// Initializes all policies, that are in given namespace with type <seealso cref="IAuthorizationPolicy"/>
+    /// </summary>
+    /// <returns></returns>
     private Dictionary<string, AuthorizationPolicy> InitializePolicies() 
         => typeof(IAuthorizationPolicy).Assembly.GetTypes()
             .Where(type => type.Namespace == PoliciesNamespace)

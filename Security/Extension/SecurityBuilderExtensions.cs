@@ -17,6 +17,9 @@ namespace Security.Extension;
 
 public static class SecurityBuilderExtensions
 {
+    /// <summary>
+    /// Adds Keycloak security to the WEB API.
+    /// </summary>
     public static IHostApplicationBuilder ConfigureKeycloakForApi(this IHostApplicationBuilder builder)
     {
         builder.Services.AddOptions<KeycloakOwnOptions>().BindConfiguration(SecurityConstants.KeycloakOptionsName);

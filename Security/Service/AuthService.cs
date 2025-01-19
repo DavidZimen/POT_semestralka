@@ -20,8 +20,6 @@ public interface IAuthService
 
 public class AuthService : IAuthService
 {
-    private const string UserIdClaimName = "sub";
-    
     private readonly HttpContext _httpContext;
 
     public AuthService(IHttpContextAccessor httpContextAccessor)

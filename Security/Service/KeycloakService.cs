@@ -3,15 +3,17 @@ using Keycloak.Net;
 using Keycloak.Net.Models.Clients;
 using Keycloak.Net.Models.ProtocolMappers;
 using Keycloak.Net.Models.RealmsAdmin;
-using Keycloak.Net.Models.Users;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Security.Dto;
+using Security.Constants;
 using Security.Exception;
 using Security.Options;
 
 namespace Security.Service;
 
+/// <summary>
+/// Service for communicationg with running Keycloak instance.
+/// </summary>
 public interface IKeycloakService
 {
     /// <summary>
@@ -29,21 +31,10 @@ public interface IKeycloakService
     /// Updates mapping of roles claim in JWT token from realm_access.roles to roles.
     /// </summary>
     internal Task UpdateRolesClaimMapping();
-
-    /// <summary>
-    /// Creates user in the 'semestralka' realm inside the keycloak.
-    /// </summary>
-    /// <returns>UserId, if the user was successfully created in the realm, null otherwise.</returns>
-    Task<string?> CreateUserAsync(KeycloakUser user);
 }
 
 public class KeycloakService : IKeycloakService
 {
-    private const string RolesClientScope = "roles";
-    private const string RolesMapper = "realm roles asp.net";
-    private const string RolesClaimConfigProperty = "claim.name";
-    private const string NewRoleClaimName = "roles";
-    
     private readonly ILogger<KeycloakService> _logger;
     
     private readonly KeycloakClient _keycloakClient;
@@ -157,22 +148,23 @@ public class KeycloakService : IKeycloakService
     {
         // find scope for realm roles, throw exception if null
         var rolesScope = (await _keycloakClient.GetClientScopesAsync(_keycloakOptions.Realm))
-            .First(clientScope => clientScope.Name == RolesClientScope);
-        
-        var rolesMapper = rolesScope.ProtocolMappers.FirstOrDefault(mapper => mapper.Name == RolesMapper);
+            .First(clientScope => clientScope.Name == SecurityConstants.RolesClientScope);
+
+        var rolesMapper = rolesScope.ProtocolMappers.FirstOrDefault(mapper => mapper.Name == SecurityConstants.RolesMapper);
         if (rolesMapper is not null)
         {
-            _logger.LogInformation("Roles token claim mapper in realm {Realm} already configured to {ClaimName}", _keycloakOptions.Realm, NewRoleClaimName);
+            _logger.LogInformation("Roles token claim mapper in realm {Realm} already configured to {ClaimName}",
+                _keycloakOptions.Realm, SecurityConstants.NewRoleClaimName);
             return;
         }
-        
+
         // try to update roles client scope
         try
         {
             rolesMapper = new ProtocolMapper
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = RolesMapper,
+                Name = SecurityConstants.RolesMapper,
                 ConsentRequired = false,
                 Protocol = "openid-connect",
                 _ProtocolMapper = "oidc-usermodel-realm-role-mapper",
@@ -183,19 +175,23 @@ public class KeycloakService : IKeycloakService
                     { "userinfo.token.claim", "true" },
                     { "id.token.claim", "false" },
                     { "lightweight.claim", "false" },
-                    { "access.token.claim", "true"},
+                    { "access.token.claim", "true" },
                     { "claim.name", "roles" },
                     { "jsonType.label", "String" }
                 }
             };
-            var result = await _keycloakClient.CreateProtocolMapperAsync(_keycloakOptions.Realm, rolesScope.Id, rolesMapper);
+            var result =
+                await _keycloakClient.CreateProtocolMapperAsync(_keycloakOptions.Realm, rolesScope.Id, rolesMapper);
             if (result)
             {
-                _logger.LogInformation("Roles token claim mapper in realm {Realm} configured to value {ClaimName}", _keycloakOptions.Realm, NewRoleClaimName);
+                _logger.LogInformation("Roles token claim mapper in realm {Realm} configured to value {ClaimName}",
+                    _keycloakOptions.Realm, SecurityConstants.NewRoleClaimName);
             }
             else
             {
-                _logger.LogCritical("Roles token claim mapper in realm {Realm} configuration failed. Cannot start application.", _keycloakOptions.Realm);
+                _logger.LogCritical(
+                    "Roles token claim mapper in realm {Realm} configuration failed. Cannot start application.",
+                    _keycloakOptions.Realm);
                 throw new KeycloakInitializationException();
             }
         }
@@ -206,58 +202,6 @@ public class KeycloakService : IKeycloakService
         }
     }
 
-    public async Task<string?> CreateUserAsync(KeycloakUser user)
-    {
-        try
-        {
-            var result = await _keycloakClient.CreateUserAsync(_keycloakOptions.Realm, new User
-            {
-                Email = user.Email,
-                UserName = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                RealmRoles = [user.Role],
-                Enabled = true,
-                Credentials =
-                [
-                    new Credentials
-                    {
-                        Type = "password",
-                        Value = user.Password,
-                        Temporary = false
-                    }
-                ],
-                EmailVerified = false,
-                // RequiredActions = ["VERIFY_EMAIL"]
-            });
-
-            if (!result)
-            {
-                _logger.LogError("Failed to create user with email {Email}", user.Email);
-                return null;
-            }
-
-            var users = await _keycloakClient.GetUsersAsync(_keycloakOptions.Realm, email: user.Email);
-            var userId = users.FirstOrDefault(u => u.Email == user.Email)?.Id;
-
-            if (userId is not null)
-            {
-                _logger.LogInformation("User with email {Email} created successfully.", user.Email);
-            }
-            else
-            {
-                _logger.LogError("Failed to create user with email {Email}", user.Email);
-            }
-
-            return userId;
-        }
-        catch (FlurlHttpException err)
-        {
-            _logger.LogError("Failed to create user with email {Email} : {Error}", user.Email, err.Message);
-            return null;
-        }
-    }
-    
     private Realm PrepareRealmRepresentation()
     {
         return new Realm
